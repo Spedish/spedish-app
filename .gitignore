@@ -1,3 +1,6 @@
 # Compiled source #
 ###################
 node_modules/
+
+# VIM stuff #
+*.swp
