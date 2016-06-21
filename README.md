@@ -1,5 +1,5 @@
 # Spedish Webapp
-## Dependency
+## Backend  
 - NodeJS  
 ```
 brew install node
@@ -17,12 +17,12 @@ npm install -g grunt-cli
 npm install -g bower
 ```
 
-## Build
+### Build
 ```
 npm install
 ```
 
-## Run
+### Run
 1. Start MongoDB
 ```
 mongod
@@ -30,4 +30,17 @@ mongod
 2. Start server
 ```
 node index.js
+```
+## Frontend  
+- AngularJS  
+```
+cd client
+npm install -g yo
+npm install -g generator-angular
+yo angular
+gem install compass
+```
+### Run
+```
+grunt serve
 ```
