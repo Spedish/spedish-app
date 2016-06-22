@@ -1,0 +1,21 @@
+<a class="btn btn-primary" href="/#/create/item">Add Item</a>
+<table>
+    <thead>
+        <th>Title</th>
+        <th>Description</th>
+        <th>Actions</th>
+    </thead>
+    <tbody>
+        <tr ng-repeat="i in items">
+            <td width="200px"><a ng-href="/#/item/{{ i._id }}">{{ i.title }}</a></td>
+            <td width="400px">{{ i.description }}</td>
+            <td>
+              <div class="button-group">
+                <a ng-href="/#/item/{{ i._id }}/edit" class="btn btn-default"><span class="glyphicon glyphicon-edit" /></a>
+                <a ng-href="/#/item/{{ i._id }}/delete" class="btn btn-default"><span class="glyphicon glyphicon-remove-circle" /></a>
+              </div>
+            </td>
+        </tr>
+    </tbody>
+</table>
+
