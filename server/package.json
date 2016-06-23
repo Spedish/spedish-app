@@ -15,6 +15,6 @@
     "method-override": "^2.3.1",
     "mongoose": "^4.0.6",
     "resourcejs": "^0.1.18",
-    "merge-descriptors": "^3.9.6"
+    "merge-descriptors": "^1.0.1"
   }
 }
