@@ -13,6 +13,8 @@
     <!-- build:css(.tmp) styles/main.css -->
     <link rel="stylesheet" href="styles/main.css">
     <!-- endbuild -->
+    <link rel="stylesheet" href="static/css/jquery.fileupload.css">
+    <link rel="stylesheet" href="static/css/jquery.fileupload-ui.css">
   </head>
   <body ng-app="clientApp">
     <!--[if lte IE 8]>
@@ -83,6 +85,12 @@
     <script src="bower_components/restangular/dist/restangular.js"></script>
     <!-- endbower -->
     <!-- endbuild -->
+
+    <!-- Scripts required for jQuery FileUpload extension -->
+    <script src="static/js/jquery.fileupload.js"></script>
+    <script src="static/js/jquery.fileupload-process.js"></script>
+    <script src="static/js/jquery.fileupload-validate.js"></script>
+    <script src="static/js/jquery.fileupload-angular.js"></script>
 
         <!-- build:js({.tmp,app}) scripts/scripts.js -->
         <script src="scripts/app.js"></script>
