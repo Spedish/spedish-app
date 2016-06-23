@@ -1,0 +1,22 @@
+<form>
+  <div>
+    <label>Title</label>
+    <input type="text" ng-model="item.title" id="title" />
+  </div>
+  <div>
+    <label>Description</label>
+    <input type="text" ng-model="item.description" id="description" />
+  </div>
+  <div>
+    <label>Price</label>
+    <input type="text" ng-model="item.price" id="price" />
+  </div>
+  <div>
+    <label>Inventory</label>
+    <input type="text" ng-model="item.inventory" id="inventory" />
+  </div>
+
+  <input type="submit" ng-click="saveItem()" value="Add" />
+
+</form>
+
