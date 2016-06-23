@@ -16,7 +16,8 @@ angular
     'ngRoute',
     'ngSanitize',
     'ngTouch',
-    'restangular'
+    'restangular',
+    'blueimp.fileupload'
 ])
 .config(function ($routeProvider, RestangularProvider) {
 
