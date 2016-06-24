@@ -56,7 +56,7 @@ FileInfo.prototype.initUrls = function (req) {
   if (!this.error) {
     var that = this,
         //baseUrl = (options.ssl ? 'https:' : 'http:') + '//' + req.headers.host + options.uploadUrl;
-        baseUrl = 'http://' + req.headers.host + 'gallery';
+        baseUrl = 'http://' + req.headers.host + '/gallery/';
         this.url = this.deleteUrl = baseUrl + encodeURIComponent(this.name);
         /*
         Object.keys(options.imageVersions).forEach(function (version) {
