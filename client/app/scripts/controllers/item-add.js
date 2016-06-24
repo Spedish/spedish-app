@@ -23,10 +23,12 @@ angular.module('clientApp')
     '$httpProvider', 'fileUploadProvider',
     function ($httpProvider, fileUploadProvider) {
       delete $httpProvider.defaults.headers.common['X-Requested-With'];
+      /*
       fileUploadProvider.defaults.redirect = window.location.href.replace(
         /\/[^\/]*$/,
         '/cors/result.html?%s'
       );
+      */
 
       // Override settings
       angular.extend(fileUploadProvider.defaults, {
@@ -44,9 +46,8 @@ angular.module('clientApp')
   .controller('FileUploadCtrl', [
     '$scope', '$http', '$filter', '$window',
     function($scope) {
-      $scope.name = 'test';
       $scope.options = {
-        url: 'test/'
+        url: '//54.183.97.63:3000/gallery/'
       };
     }
   ]);
