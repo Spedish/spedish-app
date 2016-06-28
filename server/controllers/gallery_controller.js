@@ -51,21 +51,19 @@ FileInfo.prototype.validate = function () {
 FileInfo.prototype.safeName = function () {
   // Prevent directory traversal and creating hidden system files:
   this.name = path.basename(this.name).replace(/^\.+/, '');
+
+  this.name = encodeURIComponent(this.name);
 };
 FileInfo.prototype.initUrls = function (req) {
   if (!this.error) {
     var that = this,
         //baseUrl = (options.ssl ? 'https:' : 'http:') + '//' + req.headers.host + options.uploadUrl;
         baseUrl = 'http://' + req.headers.host + '/gallery/';
-        this.url = this.deleteUrl = baseUrl + encodeURIComponent(this.name);
+        this.url = this.deleteUrl = baseUrl + this.name;
 
         Object.keys(options.imageVersions).forEach(function (version) {
-          if (fs.existsSync(
-            options.galleryDir + '/' + version + '_' + that.name
-          )) {
-            that[version + 'Url'] = baseUrl + version + '_' +
-              encodeURIComponent(that.name);
-          }
+          that[version + 'Url'] = baseUrl + version + '_' +
+            that.name;
         });
   }
 };
