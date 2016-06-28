@@ -1,4 +1,10 @@
 module.exports = {
-    'products': require('./controllers/product_controller'),
-    'item': require('./controllers/item_controller')
+    'products': require('./controllers/product'),
+    'item': require('./controllers/item'),
+    'signup': require('./controllers/auth/signup'),
+    'login': require('./controllers/auth/login'),
+    'profile': require('./controllers/auth/profile'),
+    '': require('./controllers/auth/home'),
+    'logout': require('./controllers/auth/logout'),
+    'facebook': require('./controllers/auth/facebook')
 };
