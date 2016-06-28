@@ -99,38 +99,8 @@ UploadHandler.prototype.post = function (req, res) {
 
   // If there is a gallery ID, save it
   }).on('field', function (name, value) {
-      if (name === 'gid') {
+      if (name === 'gid')
           gid = value;
-      }
-
-  /*
-  }).on('file', function (name, file) {
-      var fileInfo = map[path.basename(file.path)];
-      fileInfo.size = file.size;
-      if (!fileInfo.validate()) {
-          fs.unlink(file.path);
-          return;
-      }
-
-      // Copy the file to the correct place
-      fs.renameSync(file.path, options.galleryDir + '/' + fileInfo.name);
-
-      // If there are any image versions, create them
-      if (options.imageTypes.test(fileInfo.name)) {
-          Object.keys(options.imageVersions).forEach(function (version) {
-              counter += 1;
-              var opts = options.imageVersions[version];
-              console.log(version);
-              imageMagick.resize({
-                  width: opts.width,
-                  height: opts.height,
-                  srcPath: options.galleryDir + '/' + fileInfo.name,
-                  dstPath: options.galleryDir + '/' + version + '_' +
-                      fileInfo.name
-              }, finish(req, res));
-          });
-      }
-  */
 
   // On error delete all the temporary files that were uploaded
   }).on('aborted', function () {
@@ -151,6 +121,12 @@ UploadHandler.prototype.post = function (req, res) {
 
   // Once the full form is processed, save the files and call the handler
   }).on('end', function () {
+
+      // If there is a gallery id then use it, otherwise we should create a new one
+      if (gid) {
+        // Check gallery is valid first
+      } else {
+      }
 
       // Go through the files we received and move them to gallery
       tmpFiles.forEach(function (file) {
