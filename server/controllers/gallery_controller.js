@@ -1,15 +1,24 @@
-var path       = require('path');
-var fs         = require('fs');
-var formidable = require('formidable');
-var nodeStatic = require('node-static');
+var path        = require('path');
+var fs          = require('fs');
+var formidable  = require('formidable');
+var nodeStatic  = require('node-static');
+var imageMagick = require('imagemagick');
 
-fileServer = new nodeStatic.Server('/tmp/');
-
-var nameCountRegexp = /(?:(?: \(([\d]+)\))?(\.[^.]+))?$/;
-
-nameCountFunc = function (s, index, ext) {
-  return ' (' + ((parseInt(index, 10) || 0) + 1) + ')' + (ext || '');
+var options    = {
+  tmpDir: '/tmp/t',
+  galleryDir: '/tmp/gallery',
+  maxSize: 5000000, // 5MB
+  minSize: 1000, // 1KB
+  imageTypes: /\.(gif|jpe?g|png)$/i,
+  imageVersions: {
+    'thumbnail': {
+      width: 128,
+      height: 128
+    }
+  }
 };
+
+fileServer = new nodeStatic.Server(options.galleryDir);
 
 setNoCacheHeaders = function(res) {
   res.setHeader('Pragma', 'no-cache');
@@ -31,26 +40,17 @@ FileInfo = function (file) {
 };
 
 FileInfo.prototype.validate = function () {
-/*
-  if (options.minFileSize && options.minFileSize > this.size) {
+  if (options.minSize && options.minSize > this.size) {
     this.error = 'File is too small';
-  } else if (options.maxFileSize && options.maxFileSize < this.size) {
-    this.error = 'File is too big';
-  } else if (!options.acceptFileTypes.test(this.name)) {
-    this.error = 'Filetype not allowed';
+  } else if (options.maxSize && options.maxSize < this.size) {
+    this.error = 'File is too big: ' + options.maxSize;
   }
-*/
+
   return !this.error;
 };
 FileInfo.prototype.safeName = function () {
   // Prevent directory traversal and creating hidden system files:
   this.name = path.basename(this.name).replace(/^\.+/, '');
-  // Prevent overwriting existing files:
-  /*
-  while (_existsSync(options.uploadDir + '/' + this.name)) {
-    this.name = this.name.replace(nameCountRegexp, nameCountFunc);
-  }
-  */
 };
 FileInfo.prototype.initUrls = function (req) {
   if (!this.error) {
@@ -58,16 +58,15 @@ FileInfo.prototype.initUrls = function (req) {
         //baseUrl = (options.ssl ? 'https:' : 'http:') + '//' + req.headers.host + options.uploadUrl;
         baseUrl = 'http://' + req.headers.host + '/gallery/';
         this.url = this.deleteUrl = baseUrl + encodeURIComponent(this.name);
-        /*
+
         Object.keys(options.imageVersions).forEach(function (version) {
-          if (_existsSync(
-            options.uploadDir + '/' + version + '/' + that.name
+          if (fs.existsSync(
+            options.galleryDir + '/' + version + '_' + that.name
           )) {
-            that[version + 'Url'] = baseUrl + version + '/' +
+            that[version + 'Url'] = baseUrl + version + '_' +
               encodeURIComponent(that.name);
           }
         });
-        */
   }
 };
 
@@ -88,7 +87,7 @@ UploadHandler.prototype.post = function (req, res) {
               handler.callback({files: files}, redirect, req, res);
           }
       };
-  form.uploadDir = '/tmp';
+  form.uploadDir = options.tmpDir;
   form.on('fileBegin', function (name, file) {
       tmpFiles.push(file.path);
       var fileInfo = new FileInfo(file, handler.req, true);
@@ -106,35 +105,38 @@ UploadHandler.prototype.post = function (req, res) {
           fs.unlink(file.path);
           return;
       }
-      //fs.renameSync(file.path, options.uploadDir + '/' + fileInfo.name);
-      fs.renameSync(file.path, '/tmp/' + fileInfo.name);
-      /*
+
+      // Copy the file to the correct place
+      fs.renameSync(file.path, options.galleryDir + '/' + fileInfo.name);
+
+      // If there are any image versions, create them
       if (options.imageTypes.test(fileInfo.name)) {
           Object.keys(options.imageVersions).forEach(function (version) {
               counter += 1;
               var opts = options.imageVersions[version];
+              console.log(version);
               imageMagick.resize({
                   width: opts.width,
                   height: opts.height,
-                  srcPath: options.uploadDir + '/' + fileInfo.name,
-                  dstPath: options.uploadDir + '/' + version + '/' +
+                  srcPath: options.galleryDir + '/' + fileInfo.name,
+                  dstPath: options.galleryDir + '/' + version + '_' +
                       fileInfo.name
-              }, finish);
+              }, finish(req, res));
           });
       }
-      */
   }).on('aborted', function () {
+      console.error('Aborted, removing file');
+
       tmpFiles.forEach(function (file) {
           fs.unlink(file);
       });
   }).on('error', function (e) {
       console.log(e);
   }).on('progress', function (bytesReceived, bytesExpected) {
-      /*
       if (bytesReceived > options.maxPostSize) {
+          console.error('File upload size exceeded, terminating connection');
           handler.req.connection.destroy();
       }
-      */
   }).on('end', function () {
       finish(req, res);
   }).parse(handler.req);
