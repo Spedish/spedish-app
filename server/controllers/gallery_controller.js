@@ -20,17 +20,6 @@ var options    = {
 
 fileServer = new nodeStatic.Server(options.galleryDir);
 
-aaa = function(app) {
-var g = new app.models.gallery();
-        g.save().then(function(g) {
-          console.log('Created gallery with id ' + g.id);
-          gid = g.id;
-          gid = 10;
-        }).catch(function(err) {
-          console.error(err);
-        });
-};
-
 setNoCacheHeaders = function(res) {
   res.setHeader('Pragma', 'no-cache');
   res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate');
@@ -71,7 +60,6 @@ FileInfo.prototype.initUrls = function (req, gid) {
         //baseUrl = (options.ssl ? 'https:' : 'http:') + '//' + req.headers.host + options.uploadUrl;
         baseUrl = 'http://' + req.headers.host + '/gallery/'+ gid + '/';
 
-        this.gid = gid;
         this.url = this.deleteUrl = baseUrl + this.name;
 
         Object.keys(options.imageVersions).forEach(function (version) {
@@ -95,7 +83,7 @@ UploadHandler.prototype.post = function (app, req, res) {
               files.forEach(function (fileInfo) {
                   fileInfo.initUrls(handler.req, gid);
               });
-              handler.callback({files: files}, req, res);
+              handler.callback({files: files}, req, res, gid);
           }
       };
 
@@ -197,12 +185,17 @@ UploadHandler.prototype.post = function (app, req, res) {
   }).parse(handler.req);
 };
 
-handleResult = function (result, req, res) {
+handleResult = function (result, req, res, gid) {
   res.writeHead(200, {
       'Content-Type': req.headers.accept
           .indexOf('application/json') !== -1 ?
                   'application/json' : 'text/plain'
   });
+
+  // Tag the gid along with request if it is specified
+  if (gid != undefined)
+    result['gid'] = gid;
+
   res.end(JSON.stringify(result));
 }
 

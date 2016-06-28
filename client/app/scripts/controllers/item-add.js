@@ -23,14 +23,9 @@ angular.module('clientApp')
     '$httpProvider', 'fileUploadProvider',
     function ($httpProvider, fileUploadProvider) {
       delete $httpProvider.defaults.headers.common['X-Requested-With'];
-      /*
-      fileUploadProvider.defaults.redirect = window.location.href.replace(
-        /\/[^\/]*$/,
-        '/cors/result.html?%s'
-      );
-      */
 
       // Override settings
+          console.log('what');
       angular.extend(fileUploadProvider.defaults, {
           // Enable image resizing, except for Android and Opera,
           // which actually support image resizing, but fail to
@@ -38,7 +33,23 @@ angular.module('clientApp')
           disableImageResize: /Android(?!.*Chrome)|Opera/
               .test(window.navigator.userAgent),
           maxFileSize: 999000,
-          acceptFileTypes: /(\.|\/)(gif|jpe?g|png)$/i
+          acceptFileTypes: /(\.|\/)(gif|jpe?g|png)$/i,
+
+          // Overriding the default Done handler to provide a gid
+          done: function(e, data) {
+            if (e.isDefaultPrevented()) {
+              return false;
+            }
+
+            var that = this;
+            data.scope.$apply(function () {
+                data.handleResponse.call(that, e, data);
+            });
+
+            if (data.result && data.result.gid) {
+              data.scope.gid = data.result.gid;
+            }
+          }
       });
     }
   ])
