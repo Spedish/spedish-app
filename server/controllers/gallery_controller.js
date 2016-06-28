@@ -75,27 +75,35 @@ UploadHandler.prototype.post = function (req, res) {
       files = [],
       map = {},
       counter = 1,
-      redirect,
+      gid,
       finish = function (req, res) {
           counter -= 1;
           if (!counter) {
               files.forEach(function (fileInfo) {
                   fileInfo.initUrls(handler.req);
               });
-              handler.callback({files: files}, redirect, req, res);
+              handler.callback({files: files}, req, res);
           }
       };
+
+  // Set the upload dir to a temporary path
   form.uploadDir = options.tmpDir;
+
+  // On receiving a file, register it to a temporary list
   form.on('fileBegin', function (name, file) {
       tmpFiles.push(file.path);
       var fileInfo = new FileInfo(file, handler.req, true);
       fileInfo.safeName();
       map[path.basename(file.path)] = fileInfo;
       files.push(fileInfo);
+
+  // If there is a gallery ID, save it
   }).on('field', function (name, value) {
-      if (name === 'redirect') {
-          redirect = value;
+      if (name === 'gid') {
+          gid = value;
       }
+
+  /*
   }).on('file', function (name, file) {
       var fileInfo = map[path.basename(file.path)];
       fileInfo.size = file.size;
@@ -122,41 +130,70 @@ UploadHandler.prototype.post = function (req, res) {
               }, finish(req, res));
           });
       }
+  */
+
+  // On error delete all the temporary files that were uploaded
   }).on('aborted', function () {
       console.error('Aborted, removing file');
 
       tmpFiles.forEach(function (file) {
           fs.unlink(file);
       });
+
   }).on('error', function (e) {
       console.log(e);
+
   }).on('progress', function (bytesReceived, bytesExpected) {
       if (bytesReceived > options.maxPostSize) {
           console.error('File upload size exceeded, terminating connection');
           handler.req.connection.destroy();
       }
+
+  // Once the full form is processed, save the files and call the handler
   }).on('end', function () {
+
+      // Go through the files we received and move them to gallery
+      tmpFiles.forEach(function (file) {
+        var fileInfo = map[path.basename(file)];
+        fileInfo.size = file.size;
+        if (!fileInfo.validate()) {
+            fs.unlink(file);
+            return;
+        }
+
+        // Copy the file to the correct place
+        fs.renameSync(file, options.galleryDir + '/' + fileInfo.name);
+
+        // If there are any image versions, create them
+        if (options.imageTypes.test(fileInfo.name)) {
+            Object.keys(options.imageVersions).forEach(function (version) {
+                counter += 1;
+                var opts = options.imageVersions[version];
+                console.log(version);
+                imageMagick.resize({
+                    width: opts.width,
+                    height: opts.height,
+                    srcPath: options.galleryDir + '/' + fileInfo.name,
+                    dstPath: options.galleryDir + '/' + version + '_' +
+                        fileInfo.name
+                }, finish(req, res));
+            });
+        }
+      });
+
+      // Call the finish handler
       finish(req, res);
+
   }).parse(handler.req);
 };
 
-handleResult = function (result, redirect, req, res) {
-  if (redirect) {
-      res.writeHead(302, {
-          'Location': redirect.replace(
-              /%s/,
-              encodeURIComponent(JSON.stringify(result))
-          )
-      });
-      res.end();
-  } else {
-      res.writeHead(200, {
-          'Content-Type': req.headers.accept
-              .indexOf('application/json') !== -1 ?
-                      'application/json' : 'text/plain'
-      });
-      res.end(JSON.stringify(result));
-  }
+handleResult = function (result, req, res) {
+  res.writeHead(200, {
+      'Content-Type': req.headers.accept
+          .indexOf('application/json') !== -1 ?
+                  'application/json' : 'text/plain'
+  });
+  res.end(JSON.stringify(result));
 }
 
 module.exports = function(app, route) {
