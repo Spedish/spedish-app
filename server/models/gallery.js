@@ -3,7 +3,7 @@ var mongoose = require('mongoose');
 var GallerySchema = new mongoose.Schema({
   Order: {
     type: String,
-    required: true
+    required: false
   },
 });
 

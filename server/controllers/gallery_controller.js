@@ -20,6 +20,17 @@ var options    = {
 
 fileServer = new nodeStatic.Server(options.galleryDir);
 
+aaa = function(app) {
+var g = new app.models.gallery();
+        g.save().then(function(g) {
+          console.log('Created gallery with id ' + g.id);
+          gid = g.id;
+          gid = 10;
+        }).catch(function(err) {
+          console.error(err);
+        });
+};
+
 setNoCacheHeaders = function(res) {
   res.setHeader('Pragma', 'no-cache');
   res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate');
@@ -54,11 +65,13 @@ FileInfo.prototype.safeName = function () {
 
   this.name = encodeURIComponent(this.name);
 };
-FileInfo.prototype.initUrls = function (req) {
+FileInfo.prototype.initUrls = function (req, gid) {
   if (!this.error) {
     var that = this,
         //baseUrl = (options.ssl ? 'https:' : 'http:') + '//' + req.headers.host + options.uploadUrl;
-        baseUrl = 'http://' + req.headers.host + '/gallery/';
+        baseUrl = 'http://' + req.headers.host + '/gallery/'+ gid + '/';
+
+        this.gid = gid;
         this.url = this.deleteUrl = baseUrl + this.name;
 
         Object.keys(options.imageVersions).forEach(function (version) {
@@ -68,19 +81,19 @@ FileInfo.prototype.initUrls = function (req) {
   }
 };
 
-UploadHandler.prototype.post = function (req, res) {
+UploadHandler.prototype.post = function (app, req, res) {
   var handler = this,
       form = new formidable.IncomingForm(),
       tmpFiles = [],
       files = [],
       map = {},
       counter = 1,
-      gid,
-      finish = function (req, res) {
+      gid = undefined,
+      finish = function (req, res, gid) {
           counter -= 1;
           if (!counter) {
               files.forEach(function (fileInfo) {
-                  fileInfo.initUrls(handler.req);
+                  fileInfo.initUrls(handler.req, gid);
               });
               handler.callback({files: files}, req, res);
           }
@@ -122,43 +135,64 @@ UploadHandler.prototype.post = function (req, res) {
   // Once the full form is processed, save the files and call the handler
   }).on('end', function () {
 
+      var processFiles = function(gid) {
+        // Go through the files we received and move them to gallery
+        tmpFiles.forEach(function (file) {
+          var fileInfo = map[path.basename(file)];
+          fileInfo.size = file.size;
+          if (!fileInfo.validate()) {
+              fs.unlink(file);
+              return;
+          }
+
+          // Copy the file to the correct place
+          fs.renameSync(file, options.galleryDir + '/' + gid + '/' + fileInfo.name);
+
+          // If there are any image versions, create them
+          if (options.imageTypes.test(fileInfo.name)) {
+              Object.keys(options.imageVersions).forEach(function (version) {
+                  counter += 1;
+                  var opts = options.imageVersions[version];
+                  console.log(version);
+                  imageMagick.resize({
+                      width: opts.width,
+                      height: opts.height,
+                      srcPath: options.galleryDir + '/' + gid + '/' + fileInfo.name,
+                      dstPath: options.galleryDir + '/' + gid + '/' + version + '_' +
+                          fileInfo.name
+                  }, finish(req, res, gid));
+              });
+          }
+        });
+
+        // Call the finish handler
+        finish(req, res, gid);
+      };
+
       // If there is a gallery id then use it, otherwise we should create a new one
-      if (gid) {
+      if (gid != undefined) {
         // Check gallery is valid first
+        app.models.gallery.find({_id: gid}, function(err, gs) {
+          if (err || !gs || gs.length != 1) {
+            console.error('Retrieving gallery failed');
+            handler.req.connection.destroy();
+          } else {
+            processFiles(gid);
+          }
+        });
       } else {
+        var g = new app.models.gallery();
+        g.save().then(function(g) {
+          console.log('Created gallery with id ' + g.id);
+
+          gid = g.id;
+
+          fs.mkdirSync(options.galleryDir + '/' + gid);
+          processFiles(gid);
+        }).catch(function(err) {
+          console.error(err);
+        });
       }
-
-      // Go through the files we received and move them to gallery
-      tmpFiles.forEach(function (file) {
-        var fileInfo = map[path.basename(file)];
-        fileInfo.size = file.size;
-        if (!fileInfo.validate()) {
-            fs.unlink(file);
-            return;
-        }
-
-        // Copy the file to the correct place
-        fs.renameSync(file, options.galleryDir + '/' + fileInfo.name);
-
-        // If there are any image versions, create them
-        if (options.imageTypes.test(fileInfo.name)) {
-            Object.keys(options.imageVersions).forEach(function (version) {
-                counter += 1;
-                var opts = options.imageVersions[version];
-                console.log(version);
-                imageMagick.resize({
-                    width: opts.width,
-                    height: opts.height,
-                    srcPath: options.galleryDir + '/' + fileInfo.name,
-                    dstPath: options.galleryDir + '/' + version + '_' +
-                        fileInfo.name
-                }, finish(req, res));
-            });
-        }
-      });
-
-      // Call the finish handler
-      finish(req, res);
 
   }).parse(handler.req);
 };
@@ -178,7 +212,7 @@ module.exports = function(app, route) {
     handler = new UploadHandler(req, res, handleResult);
 
     setNoCacheHeaders(res);
-    handler.post(req, res);
+    handler.post(app, req, res);
   });
 
   app.get('/'+route+'*', function(req, res) {
@@ -186,7 +220,7 @@ module.exports = function(app, route) {
       setNoCacheHeaders(res);
       res.send('No listing allowed');
     } else {
-      var f = req.url.substring(req.url.lastIndexOf('/') + 1);
+      var f = req.url.substring(req.url.lastIndexOf('gallery/') + 8);
       console.error(f);
       fileServer.serveFile(f, 200, {}, req, res);
     }
