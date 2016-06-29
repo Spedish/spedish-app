@@ -183,10 +183,6 @@ handleResult = function (result, req, res) {
                   'application/json' : 'text/plain'
   });
 
-  // Tag the gid along with request if it is specified
-  if (gid != undefined)
-    result['gid'] = gid;
-
   res.end(JSON.stringify(result));
 };
 
