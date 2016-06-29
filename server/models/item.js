@@ -26,6 +26,10 @@ var itemSchema = new mongoose.Schema({
   create_date: {
     type: Date
   },
+  gid: {
+    type: String,
+    required: false
+  }
 });
 
 itemSchema.pre('save', function(next) {

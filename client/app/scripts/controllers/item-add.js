@@ -54,6 +54,8 @@ angular.module('clientApp')
                 async: false
               }).done(function(res) {
                 el.val(res.gid);
+                $('#item_gid').val(res.gid);
+                $('#item_gid').trigger('input');
                 return true;
               }).fail(function() {
                 console.error('Error creating gallery');
@@ -85,7 +87,7 @@ angular.module('clientApp')
     '$scope', '$http', '$filter', '$window',
     function($scope) {
       $scope.options = {
-        url: galleryUrl 
+        url: galleryUrl
       };
     }
   ]);
