@@ -28,7 +28,12 @@
         <div class="progress-extended">&nbsp;</div>
     </div>
   </div>
-  <input type="text" id="gid" name="gid"/>
+  <div ng-if="editItem">
+    <input type="text" id="gid" name="gid" value="{{item._gallery._id}}" />
+  </div>
+  <div ng-if="addItem">
+    <input type="text" id="gid" name="gid"/>
+  </div>
   <!-- The table listing the files available for upload/download -->
   <table class="table table-striped files ng-cloak">
     <tr data-ng-repeat="file in queue" data-ng-class="{'processing': file.$processing()}">
@@ -91,7 +96,9 @@
     <input type="text" ng-model="item.inventory" id="inventory" />
   </div>
   <br />
-  <input type="text" ng-model="item.gid" id="item_gid" name="gid"/>
+  <div ng-if="addItem">
+    <input type="text" ng-model="item._gallery" id="item_gid" name="gid"/>
+  </div>
   <br />
 
   <input type="submit" ng-click="saveItem()" value="Add" />
