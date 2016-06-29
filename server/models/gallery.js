@@ -1,8 +1,8 @@
 var mongoose = require('mongoose');
 
 var GallerySchema = new mongoose.Schema({
-  Order: {
-    type: String,
+  order: {
+    type: Object,
     required: false
   },
 });

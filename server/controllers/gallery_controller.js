@@ -3,7 +3,6 @@ var fs          = require('fs');
 var formidable  = require('formidable');
 var nodeStatic  = require('node-static');
 var imageMagick = require('imagemagick');
-var async       = require('async');
 
 var options    = {
   tmpDir: '/tmp/t',
@@ -124,7 +123,13 @@ UploadHandler.prototype.post = function (app, req, res) {
   // Once the full form is processed, save the files and call the handler
   }).on('end', function () {
 
-      var processFiles = function(gid) {
+      var processFiles = function(gallery) {
+        var gid = gallery._id;
+        var order = [];
+
+        if (gallery.order)
+          order = gallery.order;
+
         // Go through the files we received and move them to gallery
         tmpFiles.forEach(function (file) {
           var fileInfo = map[path.basename(file)];
@@ -137,6 +142,9 @@ UploadHandler.prototype.post = function (app, req, res) {
           // Copy the file to the correct place
           console.log('Saving ' + file + ' to ' + options.galleryDir + '/' + gid + '/' + fileInfo.name);
           fs.renameSync(file, options.galleryDir + '/' + gid + '/' + fileInfo.name);
+
+          // Newly added file goes to the back of the picture order
+          order.push(fileInfo.name);
 
           // If there are any image versions, create them
           if (options.imageTypes.test(fileInfo.name)) {
@@ -155,8 +163,15 @@ UploadHandler.prototype.post = function (app, req, res) {
           }
         });
 
-        // Call the finish handler
-        finish(req, res, gid);
+        console.log('Gallery order update: ' + gallery.order);
+
+        gallery.update({order: order}).then(function() {
+          console.log('Gallery update finished: ' + gallery.order);
+          finish(req, res, gid);
+        }).catch(function(err) {
+          // This error handling is incomplete as we will never return
+          console.error(err);
+        });
       };
 
       // If there is a gallery id then use it, otherwise we should create a new one
@@ -168,7 +183,7 @@ UploadHandler.prototype.post = function (app, req, res) {
             handler.req.connection.destroy();
           } else {
             console.log('Successfully retrieved gallery with gid ' + gid);
-            processFiles(gid);
+            processFiles(gs[0]);
           }
         });
       }

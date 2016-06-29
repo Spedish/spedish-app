@@ -12,6 +12,7 @@ var galleryUrl = '//54.183.97.63:3000/gallery/';
 angular.module('clientApp')
   .controller('ItemAddCtrl', function ($scope, Item, $location, $window) {
     $scope.item = {};
+    $scope.addItem = true;
     $scope.saveItem = function() {
       Item.post($scope.item).then(function() {
         $window.alert('Item added');
