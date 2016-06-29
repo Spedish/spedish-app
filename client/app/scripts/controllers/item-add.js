@@ -55,7 +55,7 @@ angular.module('clientApp')
             }
             // Otherwise we need to see if this is the first upload,
             // in which case we need to request for a gallery id
-            else if (!el.val()) {
+            else if (!elGid.val()) {
               // Get a new gid
               $.ajax({
                 dataType: 'json',
