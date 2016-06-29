@@ -11,15 +11,21 @@ var orderSchema = new mongoose.Schema({
   },
   count: {
     type: Number,
+    min: [0],
     required: true
   },
   unit_price: {
     type: Number,
+    min: [0],
     required: true
   },
   total_price: {
     type: Number,
+    min: [0],
     required: true
+  },
+  note: {
+    type: String
   },
   updated_date: {
     type: Date
@@ -29,6 +35,7 @@ var orderSchema = new mongoose.Schema({
   },
   status: {
     type: String,
+    enum: ['ordered', 'paid', 'ready for pickup', 'picked up'],
     required: true
   }
 });
@@ -49,4 +56,5 @@ orderSchema.pre('save', function(next) {
 });
 
 // Export the model.
-module.exports = mongoose.model('order', orderSchema);
+var Order = mongoose.model('Order', orderSchema);
+module.exports = Order;
