@@ -34,8 +34,8 @@ angular.module('clientApp')
           // send Blob objects via XHR requests:
           disableImageResize: /Android(?!.*Chrome)|Opera/
               .test(window.navigator.userAgent),
-          maxFileSize: 999000,
-          acceptFileTypes: /(\.|\/)(gif|jpe?g|png)$/i,
+          maxFileSize: 5000000,
+          acceptFileTypes: /(\.|\/)(jpe?g|png)$/i,
 
           // Disable simultaneous update of files. Sequential upload
           // is required as the first upload will trigger a gallery id
