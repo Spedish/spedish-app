@@ -44,8 +44,18 @@ angular.module('clientApp')
 
           // Request for a gallery id if none exists
           submit: function() {
-            var el = $('#gid');
-            if (!el.val()) {
+            var elItemGid = $('#item_gid');
+            var elGid = $('#gid');
+
+            // Check if the item model already have gid set then we
+            // simply copy it over
+            if (elItemGid.val())
+            {
+              elGid.val(elItemGid.val());
+            }
+            // Otherwise we need to see if this is the first upload,
+            // in which case we need to request for a gallery id
+            else if (!el.val()) {
               // Get a new gid
               $.ajax({
                 dataType: 'json',
@@ -53,9 +63,9 @@ angular.module('clientApp')
                 url: galleryUrl,
                 async: false
               }).done(function(res) {
-                el.val(res.gid);
-                $('#item_gid').val(res.gid);
-                $('#item_gid').trigger('input');
+                elGid.val(res.gid);
+                elItemGid.val(res.gid);
+                elItemGid.trigger('input');
                 return true;
               }).fail(function() {
                 console.error('Error creating gallery');
