@@ -3,6 +3,7 @@ var fs          = require('fs');
 var formidable  = require('formidable');
 var nodeStatic  = require('node-static');
 var imageMagick = require('imagemagick');
+var async       = require('async');
 
 var options    = {
   tmpDir: '/tmp/t',
@@ -83,7 +84,7 @@ UploadHandler.prototype.post = function (app, req, res) {
               files.forEach(function (fileInfo) {
                   fileInfo.initUrls(handler.req, gid);
               });
-              handler.callback({files: files}, req, res, gid);
+              handler.callback({files: files}, req, res);
           }
       };
 
@@ -134,6 +135,7 @@ UploadHandler.prototype.post = function (app, req, res) {
           }
 
           // Copy the file to the correct place
+          console.log('Saving ' + file + ' to ' + options.galleryDir + '/' + gid + '/' + fileInfo.name);
           fs.renameSync(file, options.galleryDir + '/' + gid + '/' + fileInfo.name);
 
           // If there are any image versions, create them
@@ -165,27 +167,16 @@ UploadHandler.prototype.post = function (app, req, res) {
             console.error('Retrieving gallery failed');
             handler.req.connection.destroy();
           } else {
+            console.log('Successfully retrieved gallery with gid ' + gid);
             processFiles(gid);
           }
-        });
-      } else {
-        var g = new app.models.gallery();
-        g.save().then(function(g) {
-          console.log('Created gallery with id ' + g.id);
-
-          gid = g.id;
-
-          fs.mkdirSync(options.galleryDir + '/' + gid);
-          processFiles(gid);
-        }).catch(function(err) {
-          console.error(err);
         });
       }
 
   }).parse(handler.req);
 };
 
-handleResult = function (result, req, res, gid) {
+handleResult = function (result, req, res) {
   res.writeHead(200, {
       'Content-Type': req.headers.accept
           .indexOf('application/json') !== -1 ?
@@ -197,7 +188,7 @@ handleResult = function (result, req, res, gid) {
     result['gid'] = gid;
 
   res.end(JSON.stringify(result));
-}
+};
 
 module.exports = function(app, route) {
 
@@ -217,6 +208,31 @@ module.exports = function(app, route) {
       console.error(f);
       fileServer.serveFile(f, 200, {}, req, res);
     }
+  });
+
+  app.put('/'+route, function(req, res) {
+
+    var g = new app.models.gallery();
+    g.save().then(function(g) {
+      console.log('Created gallery with id ' + g.id);
+
+      gid = g.id;
+
+      fs.mkdirSync(options.galleryDir + '/' + gid);
+
+      result = {'gid': gid};
+
+      res.writeHead(200, {
+          'Content-Type': req.headers.accept
+              .indexOf('application/json') !== -1 ?
+                      'application/json' : 'text/plain'
+      });
+
+      res.end(JSON.stringify(result));
+
+    }).catch(function(err) {
+      console.error(err);
+    });
   });
 
   // Return middleware.

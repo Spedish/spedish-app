@@ -1,5 +1,7 @@
 'use strict';
 
+var galleryUrl = '//54.183.97.63:3000/gallery/';
+
 /**
  * @ngdoc function
  * @name clientApp.controller:ItemAddCtrl
@@ -25,7 +27,6 @@ angular.module('clientApp')
       delete $httpProvider.defaults.headers.common['X-Requested-With'];
 
       // Override settings
-          console.log('what');
       angular.extend(fileUploadProvider.defaults, {
           // Enable image resizing, except for Android and Opera,
           // which actually support image resizing, but fail to
@@ -34,6 +35,32 @@ angular.module('clientApp')
               .test(window.navigator.userAgent),
           maxFileSize: 999000,
           acceptFileTypes: /(\.|\/)(gif|jpe?g|png)$/i,
+
+          // Disable simultaneous update of files. Sequential upload
+          // is required as the first upload will trigger a gallery id
+          // resolve
+          sequentialUploads: true,
+          limitConcurrentUploads: 1,
+
+          // Request for a gallery id if none exists
+          submit: function() {
+            var el = $('#gid');
+            if (!el.val()) {
+              // Get a new gid
+              $.ajax({
+                dataType: 'json',
+                method: 'PUT',
+                url: galleryUrl,
+                async: false
+              }).done(function(res) {
+                el.val(res.gid);
+                return true;
+              }).fail(function() {
+                console.error('Error creating gallery');
+                return false;
+              });
+            }
+          },
 
           // Overriding the default Done handler to provide a gid
           done: function(e, data) {
@@ -58,7 +85,7 @@ angular.module('clientApp')
     '$scope', '$http', '$filter', '$window',
     function($scope) {
       $scope.options = {
-        url: '//54.183.97.63:3000/gallery/'
+        url: galleryUrl 
       };
     }
   ]);
