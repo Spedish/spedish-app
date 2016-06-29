@@ -2,12 +2,13 @@
 
 <!-- Image carousel -->
 <div id="gallery" ng-controller="CarouselCtrl">
-  <div style="height: 305px">
-  <uib-carousel active="active" interval="rotateInterval" no-wrap="noWrapSlides">
-    <uib-slide ng-repeat="slide in slides track by slide.id" index="slide.id">
-      <img ng-src="{{slide.image}}" style="margin:auto;">
-    </uib-slide>
-  </uib-carousel>
+  <div style="height: 500px; width: 888px">
+    <uib-carousel active="active" interval="rotateInterval" no-wrap="noWrapSlides">
+      <uib-slide ng-repeat="slide in slides track by slide.id" index="slide.id">
+        <img ng-src="{{slide.image}}" style="margin:auto;">
+      </uib-slide>
+    </uib-carousel>
+  </div>
 </div>
 
 <div>
