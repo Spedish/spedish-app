@@ -1,5 +1,7 @@
 'use strict';
 
+var galleryUrl = '//54.183.97.63:3000/gallery/';
+
 /**
  * @ngdoc function
  * @name clientApp.controller:ItemEditCtrl
@@ -15,6 +17,12 @@ angular.module('clientApp')
 
     Item.one($routeParams.id).get().then(function(item) {
       $scope.item = item;
+
+      // Load the gallery viewer
+      $scope.images = [];
+      angular.forEach(item._gallery.order, function(val) {
+        $scope.images.push(galleryUrl + '/' + item._gallery._id + '/thumbnail_' + val);
+      });
 
       $scope.saveItem = function() {
         $scope.item.save().then(function() {
