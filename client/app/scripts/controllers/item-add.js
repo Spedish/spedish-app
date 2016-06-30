@@ -91,7 +91,10 @@ angular.module('clientApp')
 
             if (data.result && data.result.order && data.result.gid) {
               // Rewrite the URL for the images
+              console.log('Recevied gallery order: ' + data.result.order);
+
               g_scope.images = [];
+
               angular.forEach(data.result.order, function(val) {
                 g_scope.images.push(galleryUrl + '/' + data.result.gid + '/thumbnail_' + val);
               });
@@ -118,5 +121,38 @@ angular.module('clientApp')
             $('#uploaderTable').hide();
           });
     }
-  ]);
+  ])
+
+  .controller('SortableCtrl', function($scope) {
+
+    $scope.galleryViewer = {
+      stop: function(e, ui) {
+        // Restore the list of images to their orignial names
+        var images = [];
+        var f;
+
+        angular.forEach($scope.images, function(val) {
+          f = val.substring(val.lastIndexOf('/') + 1);
+          f = f.replace('thumbnail_', '');
+          images.push(f);
+        });
+        console.log(images);
+
+        // Post new image order
+        var gid = $('#gid').val();
+        if (gid) {
+          $.ajax({
+            dataType: 'json',
+            method: 'PUT',
+            url: galleryUrl + gid,
+            data: { order: images }
+          }).done(function(res) {
+            console.log('Updated ordering');
+          }).fail(function(textStatus) {
+            console.error('Unable to update ordering');
+          });
+        }
+      }
+    };
+  });
 

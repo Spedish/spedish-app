@@ -5,7 +5,6 @@
 #galleryViewerWrapper {
   overflow: hidden;
   *zoom: 1; /* for ie6/7 */
-  border: 1px dashed grey;
   margin-bottom: 5px;
 }
 

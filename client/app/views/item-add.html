@@ -84,15 +84,17 @@
 <hr />
 
 <!-- Gallery Viewer -->
-<div id="galleryViewerWrapper" ng-class="{'noDisp': addItem}">
+<div id="galleryViewerWrapper" ng-class="{'noDisp': addItem}" ng-controller="SortableCtrl">
   <p>Drag the images to reorder them</p>
-  <ul id="galleryViewer" ui-sortable ng-model="images">
+  <ul id="galleryViewer" ui-sortable="galleryViewer" ng-model="images">
     <li ng-repeat="img in images"><img ng-src="{{img}}" /></li>
   </ul>
+  <p id="savingOrder" class="noDisp">Saving new image order</p>
+  <p id="orderSaved" class="noDisp">New image order saved</p>
 </div>
 
 <!-- Actual item -->
-<div class="{clear: both}">
+<div>
 <form>
   <div>
     <label>Title</label>

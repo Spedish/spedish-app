@@ -255,6 +255,32 @@ module.exports = function(app, route) {
     });
   });
 
+  app.put('/'+route+'/:gid', function(req, res) {
+    gid = req.params.gid;
+
+    app.models.gallery.find({_id: gid}, function(err, gs) {
+      if (err || !gs || gs.length != 1) {
+        console.error('Retrieving gallery failed');
+        handler.req.connection.destroy();
+      } else {
+        console.log('Successfully retrieved gallery with gid ' + gid);
+
+        // Update the ordering for the gallery
+        var g = gs[0];
+        console.log(req.body.order);
+        g.update({order: req.body.order}).then(function() {
+          res.writeHead(200, {
+              'Content-Type': req.headers.accept
+                  .indexOf('application/json') !== -1 ?
+                          'application/json' : 'text/plain'
+          });
+
+          res.end(JSON.stringify({order: req.body.order}));
+        });
+      }
+    });
+  });
+
   // Return middleware.
   return function(req, res, next) {
       next();
