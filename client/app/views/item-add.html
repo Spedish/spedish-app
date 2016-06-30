@@ -58,10 +58,12 @@
         <div class="progress progress-striped active fade" data-ng-class="{pending: 'in'}[file.$state()]" data-file-upload-progress="file.$progress()"><div class="progress-bar progress-bar-success" data-ng-style="{width: num + '%'}"></div></div>
       </td>
       <td>
+        <!--
         <button type="button" class="btn btn-primary start" data-ng-click="file.$submit()" data-ng-hide="!file.$submit || options.autoUpload" data-ng-disabled="file.$state() == 'pending' || file.$state() == 'rejected'">
           <i class="glyphicon glyphicon-upload"></i>
           <span>Start</span>
         </button>
+        -->
         <button type="button" class="btn btn-warning cancel" data-ng-click="file.$cancel()" data-ng-hide="!file.$cancel">
           <i class="glyphicon glyphicon-ban-circle"></i>
           <span>Cancel</span>
