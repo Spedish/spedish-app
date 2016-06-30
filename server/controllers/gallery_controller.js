@@ -169,11 +169,11 @@ UploadHandler.prototype.post = function (app, req, res) {
           }
         });
 
-        console.log('Gallery order update: ' + gallery.order);
+        console.log('Gallery order update: ' + order);
 
         gallery.update({order: order}).then(function() {
-          console.log('Gallery update finished: ' + gallery.order);
-          finish(req, res, gid, gallery.order);
+          console.log('Gallery update finished: ' + order);
+          finish(req, res, gid, order);
         }).catch(function(err) {
           // This error handling is incomplete as we will never return
           console.error(err);

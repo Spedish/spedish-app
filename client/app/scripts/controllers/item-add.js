@@ -98,6 +98,7 @@ angular.module('clientApp')
 
               // hide the uploader table
               $('#uploaderTable').hide();
+              $('#galleryViewerWrapper').show();
             }
           }
       });
