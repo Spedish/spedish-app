@@ -1,7 +1,7 @@
 'use strict';
 
 var galleryUrl = '//54.183.97.63:3000/gallery/';
-var g_scope = undefined;
+var g_scope;
 
 /**
  * @ngdoc function
@@ -97,7 +97,7 @@ angular.module('clientApp')
               });
 
               // hide the uploader table
-              //$('#uploaderTable').hide();
+              $('#uploaderTable').hide();
             }
           }
       });
@@ -110,6 +110,12 @@ angular.module('clientApp')
       $scope.options = {
         url: galleryUrl
       };
+
+      // Bind some event listeners
+      $('#fileupload')
+        .bind('fileuploadadded', function() {
+            $('#uploaderTable').hide();
+          });
     }
   ]);
 
