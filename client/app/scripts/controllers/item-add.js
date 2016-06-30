@@ -1,6 +1,7 @@
 'use strict';
 
 var galleryUrl = '//54.183.97.63:3000/gallery/';
+var g_scope = undefined;
 
 /**
  * @ngdoc function
@@ -11,6 +12,8 @@ var galleryUrl = '//54.183.97.63:3000/gallery/';
  */
 angular.module('clientApp')
   .controller('ItemAddCtrl', function ($scope, Item, $location, $window) {
+    g_scope = $scope;
+
     $scope.item = {};
     $scope.addItem = true;
     $scope.saveItem = function() {
@@ -75,7 +78,7 @@ angular.module('clientApp')
             }
           },
 
-          // Overriding the default Done handler to provide a gid
+          // Overriding the default Done handler to setup gallery viewer
           done: function(e, data) {
             if (e.isDefaultPrevented()) {
               return false;
@@ -86,8 +89,15 @@ angular.module('clientApp')
                 data.handleResponse.call(that, e, data);
             });
 
-            if (data.result && data.result.gid) {
-              data.scope.gid = data.result.gid;
+            if (data.result && data.result.order && data.result.gid) {
+              // Rewrite the URL for the images
+              g_scope.images = [];
+              angular.forEach(data.result.order, function(val) {
+                g_scope.images.push(galleryUrl + '/' + data.result.gid + '/thumbnail_' + val);
+              });
+
+              // hide the uploader table
+              //$('#uploaderTable').hide();
             }
           }
       });

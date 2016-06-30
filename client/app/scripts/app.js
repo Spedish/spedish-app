@@ -18,7 +18,8 @@ angular
     'ngTouch',
     'restangular',
     'blueimp.fileupload',
-    'ui.bootstrap'
+    'ui.bootstrap',
+    'ui.sortable'
 ])
 .config(function ($routeProvider, RestangularProvider) {
 

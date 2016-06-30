@@ -77,13 +77,13 @@ UploadHandler.prototype.post = function (app, req, res) {
       map = {},
       counter = 1,
       gid = undefined,
-      finish = function (req, res, gid) {
+      finish = function (req, res, gid, order) {
           counter -= 1;
           if (!counter) {
               files.forEach(function (fileInfo) {
                   fileInfo.initUrls(handler.req, gid);
               });
-              handler.callback({files: files}, req, res);
+              handler.callback({files: files}, req, res, gid, order);
           }
       };
 
@@ -158,7 +158,7 @@ UploadHandler.prototype.post = function (app, req, res) {
                       srcPath: options.galleryDir + '/' + gid + '/' + fileInfo.name,
                       dstPath: options.galleryDir + '/' + gid + '/' + version + '_' +
                           fileInfo.name
-                  }, finish(req, res, gid));
+                  }, finish(req, res, gid, undefined));
               });
           }
         });
@@ -167,7 +167,7 @@ UploadHandler.prototype.post = function (app, req, res) {
 
         gallery.update({order: order}).then(function() {
           console.log('Gallery update finished: ' + gallery.order);
-          finish(req, res, gid);
+          finish(req, res, gid, gallery.order);
         }).catch(function(err) {
           // This error handling is incomplete as we will never return
           console.error(err);
@@ -191,12 +191,15 @@ UploadHandler.prototype.post = function (app, req, res) {
   }).parse(handler.req);
 };
 
-handleResult = function (result, req, res) {
+handleResult = function (result, req, res, gid, order) {
   res.writeHead(200, {
       'Content-Type': req.headers.accept
           .indexOf('application/json') !== -1 ?
                   'application/json' : 'text/plain'
   });
+
+  result.order = order;
+  result.gid   = gid;
 
   res.end(JSON.stringify(result));
 };

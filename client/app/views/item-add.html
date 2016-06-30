@@ -1,4 +1,6 @@
-<!-- The file upload form used as target for the file upload widget -->
+<div ng-module="clientApp">
+
+<!-- Gallery uploader -->
 <form id="fileupload" action="//54.183.97.63:3000/gallery" method="POST" enctype="multipart/form-data" data-ng-controller="FileUploadCtrl" data-file-upload="options" data-ng-class="{'fileupload-processing': processing() || loadingFiles}">
   <!-- The fileupload-buttonbar contains buttons to add/delete files and start/cancel the upload -->
   <div class="row fileupload-buttonbar">
@@ -35,7 +37,7 @@
     <input type="text" id="gid" name="gid"/>
   </div>
   <!-- The table listing the files available for upload/download -->
-  <table class="table table-striped files ng-cloak">
+  <table id="uploaderTable" class="table table-striped files ng-cloak">
     <tr data-ng-repeat="file in queue" data-ng-class="{'processing': file.$processing()}">
       <td data-ng-switch data-on="!!file.thumbnailUrl">
         <div class="preview" data-ng-switch-when="true">
@@ -79,8 +81,16 @@
   </table>
 </form>
 
+<!-- Gallery Viewer -->
+<div id="galleryViewerWrapper">
+  <ul id="galleryViewer" ui-sortable ng-model="images">
+    <li ng-repeat="img in images"><img ng-src="{{img}}" /></li>
+  </ul>
+</div>
 
-<form ng-module="clientApp">
+<!-- Actual item -->
+<div class="{clear: both}">
+<form>
   <div>
     <label>Title</label>
     <input type="text" ng-model="item.title" id="title" />
@@ -106,4 +116,6 @@
   <input type="submit" ng-click="saveItem()" value="Add" />
 
 </form>
+</div>
 
+</div> <!-- For ng-module -->
