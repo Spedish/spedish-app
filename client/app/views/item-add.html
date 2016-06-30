@@ -89,9 +89,12 @@
   <ul id="galleryViewer" ui-sortable="galleryViewer" ng-model="images">
     <li ng-repeat="img in images"><img ng-src="{{img}}" /></li>
   </ul>
-  <p id="savingOrder" class="noDisp">Saving new image order</p>
-  <p id="orderSaved" class="noDisp">New image order saved</p>
 </div>
+<p id="savingOrder" class="noDisp">Saving new image order</p>
+<p id="savingOrderError" class="noDisp">Unable to save the new image order, please try again</p>
+<p id="orderSaved" class="noDisp">New image order saved</p>
+<br />
+<br />
 
 <!-- Actual item -->
 <div>

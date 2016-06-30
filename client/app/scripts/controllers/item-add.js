@@ -139,6 +139,8 @@ angular.module('clientApp')
         console.log(images);
 
         // Post new image order
+        $('#savingOrder').show();
+
         var gid = $('#gid').val();
         if (gid) {
           $.ajax({
@@ -147,8 +149,12 @@ angular.module('clientApp')
             url: galleryUrl + gid,
             data: { order: images }
           }).done(function(res) {
+            $('#savingOrder').hide();
+            $('#orderSaved').show();
             console.log('Updated ordering');
           }).fail(function(textStatus) {
+            $('#savingOrder').hide();
+            $('#savingOrderError').show();
             console.error('Unable to update ordering');
           });
         }
