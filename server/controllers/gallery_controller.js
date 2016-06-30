@@ -3,6 +3,7 @@ var fs          = require('fs');
 var formidable  = require('formidable');
 var nodeStatic  = require('node-static');
 var imageMagick = require('imagemagick');
+var randStr     = require('randomstring');
 
 var options    = {
   tmpDir: '/tmp/t',
@@ -53,6 +54,11 @@ FileInfo.prototype.safeName = function () {
   this.name = path.basename(this.name).replace(/^\.+/, '');
 
   this.name = encodeURIComponent(this.name);
+
+  // Add a random string to the name
+  var ext = path.extname(this.name);
+  var basename = path.basename(this.name, ext);
+  this.name = basename + '_' + randStr.generate(6) + ext;
 };
 FileInfo.prototype.initUrls = function (req, gid) {
   if (!this.error) {
