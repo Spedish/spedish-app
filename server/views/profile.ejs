@@ -22,16 +22,16 @@
     <div class="row">
 
         <!-- check if the user has this token (is the user authenticated with this social account) -->
-        <% if (user.facebook.token) { %>
-        <!-- FACEBOOK INFORMATION -->
+        <% if (user.thirdParty_token) { %>
+        <!-- THIRDPARTY INFORMATION -->
         <div class="col-sm-6">
             <div class="well">
-                <h3 class="text-primary"><span class="fa fa-facebook"></span> Facebook</h3>
+                <h3 class="text-primary"><span class="fa fa-facebook"></span> <%= user.thirdParty_source %></h3>
 
                 <p>
-                    <strong>id</strong>: <%= user.facebook.id %><br>
-                    <strong>email</strong>: <%= user.facebook.email %><br>
-                    <strong>name</strong>: <%= user.facebook.name %><br>
+                    <strong>id</strong>: <%= user.thirdParty_id %><br>
+                    <strong>email</strong>: <%= user.thirdParty_email %><br>
+                    <strong>name</strong>: <%= user.thirdParty_name %><br>
                 </p>
 
             </div>
@@ -44,7 +44,7 @@
 
                 <p>
                     <strong>id</strong>: <%= user._id %><br>
-                    <strong>email</strong>: <%= user.local.email %><br>
+                    <strong>email</strong>: <%= user.email %><br>
                 </p>
 
             </div>
