@@ -139,6 +139,8 @@ angular.module('clientApp')
         console.log(images);
 
         // Post new image order
+        $('#orderSaved').hide();
+        $('#savingOrderError').hide();
         $('#savingOrder').show();
 
         var gid = $('#gid').val();
