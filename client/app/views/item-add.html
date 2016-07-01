@@ -83,17 +83,20 @@
 
 <hr />
 
-<!-- Gallery Viewer -->
-<div id="galleryViewerWrapper" ng-class="{'noDisp': addItem}" ng-controller="SortableCtrl">
-  <p>Drag the images to reorder them</p>
-  <ul id="galleryViewer" ui-sortable="galleryViewer" ng-model="images">
-    <li ng-repeat="img in images"><img ng-src="{{img}}" /></li>
-  </ul>
+<!-- Gallery Viewer and Controllers -->
+<div ng-controller="SortableCtrl">
+  <div id="galleryViewerWrapper" ng-class="{'noDisp': addItem}">
+    <p>Drag the images to reorder them</p>
+    <ul id="galleryViewer" ui-sortable="galleryViewer" ng-model="images">
+      <li ng-repeat="img in images"><img ng-src="{{img}}" /></li>
+    </ul>
+  </div>
+  <p id="savingOrder" class="noDisp">Saving new image order</p>
+  <p id="savingOrderError" class="noDisp">Unable to save the new image order, please try again</p>
+  <p id="orderSaved" class="noDisp">New image order saved</p>
+
+  <div class="dropzone noDisp" ui-sortable="dropzone" ng-model="dropzoneFields">Drag image here to delete</div>
 </div>
-<p id="savingOrder" class="noDisp">Saving new image order</p>
-<p id="savingOrderError" class="noDisp">Unable to save the new image order, please try again</p>
-<p id="orderSaved" class="noDisp">New image order saved</p>
-<br />
 <br />
 
 <!-- Actual item -->

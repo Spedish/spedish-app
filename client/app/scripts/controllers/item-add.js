@@ -125,40 +125,65 @@ angular.module('clientApp')
 
   .controller('SortableCtrl', function($scope) {
 
+    $scope.dropzone = {}; // A default control will do fine
+    $scope.dropzoneFields = [];
+
     $scope.galleryViewer = {
+
+      connectWith:'.dropzone',
+
+      start: function() {
+        $('.dropzone').show();
+        $('.dropzone').sortable('refresh');
+      },
+
+      update: function(e, ui) {
+        if (ui.item.sortable.droptarget[0].classList[0] != 'dropzone') {
+          ui.item.sortable.cancel();
+        }
+      },
+
       stop: function(e, ui) {
-        // Restore the list of images to their orignial names
-        var images = [];
-        var f;
+        $('.dropzone').hide();
 
-        angular.forEach($scope.images, function(val) {
-          f = val.substring(val.lastIndexOf('/') + 1);
-          f = f.replace('thumbnail_', '');
-          images.push(f);
-        });
-        console.log(images);
+        // See if this image was re-ordered or removed
+        if (ui.item.sortable.droptarget == undefined) {
+          // Restore the list of images to their orignial names
+          var images = [];
+          var f;
 
-        // Post new image order
-        $('#orderSaved').hide();
-        $('#savingOrderError').hide();
-        $('#savingOrder').show();
-
-        var gid = $('#gid').val();
-        if (gid) {
-          $.ajax({
-            dataType: 'json',
-            method: 'PUT',
-            url: galleryUrl + gid,
-            data: { order: images }
-          }).done(function(res) {
-            $('#savingOrder').hide();
-            $('#orderSaved').show();
-            console.log('Updated ordering');
-          }).fail(function(textStatus) {
-            $('#savingOrder').hide();
-            $('#savingOrderError').show();
-            console.error('Unable to update ordering');
+          angular.forEach($scope.images, function(val) {
+            f = val.substring(val.lastIndexOf('/') + 1);
+            f = f.replace('thumbnail_', '');
+            images.push(f);
           });
+          console.log(images);
+
+          // Post new image order
+          $('#orderSaved').hide();
+          $('#savingOrderError').hide();
+          $('#savingOrder').show();
+
+          var gid = $('#gid').val();
+          if (gid) {
+            $.ajax({
+              dataType: 'json',
+              method: 'PUT',
+              url: galleryUrl + gid,
+              data: { order: images }
+            }).done(function() {
+              $('#savingOrder').hide();
+              $('#orderSaved').show();
+              console.log('Updated ordering');
+            }).fail(function() {
+              $('#savingOrder').hide();
+              $('#savingOrderError').show();
+              console.error('Unable to update ordering');
+            });
+          }
+        } else if (ui.item.sortable.droptarget[0].classList[0] == 'dropzone') {
+          console.log($scope.dropzoneFields);
+          $scope.dropzoneFields = [];
         }
       }
     };
