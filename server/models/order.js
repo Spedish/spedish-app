@@ -1,13 +1,17 @@
 var mongoose = require('mongoose');
-var orderModel = require('./order');
 
-var itemSchema = new mongoose.Schema({
+var orderSchema = new mongoose.Schema({
+  item_id: {
+    type: String,
+    required: true
+  },
   title: {
     type: String,
     required: true
   },
-  description: {
-    type: String,
+  count: {
+    type: Number,
+    min: [0],
     required: true
   },
   unit_price: {
@@ -15,27 +19,36 @@ var itemSchema = new mongoose.Schema({
     min: [0],
     required: true
   },
-  inventory: {
+  total_price: {
     type: Number,
+    min: [0],
     required: true
   },
-  orders: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Order' }],
+  note: {
+    type: String
+  },
   update_date: {
     type: Date
   },
   create_date: {
     type: Date
   },
+  status: {
+    type: String,
+    enum: ['ordered', 'paid', 'ready for pickup', 'picked up'],
+    required: true
+  }
 });
 
-itemSchema.pre('save', function(next) {
+// on every save, add the date
+orderSchema.pre('save', function(next) {
   // get the current date
   var currentDate = new Date();
 
   // change the update_date field to current date
   this.update_date = currentDate;
 
-  // if order_date doesn't exist, add to that field
+  // if create_date doesn't exist, add to that field
   if (!this.create_date)
     this.create_date = currentDate;
 
@@ -43,5 +56,5 @@ itemSchema.pre('save', function(next) {
 });
 
 // Export the model.
-var Item = mongoose.model('Item', itemSchema);
-module.exports = Item;
+var Order = mongoose.model('Order', orderSchema);
+module.exports = Order;

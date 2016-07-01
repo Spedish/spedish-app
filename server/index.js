@@ -57,6 +57,28 @@ mongoose.connection.once('open', function () {
         app.use(route, controller(app, route, passport));
     });
 
+    app.use(logErrors);
+    app.use(clientErrorHandler);
+    app.use(errorHandler);
+
+    function logErrors(err, req, res, next) {
+      console.error(err.stack);
+      next(err);
+    }
+
+    function clientErrorHandler(err, req, res, next) {
+      if (req.xhr) {
+        res.status(500).send({ error: 'Something failed!' });
+      } else {
+        next(err);
+      }
+    }
+
+    function errorHandler(err, req, res, next) {
+      res.status(500);
+      res.render('error', { error: err });
+    }
+
     console.log('Listening on port 3000...');
     app.listen(3000);
 });
