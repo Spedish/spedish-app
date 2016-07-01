@@ -137,17 +137,18 @@ angular.module('clientApp')
         $('.dropzone').sortable('refresh');
       },
 
-      update: function(e, ui) {
-        if (ui.item.sortable.droptarget[0].classList[0] != 'dropzone') {
-          ui.item.sortable.cancel();
-        }
-      },
-
       stop: function(e, ui) {
         $('.dropzone').hide();
 
+        $('#imageRemoved').hide();
+        $('#orderSaved').hide();
+        $('#savingOrderError').hide();
+        $('#savingOrder').hide();
+
+        var gid = $('#gid').val();
+
         // See if this image was re-ordered or removed
-        if (ui.item.sortable.droptarget == undefined) {
+        if (ui.item.sortable.droptarget[0].id == 'galleryViewer') {
           // Restore the list of images to their orignial names
           var images = [];
           var f;
@@ -160,11 +161,8 @@ angular.module('clientApp')
           console.log(images);
 
           // Post new image order
-          $('#orderSaved').hide();
-          $('#savingOrderError').hide();
           $('#savingOrder').show();
 
-          var gid = $('#gid').val();
           if (gid) {
             $.ajax({
               dataType: 'json',
@@ -177,13 +175,30 @@ angular.module('clientApp')
               console.log('Updated ordering');
             }).fail(function() {
               $('#savingOrder').hide();
-              $('#savingOrderError').show();
+              $('#savingError').show();
               console.error('Unable to update ordering');
             });
           }
         } else if (ui.item.sortable.droptarget[0].classList[0] == 'dropzone') {
-          console.log($scope.dropzoneFields);
+          var val = $scope.dropzoneFields[0];
+
           $scope.dropzoneFields = [];
+
+          f = val.substring(val.lastIndexOf('/') + 1);
+          f = f.replace('thumbnail_', '');
+          console.log('Deleting ' + val);
+
+          $.ajax({
+            dataType: 'json',
+            method: 'DELETE',
+            url: galleryUrl + gid + '/' + f,
+          }).done(function() {
+            console.log('Image removed');
+            $('#imageRemoved').show();
+          }).fail(function() {
+            console.error('Unable to remove image');
+            $('#savingError').show();
+          });
         }
       }
     };

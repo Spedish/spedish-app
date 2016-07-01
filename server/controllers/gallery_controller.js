@@ -281,6 +281,46 @@ module.exports = function(app, route) {
     });
   });
 
+  app.delete('/'+route+'/:gid/:imageName', function(req, res) {
+    gid = req.params.gid;
+    img = req.params.imageName;
+
+    // Fetch the gallery
+    app.models.gallery.find({_id: gid}, function(err, gs) {
+      if (err || !gs || gs.length != 1) {
+        console.error('Retrieving gallery failed');
+        handler.req.connection.destroy();
+      } else {
+        // Delete the image from the order list (which will stop it from appearing)
+        console.log('Successfully retrieved gallery with gid ' + gid);
+
+        // Update the ordering for the gallery
+        var g = gs[0];
+        var order = g.order;
+        var idx = order.indexOf(img);
+
+        if (idx >= 0) {
+          order.splice(idx, 1);
+
+          console.log('Removed image: ' + img + ' remaining: ' + order);
+
+          g.update({order: order}).then(function() {
+            res.writeHead(200, {
+                'Content-Type': req.headers.accept
+                    .indexOf('application/json') !== -1 ?
+                            'application/json' : 'text/plain'
+            });
+
+            res.end(JSON.stringify({order: order}));
+          });
+        } else {
+          res.statusCode = 404;
+          res.end();
+        }
+      }
+    });
+  });
+
   // Return middleware.
   return function(req, res, next) {
       next();
