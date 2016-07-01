@@ -8,5 +8,5 @@ module.exports = {
     '': require('./controllers/auth/home'),
     'logout': require('./controllers/auth/logout'),
     'facebook': require('./controllers/auth/facebook'),
-    'gallery': require('./controllers/gallery_controller')
+    'gallery': require('./controllers/gallery')
 };
