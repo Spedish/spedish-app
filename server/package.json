@@ -10,11 +10,19 @@
   "license": "ISC",
   "dependencies": {
     "body-parser": "^1.10.1",
+    "cookie-parser": "1.4.3",
     "express": "^4.11.0",
     "lodash": "^2.4.1",
     "method-override": "^2.3.1",
     "mongoose": "^4.0.6",
     "resourcejs": "^0.1.18",
-    "merge-descriptors": "^1.0.1"
+    "merge-descriptors": "^1.0.1",
+    "passport": "0.3.2",
+    "passport-local": "1.0.0",
+    "passport-facebook": "2.1.1",
+    "bcrypt-nodejs": "0.0.3",
+    "ejs": "2.4.2",
+    "connect-flash": "0.1.1",
+    "express-session": "1.13.0"
   }
 }
