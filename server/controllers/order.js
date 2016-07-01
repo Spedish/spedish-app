@@ -16,13 +16,13 @@ module.exports = function(app, route) {
         req.body.unit_price = item.unit_price;
         req.body.total_price = item.unit_price*req.body.count;
         Order.create(req.body, function (err, order) {
-          if (err) return res.status(200).json({
+          if (err) return res.status(500).json({
                                     status: 'failure',
                                     message: "Create order failed."
                                   });
           item.orders.push(order._id);
           item.save(function(err, docs) {
-            if (err) return res.status(200).json({
+            if (err) return res.status(500).json({
                                       status: 'failure',
                                       message: "Update inventory failed."
                                     })
@@ -30,7 +30,7 @@ module.exports = function(app, route) {
             res.status(200).json(docs);
           });
         });
-      } else res.status(200).json({
+      } else res.status(409).json({
             status: 'failure',
             message: "We don't have enough inventory."
         });
