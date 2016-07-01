@@ -20,7 +20,7 @@ var itemSchema = new mongoose.Schema({
     required: true
   },
   orders: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Order' }],
-  updated_date: {
+  update_date: {
     type: Date
   },
   create_date: {
@@ -32,8 +32,8 @@ itemSchema.pre('save', function(next) {
   // get the current date
   var currentDate = new Date();
 
-  // change the updated_date field to current date
-  this.updated_date = currentDate;
+  // change the update_date field to current date
+  this.update_date = currentDate;
 
   // if order_date doesn't exist, add to that field
   if (!this.create_date)

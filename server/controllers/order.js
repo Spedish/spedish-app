@@ -1,4 +1,3 @@
-var Resource = require('resourcejs');
 var Order = require('../models/order.js');
 
 module.exports = function(app, route) {

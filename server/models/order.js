@@ -27,10 +27,10 @@ var orderSchema = new mongoose.Schema({
   note: {
     type: String
   },
-  updated_date: {
+  update_date: {
     type: Date
   },
-  order_date: {
+  create_date: {
     type: Date
   },
   status: {
@@ -45,12 +45,12 @@ orderSchema.pre('save', function(next) {
   // get the current date
   var currentDate = new Date();
 
-  // change the updated_at field to current date
-  this.updated_date = currentDate;
+  // change the update_date field to current date
+  this.update_date = currentDate;
 
-  // if created_at doesn't exist, add to that field
-  if (!this.order_date)
-    this.order_date = currentDate;
+  // if create_date doesn't exist, add to that field
+  if (!this.create_date)
+    this.create_date = currentDate;
 
   next();
 });
