@@ -7,5 +7,6 @@ module.exports = {
     'profile': require('./controllers/auth/profile'),
     '': require('./controllers/auth/home'),
     'logout': require('./controllers/auth/logout'),
-    'facebook': require('./controllers/auth/facebook')
+    'facebook': require('./controllers/auth/facebook'),
+    'gallery': require('./controllers/gallery')
 };

@@ -26,6 +26,11 @@ var itemSchema = new mongoose.Schema({
   create_date: {
     type: Date
   },
+  _gallery: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'gallery',
+    required: false
+  }
 });
 
 itemSchema.pre('save', function(next) {
@@ -41,6 +46,13 @@ itemSchema.pre('save', function(next) {
 
   next();
 });
+
+var autoPopulateGallery = function(next) {
+  this.populate('_gallery');
+  next();
+}
+
+ItemSchema.pre('findOne', autoPopulateGallery);
 
 // Export the model.
 var Item = mongoose.model('Item', itemSchema);

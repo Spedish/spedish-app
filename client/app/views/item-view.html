@@ -1,4 +1,22 @@
 <ng-include src="'views/item-nav.html'" />
-<h3>{{ item.title }}</h3>
-<p>Description: {{ item.description }}</p>
-<p>Price/Inventory: ${{ item.price }} @ {{ item.inventory }}</p>
+
+<!-- Image carousel -->
+<div id="gallery" ng-controller="CarouselCtrl">
+  <div style="height: 500px; width: 888px">
+    <uib-carousel active="active" interval="rotateInterval" no-wrap="noWrapSlides">
+      <uib-slide ng-repeat="slide in slides track by slide.id" index="slide.id">
+        <img ng-src="{{slide.image}}" style="margin:auto;">
+      </uib-slide>
+    </uib-carousel>
+  </div>
+</div>
+
+<div>
+  <h3>{{ item.title }}</h3>
+  <p>Description: {{ item.description }}</p>
+  <p>Price/Inventory: ${{ item.price }} @ {{ item.inventory }}</p>
+  <br />
+  <p>Gallery ID: {{ item._gallery._id }}</p>
+  <p>Image Order: {{ item._gallery.order }}</p>
+</div>
+

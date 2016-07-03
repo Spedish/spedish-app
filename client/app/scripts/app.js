@@ -16,7 +16,10 @@ angular
     'ngRoute',
     'ngSanitize',
     'ngTouch',
-    'restangular'
+    'restangular',
+    'blueimp.fileupload',
+    'ui.bootstrap',
+    'ui.sortable'
 ])
 .config(function ($routeProvider, RestangularProvider) {
 
