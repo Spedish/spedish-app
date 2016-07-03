@@ -19,7 +19,10 @@ var itemSchema = new mongoose.Schema({
     type: Number,
     required: true
   },
-  orders: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Order' }],
+  orders: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Order'
+  }],
   update_date: {
     type: Date
   },
@@ -52,7 +55,7 @@ var autoPopulateGallery = function(next) {
   next();
 }
 
-ItemSchema.pre('findOne', autoPopulateGallery);
+itemSchema.pre('findOne', autoPopulateGallery);
 
 // Export the model.
 var Item = mongoose.model('Item', itemSchema);
