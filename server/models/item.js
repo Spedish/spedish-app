@@ -58,6 +58,7 @@ var autoPopulate = function(next) {
 }
 
 itemSchema.pre('findOne', autoPopulate);
+itemSchema.pre('find', autoPopulate);
 
 // Export the model.
 var Item = mongoose.model('Item', itemSchema);
