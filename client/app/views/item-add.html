@@ -1,7 +1,7 @@
 <div ng-module="clientApp">
 
 <!-- Gallery uploader -->
-<form id="fileupload" action="//54.183.97.63:3000/gallery" method="POST" enctype="multipart/form-data" data-ng-controller="FileUploadCtrl" data-file-upload="options" data-ng-class="{'fileupload-processing': processing() || loadingFiles}">
+<form id="fileupload" action="//localhost:3000/gallery" method="POST" enctype="multipart/form-data" data-ng-controller="FileUploadCtrl" data-file-upload="options" data-ng-class="{'fileupload-processing': processing() || loadingFiles}">
   <!-- The fileupload-buttonbar contains buttons to add/delete files and start/cancel the upload -->
   <div class="row fileupload-buttonbar">
     <div class="col-lg-7">
