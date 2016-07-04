@@ -18,9 +18,9 @@ angular.module('clientApp')
       $scope.order.status = 'ordered';
 
       $scope.saveOrder = function() {
-        Order.post($scope.order).then(function() {
+        Order.post($scope.order).then(function(res) {
           $window.alert('Ordered');
-          $location.path('/item');
+          $location.path('/order/' + res._id);
         });
       };
 
