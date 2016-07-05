@@ -14,8 +14,8 @@
         <tr ng-repeat="o in orders">
             <td width="400px"><a ng-href="/#/order/{{ o._id }}">{{ o._id }}</a></td>
             <td width="400px">{{ o.count }}</td>
-            <td width="400px">{{ o.unit_price }}</td>
-            <td width="400px">{{ o.total_price }}</td>
+            <td width="400px">${{ o.unit_price }}</td>
+            <td width="400px">${{ o.total_price }}</td>
             <td width="400px">{{ o.note }}</td>
             <td width="400px">{{ o.status }}</td>
             <td width="400px">{{ o.create_date }}</td>
