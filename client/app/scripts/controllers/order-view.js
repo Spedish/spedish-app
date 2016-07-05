@@ -8,10 +8,11 @@
  * Controller of the clientApp
  */
 angular.module('clientApp')
-  .controller('OrderViewCtrl', function($scope, Order, $routeParams) {
-
-    //$scope.viewOrder = true;
-
-    $scope.order = Order.one($routeParams.id).get().$object;
-    console.log($scope.order);
+  .controller('OrderViewCtrl', function($scope, Order, Item, $routeParams) {
+    Order.one($routeParams.id).get().then(function(order) {
+      $scope.order = order;
+      Item.one(order.item_id).get().then(function(item) {
+        $scope.item = item;
+      });
+    });
   })

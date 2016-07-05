@@ -76,6 +76,11 @@ angular
         controller: 'OrderViewCtrl',
         controllerAs: 'orderView'
       })
+      .when('/item/:id/orders', {
+        templateUrl: 'views/orders.html',
+        controller: 'OrdersCtrl',
+        controllerAs: 'orders'
+      })
       .otherwise({
         redirectTo: '/'
       });

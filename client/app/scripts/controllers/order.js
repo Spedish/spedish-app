@@ -23,6 +23,5 @@ angular.module('clientApp')
           $location.path('/order/' + res._id);
         });
       };
-
     });
   });

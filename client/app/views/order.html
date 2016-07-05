@@ -1,5 +1,3 @@
-<div ng-module="clientApp">
-
 <ng-include src="'views/item-nav.html'" />
 <form>
   <div>
@@ -8,7 +6,7 @@
   </div>
   <div>
     <label>Price: </label>
-    <p>{{ item.unit_price }}</p>
+    <p>${{ item.unit_price }}</p>
   </div>
   <div>
     <label>Count</label>
