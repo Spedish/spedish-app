@@ -1,6 +1,6 @@
 'use strict';
 
-var galleryUrl = '//54.183.97.63:3000/gallery/';
+var galleryUrl = '//localhost:3000/gallery/';
 var g_scope;
 
 /**
@@ -203,4 +203,3 @@ angular.module('clientApp')
       }
     };
   });
-

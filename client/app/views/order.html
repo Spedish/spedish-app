@@ -1,0 +1,21 @@
+<ng-include src="'views/item-nav.html'" />
+<form>
+  <div>
+    <label>Name: </label>
+    <p>{{ item.title }}</p>
+  </div>
+  <div>
+    <label>Price: </label>
+    <p>${{ item.unit_price }}</p>
+  </div>
+  <div>
+    <label>Count</label>
+    <input type="text" ng-model="order.count" id="count" />
+  </div>
+  <div>
+    <label>Note</label>
+    <input type="text" ng-model="order.note" id="note" />
+  </div>
+  <input type="submit" ng-click="saveOrder()" value="Order Now" />
+</form>
+</div>

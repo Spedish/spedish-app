@@ -50,12 +50,15 @@ itemSchema.pre('save', function(next) {
   next();
 });
 
-var autoPopulateGallery = function(next) {
+// populate all referenced collections on item
+var autoPopulate = function(next) {
   this.populate('_gallery');
+  this.populate('orders');
   next();
 }
 
-itemSchema.pre('findOne', autoPopulateGallery);
+itemSchema.pre('findOne', autoPopulate);
+itemSchema.pre('find', autoPopulate);
 
 // Export the model.
 var Item = mongoose.model('Item', itemSchema);
