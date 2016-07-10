@@ -1,6 +1,5 @@
 'use strict';
 
-var galleryUrl = '//54.183.97.63:3000/gallery/';
 var g_scope;
 
 /**
@@ -13,6 +12,8 @@ var g_scope;
 angular.module('clientApp')
   .controller('ItemEditCtrl', function ($scope, Item, $routeParams, $location, $window) {
     g_scope = $scope;
+
+    var galleryUrl = g_config.baseUrl + '/gallery';
 
     $scope.editItem = true;
     $scope.item = {};

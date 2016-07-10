@@ -1,6 +1,6 @@
 'use strict';
 
-var galleryUrl = '//54.183.97.63:3000/gallery/';
+//var galleryUrl = app.config.baseUrl + '/gallery'; /* /'//54.183.97.63:3000/gallery/'; */
 var g_scope;
 
 /**
@@ -29,6 +29,8 @@ angular.module('clientApp')
     '$httpProvider', 'fileUploadProvider',
     function ($httpProvider, fileUploadProvider) {
       delete $httpProvider.defaults.headers.common['X-Requested-With'];
+
+      var galleryUrl = g_config.baseUrl + '/gallery';
 
       // Override settings
       angular.extend(fileUploadProvider.defaults, {
@@ -111,6 +113,9 @@ angular.module('clientApp')
   .controller('FileUploadCtrl', [
     '$scope', '$http', '$filter', '$window',
     function($scope) {
+
+      var galleryUrl = g_config.baseUrl + '/gallery';
+
       $scope.options = {
         url: galleryUrl
       };
@@ -124,6 +129,8 @@ angular.module('clientApp')
   ])
 
   .controller('SortableCtrl', function($scope) {
+
+    var galleryUrl = g_config.baseUrl + '/gallery';
 
     $scope.dropzone = {}; // A default control will do fine
     $scope.dropzoneFields = [];
