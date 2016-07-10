@@ -28,14 +28,8 @@ npm install
 nohup nodejs index.js --prod &
 cd ..
 
-# Stop frontend server if found
-cd client
-PID=`ps -ef | grep grunt | grep '--port 8080' | grep -v grep | awk '{print $2}'`
-
-if [ ! -z "$PID" ]; then
-  echo Stopping grunt with PID $PID
-  kill -15 $PID
-fi
+# Stop nginx
+sudo service nginx stop
 
 # Install dependencies
 npm install
@@ -45,5 +39,6 @@ bower install
 rvm use system
 grunt build
 
-# Serve the dist build of frontend server
-nohup grunt serve:dist --port 8080
+# Serve the dist build of frontend server using nginx
+sudo service nginx restart
+
