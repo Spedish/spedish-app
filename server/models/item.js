@@ -52,7 +52,7 @@ var autoPopulateGallery = function(next) {
   next();
 }
 
-ItemSchema.pre('findOne', autoPopulateGallery);
+itemSchema.pre('findOne', autoPopulateGallery);
 
 // Export the model.
 var Item = mongoose.model('Item', itemSchema);

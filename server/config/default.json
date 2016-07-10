@@ -1,0 +1,9 @@
+{
+  "server": {
+    "dbConfig": {
+      "url": "mongodb://localhost:3005/spedish"
+    },
+
+    "port": 3000
+  }
+}
