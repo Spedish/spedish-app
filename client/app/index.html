@@ -13,9 +13,11 @@
     <!-- build:css(.tmp) styles/main.css -->
     <link rel="stylesheet" href="styles/main.css">
     <!-- endbuild -->
+    <!-- build:css styles/extra.css -->
     <link rel="stylesheet" href="static/css/jquery.fileupload.css">
     <link rel="stylesheet" href="static/css/jquery.fileupload-ui.css">
     <link rel="stylesheet" href="static/css/jquery.ui.sortable.css">
+    <!-- endbuild -->
   </head>
   <body ng-app="clientApp">
     <!--[if lte IE 8]>
@@ -91,18 +93,18 @@
     <!-- endbower -->
     <!-- endbuild -->
 
-    <!-- Scripts required for jQuery FileUpload extension -->
-    <script src="static/js/jquery.ui.widget.js"></script>
-    <script src="static/js/load-image.all.min.js"></script>
-    <script src="static/js/jquery.fileupload.js"></script>
-    <script src="static/js/jquery.fileupload-process.js"></script>
-    <script src="static/js/jquery.fileupload-image.js"></script>
-    <script src="static/js/jquery.fileupload-validate.js"></script>
-    <script src="static/js/jquery.fileupload-angular.js"></script>
-
+        <!-- build:js({.tmp,app}) scripts/scripts.js -->
         <script src="scripts/config.js"></script>
 
-        <!-- build:js({.tmp,app}) scripts/scripts.js -->
+        <!-- Scripts required for jQuery FileUpload extension -->
+        <script src="static/js/jquery.ui.widget.js"></script>
+        <script src="static/js/load-image.all.min.js"></script>
+        <script src="static/js/jquery.fileupload.js"></script>
+        <script src="static/js/jquery.fileupload-process.js"></script>
+        <script src="static/js/jquery.fileupload-image.js"></script>
+        <script src="static/js/jquery.fileupload-validate.js"></script>
+        <script src="static/js/jquery.fileupload-angular.js"></script>
+
         <script src="scripts/app.js"></script>
         <script src="scripts/controllers/main.js"></script>
         <script src="scripts/controllers/about.js"></script>
