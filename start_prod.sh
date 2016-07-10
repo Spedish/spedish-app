@@ -21,6 +21,29 @@ if [ ! -z "$PID" ]; then
 fi
 
 # Install server dependencies
+cd server
+npm install
 
+# Start server
+nohup nodejs index.js --prod &
+cd ..
 
+# Stop frontend server if found
+cd client
+PID=`ps -ef | grep grunt | grep '--port 8080' | grep -v grep | awk '{print $2}'`
 
+if [ ! -z "$PID" ]; then
+  echo Stopping grunt with PID $PID
+  kill -15 $PID
+fi
+
+# Install dependencies
+npm install
+bower install
+
+# Build frontend server
+rvm use system
+grunt build
+
+# Serve the dist build of frontend server
+nohup grunt serve:dist --port 8080

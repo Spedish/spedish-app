@@ -29,7 +29,7 @@ angular
   if (ENV === 'dev')
     g_config.baseUrl = 'http://spedish.com:3000';
   else
-    g_config.baseUrl = 'http://spedish.com';
+    g_config.baseUrl = 'http://spedish.com:4000';
 
   RestangularProvider.setBaseUrl(g_config.baseUrl);
 
