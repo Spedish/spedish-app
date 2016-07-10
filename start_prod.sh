@@ -1,7 +1,7 @@
-# Sync master from git
+echo Sync to latest git master
 git fetch origin master
 
-# Check if there is a prod mongodb already started
+echo Stopping mongodb
 PID=`ps -ef | grep mongod | grep '/opt/spedish/db' | grep -v grep | awk '{print $2}'`
 
 if [ ! -z "$PID" ]; then
@@ -9,10 +9,10 @@ if [ ! -z "$PID" ]; then
   kill -15 $PID
 fi
 
-# Start Mongodb
+echo Restarting mongodb
 nohup mongod --dbpath /opt/spedish/db &
 
-# Stop NodeJS server
+echo Stopping nodejs
 PID=`ps -ef | grep nodejs | grep '--prod' | grep -v grep | awk '{print $2}'`
 
 if [ ! -z "$PID" ]; then
@@ -20,25 +20,25 @@ if [ ! -z "$PID" ]; then
   kill -15 $PID
 fi
 
-# Install server dependencies
+echo Installing server dependecies
 cd server
 npm install
 
-# Start server
+echo Starting nodejs
 nohup nodejs index.js --prod &
 cd ..
 
-# Stop nginx
+echo Stopping nginx
 sudo service nginx stop
 
-# Install dependencies
+echo Installing frontend dependencies
 npm install
 bower install
 
-# Build frontend server
+echo Building frontend dist package
 rvm use system
 grunt build
 
-# Serve the dist build of frontend server using nginx
+echo Restarting nginx
 sudo service nginx restart
 
