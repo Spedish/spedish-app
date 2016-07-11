@@ -211,4 +211,3 @@ angular.module('clientApp')
       }
     };
   });
-

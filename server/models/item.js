@@ -19,7 +19,10 @@ var itemSchema = new mongoose.Schema({
     type: Number,
     required: true
   },
-  orders: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Order' }],
+  orders: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Order'
+  }],
   update_date: {
     type: Date
   },
@@ -47,12 +50,15 @@ itemSchema.pre('save', function(next) {
   next();
 });
 
-var autoPopulateGallery = function(next) {
+// populate all referenced collections on item
+var autoPopulate = function(next) {
   this.populate('_gallery');
+  this.populate('orders');
   next();
 }
 
-itemSchema.pre('findOne', autoPopulateGallery);
+itemSchema.pre('findOne', autoPopulate);
+itemSchema.pre('find', autoPopulate);
 
 // Export the model.
 var Item = mongoose.model('Item', itemSchema);

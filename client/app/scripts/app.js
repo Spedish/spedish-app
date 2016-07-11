@@ -83,9 +83,9 @@ angular
 // as _id is used in nodejs
 .factory('ProductRestangular', function(Restangular) {
   return Restangular.withConfig(function(RestangularConfigurer) {
-      RestangularConfigurer.setRestangularFields({
-          id: '_id'
-      });
+    RestangularConfigurer.setRestangularFields({
+      id: '_id'
+    });
   });
 })
 
@@ -98,13 +98,26 @@ angular
 // as _id is used in nodejs
 .factory('ItemRestangular', function(Restangular) {
   return Restangular.withConfig(function(RestangularConfigurer) {
-      RestangularConfigurer.setRestangularFields({
-          id: '_id'
-      });
+    RestangularConfigurer.setRestangularFields({
+      id: '_id'
+    });
   });
 })
 
-// Provide the product factory
+.factory('OrderRestangular', function(Restangular) {
+  return Restangular.withConfig(function(RestangularConfigurer) {
+    RestangularConfigurer.setRestangularFields({
+      id: '_id'
+    });
+  });
+})
+
+// Provide the item factory
 .factory('Item', function(ItemRestangular) {
   return ItemRestangular.service('item');
+})
+
+// Provide the product factory
+.factory('Order', function(OrderRestangular) {
+  return OrderRestangular.service('order');
 });
