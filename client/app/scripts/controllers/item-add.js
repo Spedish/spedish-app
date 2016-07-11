@@ -30,7 +30,7 @@ angular.module('clientApp')
     function ($httpProvider, fileUploadProvider) {
       delete $httpProvider.defaults.headers.common['X-Requested-With'];
 
-      var galleryUrl = g_config.baseUrl + '/gallery';
+      var galleryUrl = g_config.baseUrl + '/gallery/';
 
       // Override settings
       angular.extend(fileUploadProvider.defaults, {
@@ -104,6 +104,7 @@ angular.module('clientApp')
               // hide the uploader table
               $('#uploaderTable').hide();
               $('#galleryViewerWrapper').show();
+              console.log(g_scope.images);
             }
           }
       });
@@ -130,7 +131,7 @@ angular.module('clientApp')
 
   .controller('SortableCtrl', function($scope) {
 
-    var galleryUrl = g_config.baseUrl + '/gallery';
+    var galleryUrl = g_config.baseUrl + '/gallery/';
 
     $scope.dropzone = {}; // A default control will do fine
     $scope.dropzoneFields = [];
