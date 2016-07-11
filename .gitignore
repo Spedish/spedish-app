@@ -7,3 +7,6 @@ client/app/scripts/config.js
 
 # VIM stuff #
 *.swp
+
+# Server stuff #
+*nohup*
