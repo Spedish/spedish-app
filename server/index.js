@@ -3,13 +3,12 @@ var mongoose = require('mongoose');
 var bodyParser = require('body-parser');
 var methodOverride = require('method-override');
 var _ = require('lodash');
+var config = require('config');
 
 var passport = require('passport');
 var flash = require('connect-flash');
 var session = require('express-session');
 var cookieParser = require("cookie-parser");
-
-var configDB = require('./config/database');
 
 // Create the application.
 var app = express();
@@ -44,7 +43,7 @@ app.use(passport.session()); // persistent login sessions
 app.use(flash()); // use connect-flash for flash messages stored in session
 
 // Connect to MongoDB
-mongoose.connect(configDB.url);
+mongoose.connect(config.get('server.dbConfig.url'));
 mongoose.connection.on('error', console.error.bind(console, 'connection error:'));
 mongoose.connection.once('open', function () {
 
@@ -79,6 +78,6 @@ mongoose.connection.once('open', function () {
       res.render('error', { error: err });
     }
 
-    console.log('Listening on port 3000...');
-    app.listen(3000);
+    console.log('Listening on port ' + config.get('server.port'));
+    app.listen(config.get('server.port'));
 });

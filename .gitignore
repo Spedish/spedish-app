@@ -2,5 +2,11 @@
 ###################
 node_modules/
 
+# Auto generated config file #
+client/app/scripts/config.js
+
 # VIM stuff #
 *.swp
+
+# Server stuff #
+*nohup*

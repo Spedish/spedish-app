@@ -24,7 +24,7 @@ angular.module('clientApp')
   Item.one($routeParams.id).get().then(function(data) {
 
     // Form gallery links
-    var galleryUrl = '//54.183.97.63:3000/gallery';
+    var galleryUrl = g_config.baseUrl + '/gallery'; /* '//54.183.97.63:3000/gallery'; */
     var gid = data._gallery._id;
 
     $scope.slides = [];
