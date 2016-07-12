@@ -225,8 +225,11 @@ module.exports = function(app, route) {
       res.send('No listing allowed');
     } else {
       var f = req.url.substring(req.url.lastIndexOf('gallery/') + 8);
-      console.error(f);
-      fileServer.serveFile(f, 200, {}, req, res);
+      console.log('Gallery serving: ' + f);
+      var promise = fileServer.serveFile(f, 200, {}, req, res);
+      promise.on('error', function(e, res) {
+        console.error('Failed to serve file: ' + e);
+      });
     }
   });
 
