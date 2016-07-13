@@ -37,6 +37,7 @@ FileInfo = function (file) {
   this.name = file.name;
   this.size = file.size;
   this.type = file.type;
+  this.localPath = '';
   this.deleteType = 'DELETE';
 };
 
@@ -85,9 +86,12 @@ UploadHandler.prototype.post = function (app, req, res) {
       gid = undefined,
       finish = function (req, res, gid, order) {
           counter -= 1;
+          console.log('Counter: ' + counter);
           if (!counter) {
               files.forEach(function (fileInfo) {
                   fileInfo.initUrls(handler.req, gid);
+                  console.log('>>> Local path of thumbnail is: ' + fileInfo.localPath);
+                  while(! fs.existsSync(fileInfo.localPath)) { }
               });
               handler.callback({files: files}, req, res, gid, order);
           }
@@ -137,6 +141,7 @@ UploadHandler.prototype.post = function (app, req, res) {
           order = gallery.order;
 
         // Go through the files we received and move them to gallery
+        console.log(tmpFiles);
         tmpFiles.forEach(function (file) {
           var fileInfo = map[path.basename(file)];
           fileInfo.size = file.size;
@@ -156,14 +161,15 @@ UploadHandler.prototype.post = function (app, req, res) {
           if (options.imageTypes.test(fileInfo.name)) {
               Object.keys(options.imageVersions).forEach(function (version) {
                   counter += 1;
+                  console.log('Counter (new resize): ' + counter);
                   var opts = options.imageVersions[version];
                   console.log(version);
+                  fileInfo.localPath = options.galleryDir + '/' + gid + '/' + version + '_' + fileInfo.name;
                   imageMagick.resize({
                       width: opts.width,
                       height: opts.height,
                       srcPath: options.galleryDir + '/' + gid + '/' + fileInfo.name,
-                      dstPath: options.galleryDir + '/' + gid + '/' + version + '_' +
-                          fileInfo.name
+                      dstPath: fileInfo.localPath
                   }, finish(req, res, gid, undefined));
               });
           }
@@ -225,8 +231,11 @@ module.exports = function(app, route) {
       res.send('No listing allowed');
     } else {
       var f = req.url.substring(req.url.lastIndexOf('gallery/') + 8);
-      console.error(f);
-      fileServer.serveFile(f, 200, {}, req, res);
+      console.log('Gallery serving: ' + f);
+      var promise = fileServer.serveFile(f, 200, {}, req, res);
+      promise.on('error', function(e, res) {
+        console.error('Failed to serve file: ' + e);
+      });
     }
   });
 

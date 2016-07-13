@@ -123,9 +123,14 @@ angular.module('clientApp')
 
       // Bind some event listeners
       $('#fileupload')
+        // Hide the uploader table once the UI has been rendered
         .bind('fileuploadadded', function() {
-            $('#uploaderTable').hide();
-          });
+          $('#uploaderTable').hide();
+        })
+        // Show the uploader table when new files are being added
+        .bind('fileuploadadd', function() {
+          $('#uploaderTable').show();
+        });
     }
   ])
 
