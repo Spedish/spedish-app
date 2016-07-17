@@ -11,73 +11,88 @@ var g_config = {};
  * Main module of the application.
  */
 angular
-.module('clientApp', [
-  'config',
-  'ngAnimate',
-  'ngCookies',
-  'ngResource',
-  'ngRoute',
-  'ngSanitize',
-  'ngTouch',
-  'restangular',
-  'blueimp.fileupload',
-  'ui.bootstrap',
-  'ui.sortable'
-])
-.config(function (ENV, $routeProvider, RestangularProvider) {
+  .module('clientApp', [
+    'config',
+    'ngAnimate',
+    'ngCookies',
+    'ngResource',
+    'ngRoute',
+    'ngSanitize',
+    'ngTouch',
+    'restangular',
+    'blueimp.fileupload',
+    'ui.bootstrap',
+    'ui.sortable'
+  ])
+  .config(function(ENV, $routeProvider, RestangularProvider) {
 
-  if (ENV === 'dev')
-    g_config.baseUrl = 'http://spedish.com:3000';
-  else
-    g_config.baseUrl = 'http://spedish.com:4000';
+    if (ENV === 'dev')
+      g_config.baseUrl = 'http://localhost:3000';
+    else
+      g_config.baseUrl = 'http://spedish.com:4000';
 
-  RestangularProvider.setBaseUrl(g_config.baseUrl);
+    RestangularProvider.setBaseUrl(g_config.baseUrl);
 
-  $routeProvider
-  .when('/', {
-    templateUrl: 'views/main.html',
-    controller: 'MainCtrl',
-    controllerAs: 'main'
+    $routeProvider
+      .when('/', {
+        templateUrl: 'views/main.html',
+        controller: 'MainCtrl',
+        controllerAs: 'main'
+      })
+      .when('/about', {
+        templateUrl: 'views/about.html',
+        controller: 'AboutCtrl',
+        controllerAs: 'about'
+      })
+      .when('/products', {
+        templateUrl: 'views/products.html',
+        controller: 'ProductsCtrl',
+        controllerAs: 'products'
+      })
+      .when('/item', {
+        templateUrl: 'views/item.html',
+        controller: 'ItemCtrl',
+        controllerAs: 'item'
+      })
+      .when('/create/item', {
+        templateUrl: 'views/item-add.html',
+        controller: 'ItemAddCtrl',
+        controllerAs: 'itemAdd'
+      })
+      .when('/item/:id', {
+        templateUrl: 'views/item-view.html',
+        controller: 'ItemViewCtrl',
+        controllerAs: 'itemView'
+      })
+      .when('/item/:id/delete', {
+        templateUrl: 'views/item-delete.html',
+        controller: 'ItemDeleteCtrl',
+        controllerAs: 'itemDelete'
+      })
+      .when('/item/:id/edit', {
+        templateUrl: 'views/item-edit.html',
+        controller: 'ItemEditCtrl',
+        controllerAs: 'itemEdit'
+      })
+      .when('/item/:id/order', {
+        templateUrl: 'views/order.html',
+        controller: 'OrderCtrl',
+        controllerAs: 'order'
+      })
+      .when('/order/:id', {
+        templateUrl: 'views/order-view.html',
+        controller: 'OrderViewCtrl',
+        controllerAs: 'orderView'
+      })
+      .when('/item/:id/orders', {
+        templateUrl: 'views/orders.html',
+        controller: 'OrdersCtrl',
+        controllerAs: 'orders'
+      })
+      .otherwise({
+        redirectTo: '/'
+      });
   })
-  .when('/about', {
-    templateUrl: 'views/about.html',
-    controller: 'AboutCtrl',
-    controllerAs: 'about'
-  })
-  .when('/products', {
-    templateUrl: 'views/products.html',
-    controller: 'ProductsCtrl',
-    controllerAs: 'products'
-  })
-  .when('/item', {
-    templateUrl: 'views/item.html',
-    controller: 'ItemCtrl',
-    controllerAs: 'item'
-  })
-  .when('/create/item', {
-    templateUrl: 'views/item-add.html',
-    controller: 'ItemAddCtrl',
-    controllerAs: 'itemAdd'
-  })
-  .when('/item/:id', {
-    templateUrl: 'views/item-view.html',
-    controller: 'ItemViewCtrl',
-    controllerAs: 'itemView'
-  })
-  .when('/item/:id/delete', {
-    templateUrl: 'views/item-delete.html',
-    controller: 'ItemDeleteCtrl',
-    controllerAs: 'itemDelete'
-  })
-  .when('/item/:id/edit', {
-    templateUrl: 'views/item-edit.html',
-    controller: 'ItemEditCtrl',
-    controllerAs: 'itemEdit'
-  })
-  .otherwise({
-      redirectTo: '/'
-  });
-})
 
 // Override the restangular framework's id keyword from id to _id,
 // as _id is used in nodejs
