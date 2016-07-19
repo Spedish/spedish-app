@@ -12,8 +12,8 @@ var dayOfWeek = new Schema({
 });
 
 var pickupWindow = new Schema({
-  start_time: Number,
-  end_time: Number,
+  start_time: String,
+  end_time: String,
   status: Boolean
 });
 

@@ -1,4 +1,5 @@
 var Availability = require('../models/availability.js');
+var moment = require('moment');
 
 module.exports = function(app, route) {
   var Item = app.models.item;
