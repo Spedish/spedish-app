@@ -24,7 +24,7 @@ module.exports = function(app, route) {
             if (err) return res.status(500).json({
               status: 'failure',
               message: "Update inventory failed."
-            })
+            });
             console.log('Inventory successfully updated!');
             res.status(200).json(order);
           });
