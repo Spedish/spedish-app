@@ -94,10 +94,20 @@ angular
         controller: 'LoginCtrl',
         controllerAs: 'login'
       })
-      .when('/signup', {
-        templateUrl: 'views/signup.html',
-        controller: 'SignupCtrl',
-        controllerAs: 'signup'
+      .when('/buyerSignup', {
+        templateUrl: 'views/buyerSignup.html',
+        controller: 'BuyerSignupCtrl',
+        controllerAs: 'buyerSignup'
+      })
+      .when('/sellerSignup', {
+        templateUrl: 'views/sellerSignup.html',
+        controller: 'SellerSignupCtrl',
+        controllerAs: 'sellerSignup'
+      })
+      .when('/profile', {
+        templateUrl: 'views/profile.html',
+        controller: 'ProfileCtrl',
+        controllerAs: 'profile'
       })
       .otherwise({
         redirectTo: '/'
@@ -130,6 +140,14 @@ angular
   });
 })
 
+.factory('UserRestangular', function(Restangular) {
+  return Restangular.withConfig(function(RestangularConfigurer) {
+    RestangularConfigurer.setRestangularFields({
+      id: '_id'
+    });
+  });
+})
+
 // Provide the product factory
 .factory('Product', function(ProductRestangular) {
   return ProductRestangular.service('products');
@@ -146,6 +164,16 @@ angular
 })
 
 // Provide the signup factory
-.factory('Signup', function(Restangular) {
-  return Restangular.service('signup');
+.factory('Signup', function(UserRestangular) {
+  return UserRestangular.service('signup');
+})
+
+// Provide the login factory
+.factory('Login', function(UserRestangular) {
+  return UserRestangular.service('login');
+})
+
+// Provide the facebook login factory
+.factory('FacebookLogin', function(UserRestangular) {
+  return UserRestangular.all('auth/facebook');
 });
