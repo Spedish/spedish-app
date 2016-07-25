@@ -24,7 +24,7 @@ var userSchema = mongoose.Schema({
   firstname: String,
   lastname: String,
   address: String, // Need more work afterwards, but Google map Geocoding service can convert addresses (like "1600 Amphitheatre Parkway, Mountain View, CA") into geographic coordinates
-  contact: Number,
+  contact: String,
   about: String,
 
   thirdParty_source: String,
