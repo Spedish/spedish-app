@@ -1,7 +1,33 @@
 var Order = require('../models/order.js');
+var moment = require('moment');
 
 module.exports = function(app, route) {
   var Item = app.models.item;
+
+  function checkAvailability(item, order) {
+    var pickUpTime = moment(order.pick_up_time, 'h:mm');
+    var pickUpDayOfWeek = moment(order.pick_up_date, 'YYYY-MM-DD').weekday();
+    var lunchWindowStartTime = moment(item.availability.pickup_window.lunch.start_time, 'h:mm');
+    var lunchWindowEndTime = moment(item.availability.pickup_window.lunch.end_time, 'h:mm');
+    var dinnerWindowStartTime = moment(item.availability.pickup_window.lunch.start_time, 'h:mm');
+    var dinnerWindowStartTime = moment(item.availability.pickup_window.lunch.start_time, 'h:mm');
+
+    if (item.availability.pickup_window.free_sell && order.count >= item.inventory) {
+      true
+    } else {
+      console.log(item.availability.day_of_week.get(pickUpDayOfWeek.toString()));
+      if (item.availability.day_of_week.pickUpDayOfWeek && //pickUpTime is in slots &&
+        moment().add(item.availability.lead_time, 'minutes').isSameOrBefore(pickUpTime)) {
+        if (order.count <= item.inventory) {
+          true
+        } else {
+          false
+        }
+      } else {
+        false
+      }
+    }
+  }
 
   app.post('/order', function(req, res) {
     Item.findById(req.body.item_id, function(err, item) {
