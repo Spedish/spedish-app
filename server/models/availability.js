@@ -2,13 +2,13 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
 var dayOfWeek = new Schema({
-  monday: Boolean,
-  tuesday: Boolean,
-  wednesday: Boolean,
-  thursday: Boolean,
-  friday: Boolean,
-  saturday: Boolean,
-  sunday: Boolean
+  "1": Boolean,
+  "2": Boolean,
+  "3": Boolean,
+  "4": Boolean,
+  "5": Boolean,
+  "6": Boolean,
+  "0": Boolean
 });
 
 var pickupWindow = new Schema({

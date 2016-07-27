@@ -15,14 +15,14 @@ module.exports = function(app, route) {
         Availability.findByIdAndUpdate(item.availability._id, req.body, {
             new: true
           },
-          function(err, aaa) {
-            console.log(aaa);
+          function(err, availability) {
+            console.log(availability);
             if (err) return res.status(404).json({
               status: 'failure',
               message: "Update availability failed."
             });
             console.log('Availability successfully updated!');
-            res.status(200).json(aaa);
+            res.status(200).json(availability);
           });
       } else {
         Availability.create(req.body, function(err, availability) {

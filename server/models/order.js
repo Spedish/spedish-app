@@ -9,6 +9,14 @@ var orderSchema = new mongoose.Schema({
     type: String,
     required: true
   },
+  pick_up_date: {
+    type: Date,
+    required: true
+  },
+  pick_up_time: {
+    type: String,
+    required: true
+  },
   count: {
     type: Number,
     min: [0],
