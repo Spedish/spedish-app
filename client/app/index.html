@@ -37,7 +37,9 @@
               <span class="icon-bar"></span>
             </button>
 
-            <a class="navbar-brand" href="#/">client</a>
+            <a class="navbar-brand" href="#/">Spedish</a>
+            <div class="navbar-brand" ng-if="globals.currentUser" ng-bind="globals.currentUser.username"></div>
+
           </div>
 
           <div class="collapse navbar-collapse" id="js-navbar-collapse">
@@ -46,6 +48,8 @@
               <li class="active"><a href="#/">Home</a></li>
               <li><a ng-href="#/item">Items</a></li>
               <li><a ng-href="#/products">Products</a></li>
+              <li ng-if="globals.currentUser == null"><a ng-href="#/login">Login</a></li>
+              <li ng-if="globals.currentUser != null"><a ng-href="#/profile">Profile</a></li>
             </ul>
           </div>
         </div>
@@ -55,6 +59,8 @@
     <div class="container">
     <div ng-view=""></div>
     </div>
+
+    <p>&nbsp;</p>
 
     <div class="footer">
       <div class="container">
@@ -117,6 +123,14 @@
         <script src="scripts/controllers/order.js"></script>
         <script src="scripts/controllers/order-view.js"></script>
         <script src="scripts/controllers/orders.js"></script>
+        <script src="scripts/controllers/login.js"></script>
+        <script src="scripts/controllers/buyerSignup.js"></script>
+        <script src="scripts/controllers/sellerSignup.js"></script>
+        <script src="scripts/controllers/profile.js"></script>
+
+        <!-- Scripts required for user authentication -->
+        <script src="scripts/services/authentication.service.js"></script>
+        <script src="scripts/services/flash.service.js"></script>
         <!-- endbuild -->
 </body>
 </html>

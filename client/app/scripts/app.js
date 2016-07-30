@@ -89,6 +89,26 @@ angular
         controller: 'OrdersCtrl',
         controllerAs: 'orders'
       })
+      .when('/login', {
+        templateUrl: 'views/login.html',
+        controller: 'LoginCtrl',
+        controllerAs: 'login'
+      })
+      .when('/buyerSignup', {
+        templateUrl: 'views/buyerSignup.html',
+        controller: 'BuyerSignupCtrl',
+        controllerAs: 'buyerSignup'
+      })
+      .when('/sellerSignup', {
+        templateUrl: 'views/sellerSignup.html',
+        controller: 'SellerSignupCtrl',
+        controllerAs: 'sellerSignup'
+      })
+      .when('/profile', {
+        templateUrl: 'views/profile.html',
+        controller: 'ProfileCtrl',
+        controllerAs: 'profile'
+      })
       .otherwise({
         redirectTo: '/'
       });
@@ -104,13 +124,6 @@ angular
   });
 })
 
-// Provide the product factory
-.factory('Product', function(ProductRestangular) {
-  return ProductRestangular.service('products');
-})
-
-// Override the restangular framework's id keyword from id to _id,
-// as _id is used in nodejs
 .factory('ItemRestangular', function(Restangular) {
   return Restangular.withConfig(function(RestangularConfigurer) {
     RestangularConfigurer.setRestangularFields({
@@ -127,6 +140,19 @@ angular
   });
 })
 
+.factory('UserRestangular', function(Restangular) {
+  return Restangular.withConfig(function(RestangularConfigurer) {
+    RestangularConfigurer.setRestangularFields({
+      id: '_id'
+    });
+  });
+})
+
+// Provide the product factory
+.factory('Product', function(ProductRestangular) {
+  return ProductRestangular.service('products');
+})
+
 // Provide the item factory
 .factory('Item', function(ItemRestangular) {
   return ItemRestangular.service('item');
@@ -135,4 +161,19 @@ angular
 // Provide the product factory
 .factory('Order', function(OrderRestangular) {
   return OrderRestangular.service('order');
+})
+
+// Provide the signup factory
+.factory('Signup', function(UserRestangular) {
+  return UserRestangular.service('signup');
+})
+
+// Provide the login factory
+.factory('Login', function(UserRestangular) {
+  return UserRestangular.service('login');
+})
+
+// Provide the facebook login factory
+.factory('FacebookLogin', function(UserRestangular) {
+  return UserRestangular.all('auth/facebook');
 });
