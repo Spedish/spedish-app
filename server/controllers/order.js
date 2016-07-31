@@ -19,9 +19,13 @@ module.exports = function(app, route) {
       var lunchWindowEndTime = moment(item.availability.pickup_window.lunch.end_time, 'h:mm');
       var dinnerWindowStartTime = moment(item.availability.pickup_window.dinner.start_time, 'h:mm');
       var dinnerWindowEndTime = moment(item.availability.pickup_window.dinner.end_time, 'h:mm');
-      return pickUpTime.isBetween(lunchWindowStartTime, lunchWindowEndTime, null, '[]') ||
-        pickUpTime.isBetween(dinnerWindowStartTime, dinnerWindowEndTime, null, '[]');
+      var isBetweenLunchHours = item.availability.pickup_window.lunch.status?
+        pickUpTime.isBetween(lunchWindowStartTime, lunchWindowEndTime, null, '[]'): false
+      var isBetweenDinnerHours = item.availability.pickup_window.dinner.status?
+        pickUpTime.isBetween(dinnerWindowStartTime, dinnerWindowEndTime, null, '[]'): false
+      return (isBetweenLunchHours || isBetweenDinnerHours);
     }
+
     //Inventory has to satify the order item count
     if (order.count <= item.inventory) {
       //If item is free sell, returns true
@@ -38,7 +42,7 @@ module.exports = function(app, route) {
         if (pickUpDate.isSameOrAfter(currentDateTime) &&
             item.availability.day_of_week.get(pickUpDayOfWeek.toString()) &&
             checkPickUpWindow(pickUpTime) &&
-            currentDateTime.add(item.availability.lead_time, 'minutes').isSameOrBefore(pickUpTime)) {
+            currentDateTime.add(item.availability.lead_time, 'minutes').isSameOrBefore(pickUpDate)) {
           return order.count <= item.inventory;
         } else {
           return false
