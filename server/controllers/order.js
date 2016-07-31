@@ -30,7 +30,7 @@ module.exports = function(app, route) {
     if (order.count <= item.inventory) {
       //If item is free sell, returns true
       if (item.availability.pickup_window.free_sell) {
-        return true
+        return true;
       } else {
         /*
         If all following condition are satisfied, we will return true and process the order request:
@@ -45,11 +45,11 @@ module.exports = function(app, route) {
             currentDateTime.add(item.availability.lead_time, 'minutes').isSameOrBefore(pickUpDate)) {
           return order.count <= item.inventory;
         } else {
-          return false
+          return false;
         }
       }
     } else {
-      return false
+      return false;
     }
   }
 
