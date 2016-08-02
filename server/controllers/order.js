@@ -83,7 +83,7 @@ module.exports = function(app, route) {
         });
       } else res.status(409).json({
         status: 'failure',
-        message: "We don't have enough inventory."
+        message: "There's an issue processing your order, please try again later."
       });
     });
   });
