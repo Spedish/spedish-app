@@ -22,6 +22,8 @@ angular.module('clientApp')
         firstname: $scope.firstname,
         lastname: $scope.lastname,
         address: $scope.address,
+        city: $scope.city,
+        zip: $scope.zip,
         contact: $scope.contact,
         about: $scope.about
       }).then(handleSuccess, handleError);
