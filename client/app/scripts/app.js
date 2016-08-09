@@ -1,7 +1,5 @@
 'use strict';
 
-var g_config = {};
-
 /**
  * @ngdoc overview
  * @name clientApp
@@ -22,14 +20,12 @@ angular
     'restangular',
     'blueimp.fileupload',
     'ui.bootstrap',
-    'ui.sortable'
+    'ui.sortable',
+    'multipleSelect'
   ])
   .config(function(ENV, $routeProvider, RestangularProvider) {
 
-    if (ENV === 'dev')
-      g_config.baseUrl = 'http://localhost:3000';
-    else
-      g_config.baseUrl = 'http://spedish.com:4000';
+    initConfig(ENV);
 
     RestangularProvider.setBaseUrl(g_config.baseUrl);
 

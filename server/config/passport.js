@@ -72,6 +72,8 @@ module.exports = function(passport) {
             newUser.firstname = req.body.firstname;
             newUser.lastname = req.body.lastname;
             newUser.address = req.body.address;
+            newUser.city = req.body.city;
+            newUser.zip = req.body.zip;
             newUser.contact = req.body.contact;
             newUser.about = req.body.about;
 
