@@ -16,6 +16,9 @@ angular.module('clientApp')
     $scope.item = {};
     $scope.addItem = true;
 
+    $scope.categories = ['CatA', 'CatB'];
+    $scope.mealOptions = ['Vegetarian', 'Vegan'];
+
     // Prepopulate the item with user profile information
     if ($rootScope.globals && $rootScope.globals.currentUser) {
       $scope.item.street = $rootScope.globals.currentUser.address;
@@ -26,6 +29,9 @@ angular.module('clientApp')
     }
 
     $scope.saveItem = function() {
+      $scope.item.meal_options = $scope.item.meal_options.join();
+      $scope.item.category = $scope.item.category.join();
+
       Item.post($scope.item).then(function() {
         $window.alert('Item added');
         $location.path('/item');

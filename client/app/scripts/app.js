@@ -20,7 +20,8 @@ angular
     'restangular',
     'blueimp.fileupload',
     'ui.bootstrap',
-    'ui.sortable'
+    'ui.sortable',
+    'multipleSelect'
   ])
   .config(function(ENV, $routeProvider, RestangularProvider) {
 
