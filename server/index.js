@@ -37,9 +37,9 @@ require('./config/passport')(passport);
 
 // required for passport
 app.use(session({
-  secret: 'SpedishRocks!!!',
-  resave: false,
-  saveUninitialized: false
+  resave: true,
+  saveUninitialized: false,
+  secret: 'SpedishRocks!!!'
 })); // session secret
 app.use(passport.initialize());
 app.use(passport.session()); // persistent login sessions
