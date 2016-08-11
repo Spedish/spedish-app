@@ -29,8 +29,10 @@ angular.module('clientApp')
     }
 
     $scope.saveItem = function() {
-      $scope.item.meal_options = $scope.item.meal_options.join();
-      $scope.item.category = $scope.item.category.join();
+      if ($scope.item.meal_options && ($scope.item.meal_options instanceof Array))
+        $scope.item.meal_options = $scope.item.meal_options.join();
+      if ($scope.item.category && ($scope.item.category instanceof Array))
+        $scope.item.category = $scope.item.category.join();
 
       Item.post($scope.item).then(function() {
         $window.alert('Item added');
