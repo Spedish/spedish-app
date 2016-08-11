@@ -23,9 +23,11 @@ angular
     'ui.sortable',
     'multipleSelect'
   ])
-  .config(function(ENV, $routeProvider, RestangularProvider) {
+  .config(function(ENV, $httpProvider, $routeProvider, RestangularProvider) {
 
     initConfig(ENV);
+
+    $httpProvider.defaults.withCredentials = true;
 
     RestangularProvider.setBaseUrl(g_config.baseUrl);
 
@@ -89,6 +91,9 @@ angular
         templateUrl: 'views/login.html',
         controller: 'LoginCtrl',
         controllerAs: 'login'
+      })
+      .when('/logout', {
+        controller: 'LogoutCtrl',
       })
       .when('/buyerSignup', {
         templateUrl: 'views/buyerSignup.html',

@@ -5,8 +5,8 @@ module.exports = {
     'order': require('./controllers/order'),
     'login': require('./controllers/auth/login'),
     'profile': require('./controllers/auth/profile'),
-    '': require('./controllers/auth/home'),
     'logout': require('./controllers/auth/logout'),
+    'user_status': require('./controllers/auth/status'),
     'facebook': require('./controllers/auth/facebook'),
     'gallery': require('./controllers/gallery')
 };

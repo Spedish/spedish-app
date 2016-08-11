@@ -28,7 +28,7 @@
 
     <!-- Add your site or application content here -->
     <div class="header">
-      <div class="navbar navbar-default" role="navigation">
+      <div class="navbar navbar-default" role="navigation" ng-controller="NavCtrl">
         <div class="container">
           <div class="navbar-header">
 
@@ -40,7 +40,6 @@
             </button>
 
             <a class="navbar-brand" href="#/">Spedish</a>
-            <div class="navbar-brand" ng-if="globals.currentUser" ng-bind="globals.currentUser.username"></div>
 
           </div>
 
@@ -50,8 +49,9 @@
               <li class="active"><a href="#/">Home</a></li>
               <li><a ng-href="#/item">Items</a></li>
               <li><a ng-href="#/products">Products</a></li>
-              <li ng-if="globals.currentUser == null"><a ng-href="#/login">Login</a></li>
-              <li ng-if="globals.currentUser != null"><a ng-href="#/profile">Profile</a></li>
+              <li ng-if="!isLoggedIn()"><a ng-href="#/login">Login</a></li>
+              <li ng-if="isLoggedIn()"><a ng-href="#/profile">Profile</a></li>
+              <li ng-if="isLoggedIn()"><a ng-click="logout()">Logout</a></li>
             </ul>
           </div>
         </div>
@@ -117,6 +117,8 @@
         <script src="static/js/jquery.fileupload-angular.js"></script>
 
         <script src="scripts/app.js"></script>
+        <script src="scripts/auth.js"></script>
+        <script src="scripts/controllers/nav.js"></script>
         <script src="scripts/controllers/main.js"></script>
         <script src="scripts/controllers/about.js"></script>
         <script src="scripts/controllers/products.js"></script>

@@ -7,7 +7,6 @@ var config = require('config');
 
 var passport = require('passport');
 var flash = require('connect-flash');
-var session = require('express-session');
 var cookieParser = require("cookie-parser");
 
 // Create the application.
@@ -21,29 +20,31 @@ app.use(bodyParser.json());
 app.use(cookieParser());
 app.use(methodOverride('X-HTTP-Method-Override'));
 
+app.use(require('express-session')({
+  secret: 'SpedishRocks',
+  resave: false,
+  saveUninitialized: false
+}));
+
+// required for passport
+app.use(passport.initialize());
+app.use(passport.session()); // persistent login sessions
+
+// pass passport for configuration
+require('./config/passport')(passport);
+
+app.use(flash()); // use connect-flash for flash messages stored in session
+
 // CORS Support
 app.use(function(req, res, next) {
-  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Origin', config.get('server.CORSOrigin'));
   res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
+  res.header('Access-Control-Allow-Credentials', true);
   res.header('Access-Control-Allow-Headers',
     'Origin, X-Requested-With, Content-Type, Accept, Authorization');
   next();
 });
 
-app.set('view engine', 'ejs'); // set up ejs for templating
-
-// pass passport for configuration
-require('./config/passport')(passport);
-
-// required for passport
-app.use(session({
-  secret: 'SpedishRocks!!!',
-  resave: false,
-  saveUninitialized: false
-})); // session secret
-app.use(passport.initialize());
-app.use(passport.session()); // persistent login sessions
-app.use(flash()); // use connect-flash for flash messages stored in session
 
 // Connect to MongoDB
 mongoose.connect(config.get('server.dbConfig.url'));
