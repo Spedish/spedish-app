@@ -6,7 +6,6 @@ var _ = require('lodash');
 var config = require('config');
 
 var passport = require('passport');
-var flash = require('connect-flash');
 var session = require('express-session');
 var cookieParser = require("cookie-parser");
 
@@ -30,8 +29,6 @@ app.use(function(req, res, next) {
   next();
 });
 
-app.set('view engine', 'ejs'); // set up ejs for templating
-
 // pass passport for configuration
 require('./config/passport')(passport);
 
@@ -43,7 +40,6 @@ app.use(session({
 })); // session secret
 app.use(passport.initialize());
 app.use(passport.session()); // persistent login sessions
-app.use(flash()); // use connect-flash for flash messages stored in session
 
 // Connect to MongoDB
 mongoose.connect(config.get('server.dbConfig.url'));
