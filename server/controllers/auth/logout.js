@@ -1,13 +1,13 @@
 module.exports = function(app, route, passport) {
 
-  app.post('/logout', function(req, res) {
-    req.logout();
-    return res.status(200).json({'action': 'logged out'});
-  });
+    app.get('/logout', function(req, res) {
+       req.logout();
+       res.status(200).json({status: 'bye'});
+    });
 
-  // Return middleware.
-  return function(req, res, next) {
-    next();
-  };
+    // Return middleware.
+    return function(req, res, next) {
+        next();
+    };
 
 };

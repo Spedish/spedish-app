@@ -8,39 +8,23 @@
  * Controller of the clientApp
  */
 angular.module('clientApp')
-  .controller('LoginCtrl', function($scope, $window, $location, Login,
-    FacebookLogin, AuthenticationService, FlashService, Restangular) {
+  .controller('LoginCtrl', function($scope, $location, AuthService) {
 
-    (function initController() {
-      // reset login status
-      AuthenticationService.ClearCredentials();
-    })();
+    $scope.error = false;
+    $scope.disabled = false;
 
-    // Basic login
-    $scope.basicLogin = function() {
-      $scope.dataLoading = true;
-
-      Login.post({
-        username: $scope.username,
-        password: $scope.password
-      }).then(handleSuccess, handleError);
+    $scope.login = function() {
+      AuthService.login($scope.loginForm.username, $scope.loginForm.password)
+        .then(function() {
+          $location.path('/');
+          $scope.disabled = false;
+          $scope.loginForm = {};
+        })
+        .catch(function() {
+          $scope.error = true;
+          $scope.errorMessage = 'Failed to log in';
+          $scope.disabled = false;
+          $scope.loginForm = {};
+        });
     };
-
-    // Facebook login
-    $scope.facebookLogin = function() {
-      // Need to implement later
-    };
-
-    // private functions
-    function handleSuccess(user) {
-      AuthenticationService.SetCredentials($scope.username, $scope.password,
-        user);
-      $location.path('/profile');
-    }
-
-    function handleError(res) {
-      FlashService.Error(res.data.message);
-      $scope.dataLoading = false;
-    }
-
   });

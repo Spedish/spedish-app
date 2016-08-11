@@ -23,9 +23,11 @@ angular
     'ui.sortable',
     'multipleSelect'
   ])
-  .config(function(ENV, $routeProvider, RestangularProvider) {
+  .config(function(ENV, $httpProvider, $routeProvider, RestangularProvider) {
 
     initConfig(ENV);
+
+    $httpProvider.defaults.withCredentials = true;
 
     RestangularProvider.setBaseUrl(g_config.baseUrl);
 
@@ -169,20 +171,3 @@ angular
   return UserRestangular.service('login');
 })
 
-// Provide the login factory
-.factory('Logout', function(UserRestangular) {
-  return UserRestangular.service('logout');
-})
-
-// Provide the facebook login factory
-.factory('FacebookLogin', function(UserRestangular) {
-  return UserRestangular.all('auth/facebook');
-});
-
-angular.module('clientApp')
-  .controller('navCtrl', function($scope, AuthenticationService, Logout) {
-    $scope.logout = function() {
-      Logout.post();
-      AuthenticationService.ClearCredentials();
-    }
-  });

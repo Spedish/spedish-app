@@ -1,9 +1,5 @@
 module.exports = function(app, route, passport) {
 
-  // =====================================
-  // SIGNUP ==============================
-  // =====================================
-
   app.post('/signup', function(req, res, next) {
     passport.authenticate('local-signup', function(err, user, info) {
       if (err) {
