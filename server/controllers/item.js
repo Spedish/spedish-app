@@ -27,24 +27,34 @@ module.exports = function(app, route, passport) {
         }
       })
     .post({
-        before: function(req, res) {
-          // If user not logged in then redirect to login
+        before: function(req, res, next) {
           if (!req.isAuthenticated()) {
-            res.redirect('/login');
+            console.error('Unauthenticated user attempted to create an item');
+            res.status(403).json({'error': 'no user currently logged in'});
+
+            return false;
           }
 
           // Assign uid
+          debugger;
           req.item._uid = req.user._id;
+
+          next();
         }
       })
     .put({
-        before: function(req, res) {
-          isResOwner(req, req.item);
+        before: function(req, res, next) {
+          if (!isResOwner(req, req.item)) {
+            res.status(403).json({'error': 'This user does not own current resource'});
+
+            return false;
+          } else {
+            next();
+          }
         }
       })
     .index({
         after: function(req, res, next) {
-          debugger;
           res.resource.item.forEach(function(item, idx, arr) {
             if (isResOwner(req, item))
               item._doc.canEdit = true;
@@ -57,8 +67,14 @@ module.exports = function(app, route, passport) {
         }
       })
     .delete({
-        before: function(req, res) {
-          isResOwner(req, req.item);
+        before: function(req, res, next) {
+          if (!isResOwner(req, req.item)) {
+            res.status(403).json({'error': 'This user does not own current resource'});
+
+            return false;
+          } else {
+            next();
+          }
         }
       })
 
