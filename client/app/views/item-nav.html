@@ -1,6 +1,6 @@
 <ul class="nav nav-tabs">
   <li role="presentation" ng-class="{active: viewItem}"><a ng-href="#/item/{{ item._id }}">View</a></li>
-  <li role="presentation" ng-class="{active: editItem}"><a ng-href="#/item/{{ item._id }}/edit">Edit</a></li>
-  <li role="presentation"><a ng-href="#/item/{{ item._id }}/orders">Orders</a></li>
+  <li role="presentation" ng-if="item.canEdit" ng-class="{active: editItem}"><a ng-href="#/item/{{ item._id }}/edit">Edit</a></li>
+  <li role="presentation" ng-if="item.canEdit"><a ng-href="#/item/{{ item._id }}/orders">Orders</a></li>
   <a class="btn btn-primary" href="#/item/{{ item._id }}/order">Order Now</a>
 </ul>

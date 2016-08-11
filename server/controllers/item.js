@@ -18,7 +18,6 @@ module.exports = function(app, route, passport) {
   Resource(app, '', route, app.models.item)
     .get({
         after: function(req, res, next) {
-          debugger;
           if (isResOwner(req, res))
             res.resource.item._doc.canEdit = true;
           else {
@@ -43,7 +42,20 @@ module.exports = function(app, route, passport) {
           isResOwner(req, req.item);
         }
       })
-    .index()
+    .index({
+        after: function(req, res, next) {
+          debugger;
+          res.resource.item.forEach(function(item, idx, arr) {
+            if (isResOwner(req, item))
+              item._doc.canEdit = true;
+            else {
+              item._doc.canEdit = false;
+            }
+          });
+
+          next();
+        }
+      })
     .delete({
         before: function(req, res) {
           isResOwner(req, req.item);

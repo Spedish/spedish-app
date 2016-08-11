@@ -10,7 +10,7 @@
             <td width="200px"><a ng-href="/#/item/{{ i._id }}">{{ i.title }}</a></td>
             <td width="400px">{{ i.description }}</td>
             <td>
-              <div class="button-group">
+              <div class="button-group" ng-if="i.canEdit">
                 <a ng-href="/#/item/{{ i._id }}/edit" class="btn btn-default"><span class="glyphicon glyphicon-edit" /></a>
                 <a ng-href="/#/item/{{ i._id }}/delete" class="btn btn-default"><span class="glyphicon glyphicon-remove-circle" /></a>
               </div>
