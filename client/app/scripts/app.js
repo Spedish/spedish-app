@@ -92,9 +92,6 @@ angular
         controller: 'LoginCtrl',
         controllerAs: 'login'
       })
-      .when('/logout', {
-        controller: 'LogoutCtrl',
-      })
       .when('/buyerSignup', {
         templateUrl: 'views/buyerSignup.html',
         controller: 'BuyerSignupCtrl',
@@ -174,20 +171,3 @@ angular
   return UserRestangular.service('login');
 })
 
-// Provide the login factory
-.factory('Logout', function(UserRestangular) {
-  return UserRestangular.service('logout');
-})
-
-// Provide the facebook login factory
-.factory('FacebookLogin', function(UserRestangular) {
-  return UserRestangular.all('auth/facebook');
-});
-
-angular.module('clientApp')
-  .controller('navCtrl', function($scope, AuthenticationService, Logout) {
-    $scope.logout = function() {
-      Logout.post();
-      AuthenticationService.ClearCredentials();
-    }
-  });

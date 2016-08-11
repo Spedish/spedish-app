@@ -8,7 +8,7 @@
  * Controller of the clientApp
  */
 angular.module('clientApp')
-  .controller('NavCtrl', function($scope, $location, AuthService) {
+  .controller('navCtrl', function($scope, $location, AuthService) {
 
     $scope.isLoggedIn = function() {
       return AuthService.isLoggedIn();
