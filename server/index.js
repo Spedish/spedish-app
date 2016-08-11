@@ -45,7 +45,6 @@ app.use(function(req, res, next) {
   next();
 });
 
-
 // Connect to MongoDB
 mongoose.connect(config.get('server.dbConfig.url'));
 mongoose.connection.on('error', console.error.bind(console, 'connection error:'));
