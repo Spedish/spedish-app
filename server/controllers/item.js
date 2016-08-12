@@ -1,8 +1,10 @@
 var Resource = require('resourcejs');
 
 function isResOwner(req, obj) {
-  if (!req.isAuthenticated())
+  if (!req.isAuthenticated()) {
+    console.log('user is not logged in');
     return false;
+  }
 
   // If we are checking for the resource owner, then the resource must
   // have an owner field
@@ -12,13 +14,46 @@ function isResOwner(req, obj) {
   return obj._uid == req.user._id;
 }
 
+// Because this is a sequence of steps, we chain it together
+// instead of using a sycnhronise library
+function isResOwnerResolveChained(req, res, next, objId, objType) {
+  if (!req.isAuthenticated()) {
+    res.status(403).json({'error': 'user not logged in'});
+
+    return false;
+  }
+
+  // Get the object
+  objType.findOne({_id: objId}, function(err, obj) {
+    if (err || !obj) {
+      res.status(404).json({'error': 'object being edited does not exist'}).end();
+
+      return false;
+    }
+
+    // Check that the object has an id
+    if (!obj._uid) {
+      res.status(500).json({'error': 'model error'}).end();
+
+      return false;
+    }
+
+    if (obj._uid == req.user._id) {
+      next();
+    } else {
+      res.status(403).json({'error': 'you do not own this resource'}).end();
+
+      return false;
+    }
+  });
+}
+
 module.exports = function(app, route, passport) {
   // Setup the controller for REST;
-  //Resource(app, '', route, app.models.item).rest()
   Resource(app, '', route, app.models.item)
     .get({
         after: function(req, res, next) {
-          if (isResOwner(req, res))
+          if (isResOwner(req, res.resource.item))
             res.resource.item._doc.canEdit = true;
           else {
             res.resource.item._doc.canEdit = false;
@@ -30,27 +65,21 @@ module.exports = function(app, route, passport) {
         before: function(req, res, next) {
           if (!req.isAuthenticated()) {
             console.error('Unauthenticated user attempted to create an item');
-            res.status(403).json({'error': 'no user currently logged in'});
+            res.status(403).json({'error': 'no user currently logged in'}).end();
 
             return false;
           }
 
           // Assign uid
           debugger;
-          req.item._uid = req.user._id;
+          req.body._uid = req.user.id;
 
           next();
         }
       })
     .put({
         before: function(req, res, next) {
-          if (!isResOwner(req, req.item)) {
-            res.status(403).json({'error': 'This user does not own current resource'});
-
-            return false;
-          } else {
-            next();
-          }
+          return isResOwnerResolveChained(req, res, next, req.params.itemId, app.models.item);
         }
       })
     .index({
@@ -68,13 +97,7 @@ module.exports = function(app, route, passport) {
       })
     .delete({
         before: function(req, res, next) {
-          if (!isResOwner(req, req.item)) {
-            res.status(403).json({'error': 'This user does not own current resource'});
-
-            return false;
-          } else {
-            next();
-          }
+          return isResOwnerResolveChained(req, res, next, req.params.itemId, app.models.item);
         }
       })
 
