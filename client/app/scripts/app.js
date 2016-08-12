@@ -55,7 +55,8 @@ angular
       .when('/create/item', {
         templateUrl: 'views/item-add.html',
         controller: 'ItemAddCtrl',
-        controllerAs: 'itemAdd'
+        controllerAs: 'itemAdd',
+        requireAuth: true
       })
       .when('/item/:id', {
         templateUrl: 'views/item-view.html',
@@ -65,17 +66,20 @@ angular
       .when('/item/:id/delete', {
         templateUrl: 'views/item-delete.html',
         controller: 'ItemDeleteCtrl',
-        controllerAs: 'itemDelete'
+        controllerAs: 'itemDelete',
+        requireAuth: true
       })
       .when('/item/:id/edit', {
         templateUrl: 'views/item-edit.html',
         controller: 'ItemEditCtrl',
-        controllerAs: 'itemEdit'
+        controllerAs: 'itemEdit',
+        requireAuth: true
       })
       .when('/item/:id/order', {
         templateUrl: 'views/order.html',
         controller: 'OrderCtrl',
-        controllerAs: 'order'
+        controllerAs: 'order',
+        requireAuth: true
       })
       .when('/order/:id', {
         templateUrl: 'views/order-view.html',
@@ -105,7 +109,8 @@ angular
       .when('/profile', {
         templateUrl: 'views/profile.html',
         controller: 'ProfileCtrl',
-        controllerAs: 'profile'
+        controllerAs: 'profile',
+        requireAuth: true
       })
       .otherwise({
         redirectTo: '/'
@@ -164,10 +169,5 @@ angular
 // Provide the signup factory
 .factory('Signup', function(UserRestangular) {
   return UserRestangular.service('signup');
-})
-
-// Provide the login factory
-.factory('Login', function(UserRestangular) {
-  return UserRestangular.service('login');
 })
 

@@ -62,8 +62,11 @@ angular.module('clientApp')
 angular.module('clientApp')
   .run(function($rootScope, $location, $route, AuthService) {
     $rootScope.$on('$routeChangeStart',
-      function(e, next, current) {
+      function(event, next, current) {
         AuthService.userSync();
+
+        if (next.$$route.requireAuth && !g_config.user)
+          $location.path('/login');
       });
   });
 
