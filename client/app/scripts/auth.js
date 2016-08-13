@@ -57,6 +57,14 @@ angular.module('clientApp')
           g_config.user = false;
         });
     };
+
+    this.getProfile = function() {
+      return $http.get(g_config.baseUrl + '/profile');
+    };
+
+    this.saveProfile = function(profile) {
+      return $http.post(g_config.baseUrl + '/profile', profile);
+    };
   });
 
 angular.module('clientApp')

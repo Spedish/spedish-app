@@ -1,18 +1,38 @@
 <h1>Hi {{user.username}}!</h1>
-<p>You're logged in!!</p>
+<h3 ng-if="user.isSeller">Congrats! You can sell stuff</h3>
+<h3 ng-if="!user.isSeller">You are not yet a seller</h3>
 
-<ul>
-  <li>ID: {{user._id}}</li>
-  <li>Username: {{user.username}}</li>
-  <li>Email: {{user.email}}</li>
-  <li>Password: {{user.password}}</li>
-  <li>Seller: {{user.isSeller}}</li>
-  <li>First Name: {{user.firstname}}</li>
-  <li>Last Name: {{user.lastname}}</li>
-  <li>Address: {{user.address}}</li>
-  <li>City: {{user.city}}</li>
-  <li>Zip Code: {{user.zip}}</li>
-  <li>Contact Number: {{user.contact}}</li>
-  <li>About: {{user.about}}</li>
-  <li>Auth Data: {{user.authdata}}</li>
-</ul>
+<div>
+  <form name="profile" id="profile">
+    <div>
+      <label>Email:</label>
+      <input type="text" ng-model="user.email" name="email" id="email" />
+    </div>
+    <div>
+      <label>First Name:</label>
+      <input type="text" ng-model="user.firstname" name="firstname" id="firstname" />
+    </div>
+    <div>
+      <label>Last Name:</label>
+      <input type="text" ng-model="user.lastname" name="lastname" id="lastname" />
+    </div>
+    <div>
+      <label>Address:</label>
+      <input type="text" ng-model="user.address" name="address" id="address" />
+    </div>
+    <div>
+      <label>City:</label>
+      <input type="text" ng-model="user.city" name="city" id="city" />
+    </div>
+    <div>
+      <label>Zip:</label>
+      <input type="text" ng-model="user.zip" name="zip" id="zip" />
+    </div>
+    <div>
+      <label>Contact:</label>
+      <input type="text" ng-model="user.contact" name="contact" id="contact" />
+    </div>
+
+    <input type="submit" ng-click="saveProfile()" value="Update" />
+  </form>
+</div>
