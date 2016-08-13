@@ -119,8 +119,23 @@
     <input type="text" ng-model="item.unit_price" id="price" />
   </div>
   <div>
-    <label>Inventory</label>
-    <input type="text" ng-model="item.inventory" id="inventory" />
+    <h4>Availability and schedule</h4>
+    <div>
+      <label>Inventory</label>
+      <input type="text" ng-model="item.inventory" id="inventory" />
+    </div>
+    <div>
+      <label>Prepare Time (mins)</label>
+      <input type="text" ng-model="item.lead_time" id="prepareTime" />
+    </div>
+    <div>
+      <label>Weekly Schedule</label>
+      <p ng-repeat="day in days">
+        <input ng-model="item.day_of_week[day.id]" ng-checked=false type="checkbox" />
+        {{day.day}}
+      </p>
+      <pre>{{item|json}}</pre>
+    </div>
   </div>
   <br />
   <div ng-if="addItem">

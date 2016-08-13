@@ -15,6 +15,16 @@ angular.module('clientApp')
     g_scope = $scope;
 
     $scope.item = {};
+    $scope.days=[{id:1, day: 'Monday'},{id:2, day: 'Tuesday'},{id:3, day: 'Wednesday'},{id:4, day: 'Thursday'}, {id:5, day: 'Friday'}, {id:6, day:'Saturday'}, {id:0, day:'Sunday'}];
+    $scope.item.day_of_week = {
+                                "1": false,
+                                "2": false,
+                                "3": false,
+                                "4": false,
+                                "5": false,
+                                "6": false,
+                                "0": false
+                              };
     $scope.addItem = true;
     $scope.saveItem = function() {
       Item.post($scope.item).then(function() {
