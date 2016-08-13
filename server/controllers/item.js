@@ -2,7 +2,6 @@ var Resource = require('resourcejs');
 
 function isResOwner(req, obj) {
   if (!req.isAuthenticated()) {
-    console.log('user is not logged in');
     return false;
   }
 
