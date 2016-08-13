@@ -71,7 +71,6 @@ module.exports = function(app, route, passport) {
           }
 
           // Assign uid
-          debugger;
           req.body._uid = req.user.id;
 
           next();
