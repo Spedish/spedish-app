@@ -10,7 +10,7 @@ var g_scope;
  * Controller of the clientApp
  */
 angular.module('clientApp')
-  .controller('ItemAddCtrl', function ($rootScope, $scope, Item, $location, $window) {
+  .controller('ItemAddCtrl', function ($rootScope, $scope, Item, $location, $window, AuthService) {
     g_scope = $scope;
 
     $scope.item = {};
@@ -20,13 +20,14 @@ angular.module('clientApp')
     $scope.mealOptions = ['Vegetarian', 'Vegan'];
 
     // Prepopulate the item with user profile information
-    if ($rootScope.globals && $rootScope.globals.currentUser) {
-      $scope.item.street = $rootScope.globals.currentUser.address;
-      $scope.item.city = $rootScope.globals.currentUser.city;
-      $scope.item.zip = $rootScope.globals.currentUser.zip;
-      $scope.item.contact_name = $rootScope.globals.currentUser.firstname + ' ' + $rootScope.globals.currentUser.lastname;
-      $scope.item.contact_number = $rootScope.globals.currentUser.contact;
-    }
+    AuthService.getProfile().then(function(data, status) {
+      data = data.data;
+      $scope.item.street = data.address;
+      $scope.item.city = data.city;
+      $scope.item.zip = data.zip;
+      $scope.item.contact_name = data.firstname + ' ' + data.lastname;
+      $scope.item.contact_number = data.contact;
+    });
 
     $scope.saveItem = function() {
       if ($scope.item.meal_options && ($scope.item.meal_options instanceof Array))
