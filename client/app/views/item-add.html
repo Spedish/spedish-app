@@ -134,6 +134,8 @@
         <input ng-model="item.day_of_week[day.id]" ng-checked=false type="checkbox" />
         {{day.day}}
       </p>
+      <p>Is it available all day? <input ng-model="item.pick_up_window.free_sell" ng-checked=false type="checkbox" />
+      </p>
       <pre>{{item|json}}</pre>
     </div>
   </div>
