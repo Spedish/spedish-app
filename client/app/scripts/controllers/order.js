@@ -15,6 +15,13 @@ angular.module('clientApp')
     $scope.meal_type = {};
     $scope.minTime = {};
     $scope.maxTime = {};
+    $scope.dateOpened = false;
+    $scope.format = "MMM-dd-yyyy";
+    $scope.showMeridian = true;
+    $scope.hstep = 1;
+    $scope.mstep = 15;
+    var dateTimeNow = new Date();
+    var dateInAWeek = (new Date(dateTimeNow)).setDate(dateTimeNow.getDate() + 7);
 
     Item.one($routeParams.id).get().then(function(item) {
       $scope.order.item_id = $scope.item._id;
@@ -29,52 +36,6 @@ angular.module('clientApp')
         });
       };
     });
-
-    $scope.enableDateTimePicker = function() {
-      $scope.showDateTimePicker = true;
-    }
-    $scope.setTimePicker = function() {
-      $scope.showDateTimePicker = true;
-      switch($scope.meal_type) {
-        case "lunch":
-          //var pickUpDateMoment = moment(pickUpDate);
-          var minTime = moment($scope.item.availability.pickup_window.lunch.start_time, 'h:mm');
-          var maxTime = moment($scope.item.availability.pickup_window.lunch.end_time, 'h:mm');
-          $scope.minTime = moment($scope.order.pick_up_date).set({
-            'hour': minTime.get('hour'),
-            'minute': minTime.get('minute'),
-            'second': minTime.get('second')
-          });
-          $scope.order.pick_up_date = moment($scope.minTime).toDate();
-          console.log("Lunch: set pick up time to min time");
-          $scope.maxTime = moment($scope.order.pick_up_date).set({
-            'hour': maxTime.get('hour'),
-            'minute': maxTime.get('minute'),
-            'second': maxTime.get('second')
-          });
-          break;
-        case "dinner":
-          var minTime = moment($scope.item.availability.pickup_window.dinner.start_time, 'h:mm');
-          var maxTime = moment($scope.item.availability.pickup_window.dinner.end_time, 'h:mm');
-          $scope.minTime = moment($scope.order.pick_up_date).set({
-            'hour': minTime.get('hour'),
-            'minute': minTime.get('minute'),
-            'second': minTime.get('second')
-          });
-          console.log("Dinner: set pick up time to min time");
-          //$scope.order.pick_up_date = moment($scope.minTime).toDate();
-          $scope.maxTime = moment($scope.order.pick_up_date).set({
-            'hour': maxTime.get('hour'),
-            'minute': maxTime.get('minute'),
-            'second': maxTime.get('second')
-          });
-        default:
-          break;
-      }
-    }
-
-    var dateTimeNow = new Date();
-    var dateInAWeek = (new Date(dateTimeNow)).setDate(dateTimeNow.getDate() + 7);
 
     // We only allow advance purchase for items within the next 7 days
     $scope.dateOptions = {
@@ -95,9 +56,46 @@ angular.module('clientApp')
       $scope.dateOpened = true;
     };
 
-    $scope.dateOpened = false;
-    $scope.format = "MMM-dd-yyyy";
-    $scope.showMeridian = true;
-    $scope.hstep = 1;
-    $scope.mstep = 15;
+    $scope.setTimePicker = function(setDefaultTime) {
+      $scope.showDateTimePicker = true;
+      switch($scope.meal_type) {
+        case "lunch":
+          //var pickUpDateMoment = moment(pickUpDate);
+          var minTime = moment($scope.item.availability.pickup_window.lunch.start_time, 'h:mm');
+          var maxTime = moment($scope.item.availability.pickup_window.lunch.end_time, 'h:mm');
+          $scope.minTime = moment($scope.order.pick_up_date).set({
+            'hour': minTime.get('hour'),
+            'minute': minTime.get('minute'),
+            'second': minTime.get('second')
+          });
+          if (setDefaultTime) {
+            $scope.order.pick_up_date = moment($scope.minTime).toDate();
+          }
+          $scope.maxTime = moment($scope.order.pick_up_date).set({
+            'hour': maxTime.get('hour'),
+            'minute': maxTime.get('minute'),
+            'second': maxTime.get('second')
+          });
+          break;
+        case "dinner":
+          var minTime = moment($scope.item.availability.pickup_window.dinner.start_time, 'h:mm');
+          var maxTime = moment($scope.item.availability.pickup_window.dinner.end_time, 'h:mm');
+          $scope.minTime = moment($scope.order.pick_up_date).set({
+            'hour': minTime.get('hour'),
+            'minute': minTime.get('minute'),
+            'second': minTime.get('second')
+          });
+          if (setDefaultTime) {
+            $scope.order.pick_up_date = moment($scope.minTime).toDate();
+          }
+          //$scope.order.pick_up_date = moment($scope.minTime).toDate();
+          $scope.maxTime = moment($scope.order.pick_up_date).set({
+            'hour': maxTime.get('hour'),
+            'minute': maxTime.get('minute'),
+            'second': maxTime.get('second')
+          });
+        default:
+          break;
+      }
+    }
   });
