@@ -18,6 +18,7 @@ angular.module('clientApp')
     $scope.categories = ['CatA', 'CatB'];
     $scope.mealOptions = ['Vegetarian', 'Vegan'];
 
+    $scope.preloadDone = true;
     $scope.editItem = true;
     $scope.item = {};
 

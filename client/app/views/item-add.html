@@ -1,5 +1,9 @@
 <div ng-module="clientApp">
 
+<div ng-if="!preloadDone">Reloading...</div>
+
+<div ng-if="preloadDone">
+
 <!-- Gallery uploader -->
 <div data-ng-controller="FileUploadCtrl">
 <form id="fileupload" ng-action="{{ options.url }}" method="POST" enctype="multipart/form-data" data-file-upload="options" data-ng-class="{'fileupload-processing': processing() || loadingFiles}">
@@ -35,7 +39,7 @@
     <input type="text" id="gid" name="gid" value="{{item._gallery._id}}" />
   </div>
   <div ng-if="addItem">
-    <input type="text" id="gid" name="gid"/>
+    <input type="text" id="gid" name="gid" value="{{item._gallery}}" />
   </div>
   <!-- The table listing the files available for upload/download -->
   <table id="uploaderTable" class="table table-striped files ng-cloak">
@@ -96,10 +100,10 @@
 
   <div class="dropzone noDisp" ui-sortable="dropzone" ng-model="dropzoneFields">Drag image here to delete</div>
 
-  <p id="savingOrder" class="noDisp">Saving new image order</p>
-  <p id="savingError" class="noDisp">Unable to re-order/remove image, please try again</p>
-  <p id="orderSaved" class="noDisp">New image order saved</p>
-  <p id="imageRemoved" class="noDisp">Image removed</p>
+  <p ng-if="saveOrder == 'start'" id="savingOrder">Saving new image order</p>
+  <p ng-if="saveOrder == 'done'" id="orderSaved">New image order saved</p>
+  <p ng-if="deleteImage == 'done'" id="imageRemoved">Image removed</p>
+  <p ng-if="(saveOrder == 'error') || (deleteImage == 'error')" id="savingError">Unable to re-order/remove image, please try again</p>
 </div>
 <br />
 
@@ -162,5 +166,5 @@
 
 </form>
 </div>
-
+</div>
 </div> <!-- For ng-module -->
