@@ -35,6 +35,9 @@ module.exports = function(config) {
       'bower_components/ng-module/ng-module.js',
       'bower_components/angular-bootstrap/ui-bootstrap-tpls.js',
       'bower_components/angular-ui-sortable/sortable.js',
+      'bower_components/angular-ui-bootstrap-datetimepicker/datetimepicker.js',
+      'bower_components/moment/moment.js',
+      'bower_components/angular-moment/angular-moment.js',
       'bower_components/angular-mocks/angular-mocks.js',
       // endbower
       'app/scripts/**/*.js',

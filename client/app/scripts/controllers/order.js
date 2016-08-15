@@ -11,6 +11,7 @@ angular.module('clientApp')
   .controller('OrderCtrl', function($scope, Item, Order, $routeParams,
     $location, $window) {
 
+    $scope.meal_type = {};
     $scope.item = Item.one($routeParams.id).get().$object;
 
     Item.one($routeParams.id).get().then(function(item) {
@@ -24,4 +25,43 @@ angular.module('clientApp')
         });
       };
     });
+
+    var dateTimeNow = new Date();
+    var dateInAWeek = (new Date(dateTimeNow)).setDate(dateTimeNow.getDate() + 7);
+    // var minTime = new Date();
+    // minTime.setHours (11);
+    // minTime.setMinutes(0);
+    // 
+    // var maxTime = new Date();
+    // maxTime.setHours (13);
+    // maxTime.setMinutes(0);
+    // We only allow advance purchase for items within the next 7 days
+    $scope.dateOptions = {
+      showWeeks: false,
+      startingDay: 0,
+      minDate: dateTimeNow,
+      maxDate: dateInAWeek
+      // min: minTime,
+      // max: maxTime
+    };
+
+
+    // Map day_of_week availability to calender
+    $scope.disabled = function(calendarDate, mode) {
+      return mode === 'day' && ( !$scope.item.availability.day_of_week[calendarDate.getDay()]);
+    };
+
+    $scope.open = function($event,opened) {
+      $event.preventDefault();
+      $event.stopPropagation();
+      $scope.dateOpened = true;
+    };
+
+    $scope.dateOpened = false;
+    $scope.format = "MMM-dd-yyyy";
+    $scope.showMeridian = true;
+
+    $scope.$watch("date", function(date) {
+      // read date value
+    }, true);
   });

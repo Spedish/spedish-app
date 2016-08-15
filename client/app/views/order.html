@@ -13,9 +13,40 @@
     <input type="text" ng-model="order.count" id="count" />
   </div>
   <div>
+    <label>Meal type:
+      <input type="radio" ng-model="meal_type" value="lunch"> Lunch
+      <input type="radio" ng-model="meal_type" value="dinner"> Dinner
+    </label>
+  </div>
+  <div>
+    <label>Pick Up Time: </label>
+    <datetimepicker
+    hour-step="1"
+    minute-step="15"
+    ng-model="order.pick_up_date"
+    show-meridian="showMeridian"
+    date-format="{{format}}"
+    date-options="dateOptions"
+    date-disabled="disabled(date, mode)"
+    datepicker-append-to-body="false"
+    readonly-date="false"
+    disabled-date="false"
+    hidden-time="false"
+    hidden-date="false"
+    name="datetimepicker"
+    show-spinners="true"
+    readonly-time="false"
+    date-opened="dateOpened"
+    show-button-bar="false"
+    >
+    <!-- Use date-ng-click="open($event, opened)" to override date ng-click -->
+    </datetimepicker>
+  <div>
     <label>Note</label>
     <input type="text" ng-model="order.note" id="note" />
   </div>
+  <pre>{{item|json}}</pre>
+  <pre>{{order|json}}</pre>
   <input type="submit" ng-click="saveOrder()" value="Order Now" />
 </form>
 </div>
