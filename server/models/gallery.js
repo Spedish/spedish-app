@@ -5,6 +5,10 @@ var GallerySchema = new mongoose.Schema({
     type: Object,
     required: false
   },
+  _uid: {
+    type: String,
+    require: true
+  }
 });
 
 // Export the model.

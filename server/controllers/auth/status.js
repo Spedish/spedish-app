@@ -4,7 +4,10 @@ module.exports = function(app, route, passport) {
     if (!req.isAuthenticated())
       res.status(200).json({status: false});
     else
-      res.status(200).json({status: true});
+      res.status(200).json({
+        status: true,
+        isSeller: req.user.isSeller
+      });
 
     next();
   });

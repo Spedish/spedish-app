@@ -6,5 +6,6 @@ module.exports = {
   'login': require('./controllers/auth/login'),
   'logout': require('./controllers/auth/logout'),
   'user_status': require('./controllers/auth/status'),
+  'profile': require('./controllers/auth/profile'),
   'gallery': require('./controllers/gallery')
 };
