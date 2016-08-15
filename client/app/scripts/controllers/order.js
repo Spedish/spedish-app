@@ -11,8 +11,8 @@ angular.module('clientApp')
   .controller('OrderCtrl', function($scope, Item, Order, $routeParams,
     $location, $window, moment) {
 
-    $scope.meal_type = {};
     $scope.item = Item.one($routeParams.id).get().$object;
+    $scope.meal_type = {};
     $scope.minTime = {};
     $scope.maxTime = {};
 
@@ -30,18 +30,44 @@ angular.module('clientApp')
       };
     });
 
-    $scope.setTimePicker = function(value) {
-      switch(value) {
+    $scope.enableDateTimePicker = function() {
+      $scope.showDateTimePicker = true;
+    }
+    $scope.setTimePicker = function() {
+      $scope.showDateTimePicker = true;
+      switch($scope.meal_type) {
         case "lunch":
-          $scope.minTime = moment($scope.item.availability.pickup_window.lunch.start_time, 'h:mm');
-          $scope.maxTime = moment($scope.item.availability.pickup_window.lunch.end_time, 'h:mm');
-          $scope.showDateTimePicker = true;
+          //var pickUpDateMoment = moment(pickUpDate);
+          var minTime = moment($scope.item.availability.pickup_window.lunch.start_time, 'h:mm');
+          var maxTime = moment($scope.item.availability.pickup_window.lunch.end_time, 'h:mm');
+          $scope.minTime = moment($scope.order.pick_up_date).set({
+            'hour': minTime.get('hour'),
+            'minute': minTime.get('minute'),
+            'second': minTime.get('second')
+          });
+          $scope.order.pick_up_date = moment($scope.minTime).toDate();
+          console.log("Lunch: set pick up time to min time");
+          $scope.maxTime = moment($scope.order.pick_up_date).set({
+            'hour': maxTime.get('hour'),
+            'minute': maxTime.get('minute'),
+            'second': maxTime.get('second')
+          });
           break;
         case "dinner":
-          $scope.minTime = moment($scope.item.availability.pickup_window.dinner.start_time, 'h:mm');
-          $scope.maxTime = moment($scope.item.availability.pickup_window.dinner.end_time, 'h:mm');
-          $scope.showDateTimePicker = true;
-          break;
+          var minTime = moment($scope.item.availability.pickup_window.dinner.start_time, 'h:mm');
+          var maxTime = moment($scope.item.availability.pickup_window.dinner.end_time, 'h:mm');
+          $scope.minTime = moment($scope.order.pick_up_date).set({
+            'hour': minTime.get('hour'),
+            'minute': minTime.get('minute'),
+            'second': minTime.get('second')
+          });
+          console.log("Dinner: set pick up time to min time");
+          //$scope.order.pick_up_date = moment($scope.minTime).toDate();
+          $scope.maxTime = moment($scope.order.pick_up_date).set({
+            'hour': maxTime.get('hour'),
+            'minute': maxTime.get('minute'),
+            'second': maxTime.get('second')
+          });
         default:
           break;
       }
