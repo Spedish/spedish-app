@@ -4,6 +4,7 @@ var formidable  = require('formidable');
 var nodeStatic  = require('node-static');
 var imageMagick = require('imagemagick');
 var randStr     = require('randomstring');
+var auth        = require('../lib/auth');
 
 var options    = {
   tmpDir: '/tmp/t',
@@ -186,7 +187,7 @@ UploadHandler.prototype.post = function (app, req, res) {
         });
       };
 
-      // If there is a gallery id then use it, otherwise we should create a new one
+      // There must be a gallery ID at this point
       if (gid != undefined) {
         // Check gallery is valid first
         app.models.gallery.find({_id: gid}, function(err, gs) {
@@ -195,6 +196,19 @@ UploadHandler.prototype.post = function (app, req, res) {
             handler.req.connection.destroy();
           } else {
             console.log('Successfully retrieved gallery with gid ' + gid);
+
+            /*
+             * Ideally we want to check the below as well, however the upload UI is using
+             * jquery still which will not set cookies on CORS :(
+             *
+             * The other interfaces are fine since they are coming through AngularJS
+             *
+            if(!auth.isResOwner(req, gs[0])) {
+              res.status(403).json({error: 'This user does not own this gallery'}).end();
+            } else {
+              processFiles(gs[0]);
+            }
+            */
             processFiles(gs[0]);
           }
         });
@@ -216,7 +230,7 @@ handleResult = function (result, req, res, gid, order) {
   res.end(JSON.stringify(result));
 };
 
-module.exports = function(app, route) {
+module.exports = function(app, route, passport) {
 
   app.post('/'+route, function(req, res) {
     handler = new UploadHandler(req, res, handleResult);
@@ -240,10 +254,16 @@ module.exports = function(app, route) {
   });
 
   app.put('/'+route, function(req, res) {
+    if (!req.isAuthenticated()) {
+      res.status(403).json({'error': 'user not logged in'});
+
+      return false;
+    }
 
     var g = new app.models.gallery();
+    g._uid = req.user.id;
     g.save().then(function(g) {
-      console.log('Created gallery with id ' + g.id);
+      console.log('Created gallery with id ' + g.id + 'for uid ' + g._uid);
 
       gid = g.id;
 
@@ -274,18 +294,24 @@ module.exports = function(app, route) {
       } else {
         console.log('Successfully retrieved gallery with gid ' + gid);
 
-        // Update the ordering for the gallery
         var g = gs[0];
-        console.log(req.body.order);
-        g.update({order: req.body.order}).then(function() {
-          res.writeHead(200, {
-              'Content-Type': req.headers.accept
-                  .indexOf('application/json') !== -1 ?
-                          'application/json' : 'text/plain'
-          });
 
-          res.end(JSON.stringify({order: req.body.order}));
-        });
+        // Does the current user own this resource?
+        if(!auth.isResOwner(req, g)) {
+          res.status(403).json({error: 'This user does not own this gallery'}).end();
+        } else {
+          // Update the ordering for the gallery
+          console.log(req.body.order);
+          g.update({order: req.body.order}).then(function() {
+            res.writeHead(200, {
+                'Content-Type': req.headers.accept
+                    .indexOf('application/json') !== -1 ?
+                            'application/json' : 'text/plain'
+            });
+
+            res.end(JSON.stringify({order: req.body.order}));
+          });
+        }
       }
     });
   });
@@ -300,31 +326,34 @@ module.exports = function(app, route) {
         console.error('Retrieving gallery failed');
         handler.req.connection.destroy();
       } else {
-        // Delete the image from the order list (which will stop it from appearing)
-        console.log('Successfully retrieved gallery with gid ' + gid);
-
-        // Update the ordering for the gallery
         var g = gs[0];
-        var order = g.order;
-        var idx = order.indexOf(img);
 
-        if (idx >= 0) {
-          order.splice(idx, 1);
-
-          console.log('Removed image: ' + img + ' remaining: ' + order);
-
-          g.update({order: order}).then(function() {
-            res.writeHead(200, {
-                'Content-Type': req.headers.accept
-                    .indexOf('application/json') !== -1 ?
-                            'application/json' : 'text/plain'
-            });
-
-            res.end(JSON.stringify({order: order}));
-          });
+        if(!auth.isResOwner(req, g)) {
+          res.status(403).json({error: 'This user does not own this gallery'}).end();
         } else {
-          res.statusCode = 404;
-          res.end();
+          // Delete the image from the order list (which will stop it from appearing)
+          console.log('Successfully retrieved gallery with gid ' + gid);
+
+          var order = g.order;
+          var idx = order.indexOf(img);
+
+          if (idx >= 0) {
+            order.splice(idx, 1);
+
+            console.log('Removed image: ' + img + ' remaining: ' + order);
+
+            g.update({order: order}).then(function() {
+              res.writeHead(200, {
+                  'Content-Type': req.headers.accept
+                      .indexOf('application/json') !== -1 ?
+                              'application/json' : 'text/plain'
+              });
+
+              res.end(JSON.stringify({order: order}));
+            });
+          } else {
+            res.status(404).end();
+          }
         }
       }
     });
