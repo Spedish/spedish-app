@@ -31,16 +31,24 @@
     datepicker-append-to-body="false"
     readonly-date="false"
     disabled-date="false"
-    hidden-time="false"
+    hidden-time="true"
     hidden-date="false"
     name="datetimepicker"
     show-spinners="true"
-    readonly-time="false"
+    readonly-time="true"
     date-opened="dateOpened"
     show-button-bar="false"
     >
     <!-- Use date-ng-click="open($event, opened)" to override date ng-click -->
     </datetimepicker>
+    <div uib-timepicker
+    ng-model="order.pick_up_date"
+    ng-change="changed()" hour-step="hstep"
+    minute-step="mstep"
+    show-meridian="showMeridian"
+    min = "minTime"
+    max = "maxTime">
+    </div>
   <div>
     <label>Note</label>
     <input type="text" ng-model="order.note" id="note" />
