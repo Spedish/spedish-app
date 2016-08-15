@@ -23,7 +23,8 @@ angular
     'blueimp.fileupload',
     'ui.bootstrap',
     'ui.sortable',
-    'ui.bootstrap.datetimepicker'
+    'ui.bootstrap.datetimepicker',
+    'angularMoment'
   ])
   .config(function(ENV, $routeProvider, RestangularProvider) {
 
