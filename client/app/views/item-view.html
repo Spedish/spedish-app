@@ -1,5 +1,8 @@
 <ng-include src="'views/item-nav.html'" />
 
+<h4>Can be edited by this user? {{item.canEdit}}</h4>
+<br />
+
 <!-- Image carousel -->
 <div id="gallery" ng-controller="CarouselCtrl">
   <div style="height: 500px; width: 888px">
@@ -12,9 +15,11 @@
 </div>
 
 <div>
-  <h3>{{ item.title }}</h3>
+  <h2>{{ item.title }}</h2>
+  <h3>Category: {{ item.category }}</h3>
   <p>Description: {{ item.description }}</p>
   <p>Price/Inventory: ${{ item.unit_price }} @ {{ item.inventory }}</p>
+  <p>Options: {{ item.meal_options }}</p>
   <br />
   <p>Gallery ID: {{ item._gallery._id }}</p>
   <p>Image Order: {{ item._gallery.order }}</p>

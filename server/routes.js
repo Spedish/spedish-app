@@ -4,10 +4,9 @@ module.exports = {
   'signup': require('./controllers/auth/signup'),
   'order': require('./controllers/order'),
   'login': require('./controllers/auth/login'),
-  'profile': require('./controllers/auth/profile'),
-  '': require('./controllers/auth/home'),
   'logout': require('./controllers/auth/logout'),
-  'facebook': require('./controllers/auth/facebook'),
-  'gallery': require('./controllers/gallery'),
-  'availability': require('./controllers/availability')
+  'availability': require('./controllers/availability'),
+  'user_status': require('./controllers/auth/status'),
+  'profile': require('./controllers/auth/profile'),
+  'gallery': require('./controllers/gallery')
 };

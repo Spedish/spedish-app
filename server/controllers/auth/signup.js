@@ -1,24 +1,24 @@
 module.exports = function(app, route, passport) {
 
-    // =====================================
-    // SIGNUP ==============================
-    // =====================================
-    // show the signup form
-    app.get('/signup', function(req, res) {
-        // render the page and pass in any flash data if it exists
-        res.render('signup.ejs', { message: req.flash('signupMessage') });
-    });
+  app.post('/signup', function(req, res, next) {
+    passport.authenticate('local-signup', function(err, user, info) {
+      if (err) {
+        return res.status(500).json({
+          message: "Create user failed."
+        });
+      }
+      if (!user) {
+        return res.status(409).json({ // 409 Conflict
+          message: info.message
+        });
+      }
+      return res.status(201).json(user);
+    })(req, res, next);
+  });
 
-    // process the signup form
-    app.post('/signup', passport.authenticate('local-signup', {
-        successRedirect: '/profile', // redirect to the secure profile section
-        failureRedirect: '/signup', // redirect back to the signup page if there is an error
-        failureFlash: true // allow flash messages
-    }));
-
-    // Return middleware.
-    return function(req, res, next) {
-        next();
-    };
+  // Return middleware.
+  return function(req, res, next) {
+    next();
+  };
 
 };

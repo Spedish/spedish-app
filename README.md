@@ -1,4 +1,5 @@
 # Spedish Webapp
+DO NOT install with sudo.
 ## Backend  
 - NodeJS  
 ```
@@ -40,6 +41,7 @@ npm install -g generator-angular
 npm install -g generator-karma
 yo angular
 gem install compass
+bower install
 ```
 ### Run
 ```

@@ -1,0 +1,38 @@
+<h1>Hi {{user.username}}!</h1>
+<h3 ng-if="user.isSeller">Congrats! You can sell stuff</h3>
+<h3 ng-if="!user.isSeller">You are not yet a seller</h3>
+
+<div>
+  <form name="profile" id="profile">
+    <div>
+      <label>Email:</label>
+      <input type="text" ng-model="user.email" name="email" id="email" />
+    </div>
+    <div>
+      <label>First Name:</label>
+      <input type="text" ng-model="user.firstname" name="firstname" id="firstname" />
+    </div>
+    <div>
+      <label>Last Name:</label>
+      <input type="text" ng-model="user.lastname" name="lastname" id="lastname" />
+    </div>
+    <div>
+      <label>Address:</label>
+      <input type="text" ng-model="user.address" name="address" id="address" />
+    </div>
+    <div>
+      <label>City:</label>
+      <input type="text" ng-model="user.city" name="city" id="city" />
+    </div>
+    <div>
+      <label>Zip:</label>
+      <input type="text" ng-model="user.zip" name="zip" id="zip" />
+    </div>
+    <div>
+      <label>Contact:</label>
+      <input type="text" ng-model="user.contact" name="contact" id="contact" />
+    </div>
+
+    <input type="submit" ng-click="saveProfile()" value="Update" />
+  </form>
+</div>

@@ -15,10 +15,16 @@ angular.module('clientApp')
 
     var galleryUrl = g_config.baseUrl + '/gallery';
 
+    $scope.categories = ['CatA', 'CatB'];
+    $scope.mealOptions = ['Vegetarian', 'Vegan'];
+
+    $scope.preloadDone = true;
     $scope.editItem = true;
     $scope.item = {};
 
     Item.one($routeParams.id).get().then(function(item) {
+      item.meal_options = item.meal_options.split(',');
+      item.category = item.category.split(',');
       $scope.item = item;
 
       // Load the gallery viewer
@@ -31,6 +37,9 @@ angular.module('clientApp')
       });
 
       $scope.saveItem = function() {
+        $scope.item.meal_options = $scope.item.meal_options.join();
+        $scope.item.category = $scope.item.category.join();
+
         $scope.item.save().then(function() {
           $window.alert('Updated');
           $location.path('/item/' + $routeParams.id);

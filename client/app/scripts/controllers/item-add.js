@@ -1,6 +1,5 @@
 'use strict';
 
-//var galleryUrl = app.config.baseUrl + '/gallery'; /* /'//54.183.97.63:3000/gallery/'; */
 var g_scope;
 
 /**
@@ -11,9 +10,10 @@ var g_scope;
  * Controller of the clientApp
  */
 angular.module('clientApp')
-  .controller('ItemAddCtrl', function ($scope, Item, $location, $window) {
+  .controller('ItemAddCtrl', function ($rootScope, $scope, Item, $location, $window, AuthService, GalleryService) {
     g_scope = $scope;
 
+    $scope.preloadDone = false;
     $scope.item = {};
     $scope.days=[{id:1, day: 'Monday'},{id:2, day: 'Tuesday'},{id:3, day: 'Wednesday'},{id:4, day: 'Thursday'}, {id:5, day: 'Friday'}, {id:6, day:'Saturday'}, {id:0, day:'Sunday'}];
     $scope.item.day_of_week = {
@@ -26,7 +26,32 @@ angular.module('clientApp')
                                 "0": false
                               };
     $scope.addItem = true;
+
+    GalleryService.createGID()
+      .then(function(data) {
+        $scope.item._gallery = data.data.gid;
+        $scope.preloadDone = true;
+      });
+
+    $scope.categories = ['CatA', 'CatB'];
+    $scope.mealOptions = ['Vegetarian', 'Vegan'];
+
+    // Prepopulate the item with user profile information
+    AuthService.getProfile().then(function(data, status) {
+      data = data.data;
+      $scope.item.street = data.address;
+      $scope.item.city = data.city;
+      $scope.item.zip = data.zip;
+      $scope.item.contact_name = data.firstname + ' ' + data.lastname;
+      $scope.item.contact_number = data.contact;
+    });
+
     $scope.saveItem = function() {
+      if ($scope.item.meal_options && ($scope.item.meal_options instanceof Array))
+        $scope.item.meal_options = $scope.item.meal_options.join();
+      if ($scope.item.category && ($scope.item.category instanceof Array))
+        $scope.item.category = $scope.item.category.join();
+
       Item.post($scope.item).then(function() {
         $window.alert('Item added');
         $location.path('/item');
@@ -57,38 +82,6 @@ angular.module('clientApp')
           // resolve
           sequentialUploads: true,
           limitConcurrentUploads: 1,
-
-          // Request for a gallery id if none exists
-          submit: function() {
-            var elItemGid = $('#item_gid');
-            var elGid = $('#gid');
-
-            // Check if the item model already have gid set then we
-            // simply copy it over
-            if (elItemGid.val())
-            {
-              elGid.val(elItemGid.val());
-            }
-            // Otherwise we need to see if this is the first upload,
-            // in which case we need to request for a gallery id
-            else if (!elGid.val()) {
-              // Get a new gid
-              $.ajax({
-                dataType: 'json',
-                method: 'PUT',
-                url: galleryUrl,
-                async: false
-              }).done(function(res) {
-                elGid.val(res.gid);
-                elItemGid.val(res.gid);
-                elItemGid.trigger('input');
-                return true;
-              }).fail(function() {
-                console.error('Error creating gallery');
-                return false;
-              });
-            }
-          },
 
           // Overriding the default Done handler to setup gallery viewer
           done: function(e, data) {
@@ -144,10 +137,12 @@ angular.module('clientApp')
     }
   ])
 
-  .controller('SortableCtrl', function($scope) {
+  .controller('SortableCtrl', function($scope, GalleryService) {
 
     var galleryUrl = g_config.baseUrl + '/gallery/';
 
+    $scope.saveOrder = 'none';
+    $scope.deleteImage = 'none';
     $scope.dropzone = {}; // A default control will do fine
     $scope.dropzoneFields = [];
 
@@ -187,20 +182,13 @@ angular.module('clientApp')
           $('#savingOrder').show();
 
           if (gid) {
-            $.ajax({
-              dataType: 'json',
-              method: 'PUT',
-              url: galleryUrl + gid,
-              data: { order: images }
-            }).done(function() {
-              $('#savingOrder').hide();
-              $('#orderSaved').show();
-              console.log('Updated ordering');
-            }).fail(function() {
-              $('#savingOrder').hide();
-              $('#savingError').show();
-              console.error('Unable to update ordering');
-            });
+            $scope.saveOrder = 'start';
+            GalleryService.saveOrder(gid, images)
+              .then(function() {
+                $scope.saveOrder = 'done';
+              }, function(){
+                $scope.saveOrder = 'error';
+              });
           }
         } else if (ui.item.sortable.droptarget[0].classList[0] == 'dropzone') {
           var val = $scope.dropzoneFields[0];
@@ -209,19 +197,15 @@ angular.module('clientApp')
 
           f = val.substring(val.lastIndexOf('/') + 1);
           f = f.replace('thumbnail_', '');
-          console.log('Deleting ' + val);
+          console.log('Deleting ' + f);
 
-          $.ajax({
-            dataType: 'json',
-            method: 'DELETE',
-            url: galleryUrl + gid + '/' + f,
-          }).done(function() {
-            console.log('Image removed');
-            $('#imageRemoved').show();
-          }).fail(function() {
-            console.error('Unable to remove image');
-            $('#savingError').show();
-          });
+          $scope.deleteImage = 'start';
+          GalleryService.deleteImage(gid, f)
+            .then(function() {
+              $scope.deleteImage = 'done';
+            }, function() {
+              $scope.deleteImage = 'error';
+            });
         }
       }
     };

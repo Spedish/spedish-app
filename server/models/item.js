@@ -34,10 +34,76 @@ var itemSchema = new mongoose.Schema({
   create_date: {
     type: Date
   },
+  street: {
+    type: String,
+    required: true
+  },
+  city: {
+    type: String,
+    required: true
+  },
+  zip: {
+    type: String,
+    required: true
+  },
+  contact_name: {
+    type: String,
+    required: true
+  },
+  contact_number: {
+    type: String,
+    required: true
+  },
+  category: {
+    type: String,
+    required: false,
+    validate: {
+      validator: function(v) {
+        var validCategories = ['CatA', 'CatB'];
+
+        if (!v)
+          return true;
+
+        var c = v.split(',');
+        c.forEach(function(cat, idx, arr) {
+          if (validCategories.indexOf(cat) <= -1)
+            return false;
+        });
+
+        return true;
+      },
+      message: '{VALUE} contains invalid category'
+    }
+  },
+  meal_options: {
+    type: String,
+    required: false,
+    validate: {
+      validator: function(v) {
+        var validOptions = ['Vegetarian', 'Vegan'];
+
+        if (!v)
+          return true;
+
+        var o = v.split(',');
+        o.forEach(function(opt, idx, arr) {
+          if (validOptions.indexOf(opt) <= -1)
+            return false;
+        });
+
+        return true;
+      },
+      message: '{VALUE} contains invalid option'
+    }
+  },
   _gallery: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'gallery',
     required: false
+  },
+  _uid: {
+    type: String,
+    required: true
   }
 });
 

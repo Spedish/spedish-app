@@ -4,6 +4,7 @@ node_modules/
 
 # Auto generated config file #
 client/app/scripts/config.js
+client/app/scripts/helper.js
 
 # VIM stuff #
 *.swp

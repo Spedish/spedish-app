@@ -1,30 +1,45 @@
-module.exports = function(app, route, passport) {
+module.exports = function(app, route, passport, User) {
 
-    // =====================================
-    // PROFILE SECTION =====================
-    // =====================================
-    // we will want this protected so you have to be logged in to visit
-    // we will use route middleware to verify this (the isLoggedIn function)
-    app.get('/profile', isLoggedIn, function(req, res) {
-        res.render('profile.ejs', {
-            user : req.user // get the user out of session and pass to template
-        });
-    });
+  app.get('/profile', function(req, res, next) {
+    if (!req.isAuthenticated()) {
+      res.status(403).json({error: 'no logged in user'});
+    } else {
+      res.status(200).json({
+        username: req.user.username,
+        email: req.user.email,
+        firstname: req.user.firstname,
+        lastname: req.user.lastname,
+        address: req.user.address,
+        city: req.user.city,
+        zip: req.user.zip,
+        contact: req.user.contact,
+        isSeller: req.user.isSeller
+      });
+    }
 
-    // Return middleware.
-    return function(req, res, next) {
+    next();
+  });
+
+  app.post('/profile', function(req, res, next) {
+    if (!req.isAuthenticated()) {
+      res.status(403).json({error: 'no logged in user'});
+
+      next();
+    } else {
+      req.user.update(req.body, function(err, user) {
+        if (!err)
+          res.status(200).json({status: 'updated'});
+        else
+          res.status(500).json({error: 'unable to update'});
+
         next();
-    };
+      });
+    }
+  });
+
+  // Return middleware.
+  return function(req, res, next) {
+    next();
+  };
 
 };
-
-// route middleware to make sure a user is logged in
-function isLoggedIn(req, res, next) {
-
-    // if user is authenticated in the session, carry on
-    if (req.isAuthenticated())
-        return next();
-
-    // if they aren't redirect them to the home page
-    res.redirect('/');
-}
