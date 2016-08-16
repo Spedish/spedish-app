@@ -173,6 +173,36 @@
     <br />
     <multiple-autocomplete ng-model="item.category" suggestions-arr="categories" />
   </div>
+  <div>
+    <label>Street Address</label>
+    <input type="text" ng-model="item.street" id="street" />
+  </div>
+  <div>
+    <label>City</label>
+    <input type="text" ng-model="item.city" id="city" />
+  </div>
+  <div>
+    <label>Zip</label>
+    <input type="text" ng-model="item.zip" id="zip" />
+  </div>
+  <div>
+    <label>Contact Name</label>
+    <input type="text" ng-model="item.contact_name" id="contact_name" />
+  </div>
+  <div>
+    <label>Contact Number</label>
+    <input type="text" ng-model="item.contact_number" id="contact_number" />
+  </div>
+  <div>
+    <label>Special Options</label>
+    <br />
+    <multiple-autocomplete ng-model="item.meal_options" suggestions-arr="mealOptions" />
+  </div>
+  <div>
+    <label>Category</label>
+    <br />
+    <multiple-autocomplete ng-model="item.category" suggestions-arr="categories" />
+  </div>
   <br />
   <div ng-if="addItem">
     <input type="text" ng-model="item._gallery" id="item_gid" name="gid"/>

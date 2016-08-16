@@ -22,6 +22,12 @@ npm install -g bower
 ```
 npm install
 ```
+### Install imagemagick (manage photos)
+```
+brew install imagemagick
+mkdir /tmp/gallery/
+mkdir /tmp/t/
+```
 
 ### Run
 1. Start MongoDB
