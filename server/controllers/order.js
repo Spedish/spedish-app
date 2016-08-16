@@ -5,8 +5,8 @@ module.exports = function(app, route) {
   var Item = app.models.item;
 
   var checkAvailability = function(item, order) {
-    var pickUpDate = moment(order.pick_up_date, '"YYYY-MM-DD HH:mm"');
-    var currentDateTime = moment();
+    var pickUpDate = moment(order.pick_up_date, '"YYYY-MM-DDTHH:mm:ss.SSSSZ"').utc();
+    var currentDateTime = moment().utc();
     var pickUpTime = moment(pickUpDate);
     pickUpTime.set('year', currentDateTime.get('year'))
               .set('month', currentDateTime.get('month'))
@@ -15,10 +15,10 @@ module.exports = function(app, route) {
 
     var checkPickUpWindow = function(pickUpTime) {
       //TODO: Need to check status of lunch and dinner window
-      var lunchWindowStartTime = moment(item.availability.pickup_window.lunch.start_time, 'h:mm');
-      var lunchWindowEndTime = moment(item.availability.pickup_window.lunch.end_time, 'h:mm');
-      var dinnerWindowStartTime = moment(item.availability.pickup_window.dinner.start_time, 'h:mm');
-      var dinnerWindowEndTime = moment(item.availability.pickup_window.dinner.end_time, 'h:mm');
+      var lunchWindowStartTime = moment(item.availability.pickup_window.lunch.start_time, 'HH:mm:ss.SSSSZ').utc();
+      var lunchWindowEndTime = moment(item.availability.pickup_window.lunch.end_time, 'HH:mm:ss.SSSSZ').utc();
+      var dinnerWindowStartTime = moment(item.availability.pickup_window.dinner.start_time, 'HH:mm:ss.SSSSZ').utc();
+      var dinnerWindowEndTime = moment(item.availability.pickup_window.dinner.end_time, 'HH:mm:ss.SSSSZ').utc();
       var isBetweenLunchHours = item.availability.pickup_window.lunch.status?
         pickUpTime.isBetween(lunchWindowStartTime, lunchWindowEndTime, null, '[]'): false
       var isBetweenDinnerHours = item.availability.pickup_window.dinner.status?
