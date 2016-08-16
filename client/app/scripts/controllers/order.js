@@ -61,12 +61,13 @@ angular.module('clientApp')
       switch($scope.meal_type) {
         case "lunch":
           //var pickUpDateMoment = moment(pickUpDate);
-          var minTime = moment($scope.item.availability.pickup_window.lunch.start_time, 'h:mm');
-          var maxTime = moment($scope.item.availability.pickup_window.lunch.end_time, 'h:mm');
+          var minTime = moment($scope.item.availability.pickup_window.lunch.start_time, 'HH:mm:ss.SSSSZ');
+          var maxTime = moment($scope.item.availability.pickup_window.lunch.end_time, 'HH:mm:ss.SSSSZ');
           $scope.minTime = moment($scope.order.pick_up_date).set({
             'hour': minTime.get('hour'),
             'minute': minTime.get('minute'),
-            'second': minTime.get('second')
+            'second': minTime.get('second'),
+            'millisecond': minTime.get('millisecond')
           });
           if (setDefaultTime) {
             $scope.order.pick_up_date = moment($scope.minTime).toDate();
@@ -74,16 +75,18 @@ angular.module('clientApp')
           $scope.maxTime = moment($scope.order.pick_up_date).set({
             'hour': maxTime.get('hour'),
             'minute': maxTime.get('minute'),
-            'second': maxTime.get('second')
+            'second': maxTime.get('second'),
+            'millisecond': minTime.get('millisecond')
           });
           break;
         case "dinner":
-          var minTime = moment($scope.item.availability.pickup_window.dinner.start_time, 'h:mm');
-          var maxTime = moment($scope.item.availability.pickup_window.dinner.end_time, 'h:mm');
+          var minTime = moment($scope.item.availability.pickup_window.dinner.start_time, 'HH:mm:ss.SSSSZ');
+          var maxTime = moment($scope.item.availability.pickup_window.dinner.end_time, 'HH:mm:ss.SSSSZ');
           $scope.minTime = moment($scope.order.pick_up_date).set({
             'hour': minTime.get('hour'),
             'minute': minTime.get('minute'),
-            'second': minTime.get('second')
+            'second': minTime.get('second'),
+            'millisecond': minTime.get('millisecond')
           });
           if (setDefaultTime) {
             $scope.order.pick_up_date = moment($scope.minTime).toDate();
@@ -92,7 +95,8 @@ angular.module('clientApp')
           $scope.maxTime = moment($scope.order.pick_up_date).set({
             'hour': maxTime.get('hour'),
             'minute': maxTime.get('minute'),
-            'second': maxTime.get('second')
+            'second': maxTime.get('second'),
+            'millisecond': minTime.get('millisecond')
           });
         default:
           break;
