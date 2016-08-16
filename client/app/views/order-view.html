@@ -8,6 +8,7 @@
   <p>Total Price: ${{ order.total_price }}</p>
   <p>Status: {{ order.status }}</p>
   <p>Note: {{ order.note }}</p>
+  <p>Pick Up Time: {{ order.pick_up_date | amUtc | amLocal | amDateFormat:'YYYY-MM-DDTHH:mm:ss.SSSSZ' }}</p>
   <p>Order Date: {{ order.create_date }}</p>
   <p>Order Update Date: {{ order.update_date }}</p>
 </div>
