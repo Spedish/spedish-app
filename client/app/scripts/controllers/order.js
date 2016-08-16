@@ -56,11 +56,17 @@ angular.module('clientApp')
       $scope.dateOpened = true;
     };
 
+    /*
+    Set pick up time range in timepicker:
+      1. If meal_type is lunch, set time range from the lunch pick up window.
+      2. If meal_type is dinner, set time range from the dinner pick up window.
+      3. If item is free sell, do not set time range.
+      4. if setDefaultTime == true, pick_up_date will be set to lower end of pick up window.
+    */
     $scope.setTimePicker = function(setDefaultTime) {
       $scope.showDateTimePicker = true;
       switch($scope.meal_type) {
         case "lunch":
-          //var pickUpDateMoment = moment(pickUpDate);
           var minTime = moment($scope.item.availability.pickup_window.lunch.start_time, 'HH:mm:ss.SSSSZ');
           var maxTime = moment($scope.item.availability.pickup_window.lunch.end_time, 'HH:mm:ss.SSSSZ');
           $scope.minTime = moment($scope.order.pick_up_date).set({
