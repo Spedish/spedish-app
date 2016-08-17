@@ -16,7 +16,8 @@ angular.module('clientApp')
     $scope.preloadDone = false;
     $scope.item = {};
     $scope.days=[{id:1, day: 'Monday'},{id:2, day: 'Tuesday'},{id:3, day: 'Wednesday'},{id:4, day: 'Thursday'}, {id:5, day: 'Friday'}, {id:6, day:'Saturday'}, {id:0, day:'Sunday'}];
-    $scope.item.day_of_week = {
+    $scope.availability = {};
+    $scope.availability.day_of_week = {
                                 "1": false,
                                 "2": false,
                                 "3": false,
@@ -46,6 +47,32 @@ angular.module('clientApp')
       $scope.item.contact_number = data.contact;
     });
 
+    //Config for angular bootstrap time picker
+    $scope.timeConfig = {
+      hstep: 1,
+      mstep: 10,
+      ismeridian: true
+    };
+    $scope.mealOptions = ['lunch', 'dinner'];
+
+    // Keep the mealtype status be opposite to free_sell status
+    $scope.updateMealtypeStatus = function () {
+      if($scope.availability.pickup_window.free_sell) {
+        for(var key in $scope.availability.pickup_window) {
+          // Reset mealtype status (checkbox)
+          if(key != 'free_sell')
+            $scope.availability.pickup_window[key].status = false;
+        }
+      }
+    };
+
+    // Convert date object JSON string to server expected date string
+    $scope.formatDate = function(mealType, timeSection, dateObject) {
+      var dateString = dateObject.toISOString();
+      var formattedDate = dateString.substring(dateString.indexOf("T") + 1);
+      $scope.availability.pickup_window[mealType][timeSection] = formattedDate;
+    };
+
     $scope.saveItem = function() {
       if ($scope.item.meal_options && ($scope.item.meal_options instanceof Array))
         $scope.item.meal_options = $scope.item.meal_options.join();
@@ -56,6 +83,39 @@ angular.module('clientApp')
         $window.alert('Item added');
         $location.path('/item');
       });
+    };
+
+    initialize();
+    function initialize() {
+      // Initialize property
+      $scope.availability.pickup_window = $scope.availability.pickup_window || {};
+      $scope.availability.pickup_window.free_sell = false;
+      $scope.availability.pickup_window['lunch'] = $scope.availability.pickup_window['lunch'] || {};
+      $scope.availability.pickup_window['lunch']['status'] = false;
+      $scope.availability.pickup_window['dinner'] = $scope.availability.pickup_window['dinner'] || {};
+      $scope.availability.pickup_window['dinner']['status'] = false;
+
+      // For now, default lunch time is 11:30 pm to 12:30pm
+      $scope.lunchStartTime = createDateObject(11, 30);
+      $scope.formatDate('lunch', 'start_time', $scope.lunchStartTime);
+      $scope.lunchEndTime = createDateObject(12, 30);
+      $scope.formatDate('lunch', 'end_time', $scope.lunchEndTime);
+
+      // For now, default dinner time is 16:30 pm to 18:30pm
+      $scope.dinnerStartTime = createDateObject(16, 30);
+      $scope.formatDate('dinner', 'start_time', $scope.dinnerStartTime);
+      $scope.dinnerEndTime = createDateObject(18, 30);
+      $scope.formatDate('dinner', 'end_time', $scope.dinnerEndTime);
+    };
+
+    // Function to create date that can be used by time picker directive
+    function createDateObject(hour, min) {
+      var d = new Date();
+      d.setHours(hour);
+      d.setMinutes(min);
+      d.setSeconds('00');
+      d.setMilliseconds('000');
+      return d;
     };
   })
 

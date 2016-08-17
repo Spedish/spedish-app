@@ -23,7 +23,8 @@ angular
     'ui.sortable',
     'ui.bootstrap.datetimepicker',
     'angularMoment',
-    'multipleSelect'
+    'multipleSelect',
+    'ui.bootstrap'
   ])
   .config(function(ENV, $httpProvider, $routeProvider, RestangularProvider) {
 
