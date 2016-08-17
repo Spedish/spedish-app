@@ -1,7 +1,8 @@
 var Order = require('../models/order.js');
 var moment = require('moment');
+var auth = require('../lib/auth');
 
-module.exports = function(app, route) {
+module.exports = function(app, route, passport) {
   var Item = app.models.item;
 
   var checkAvailability = function(item, order) {
@@ -54,6 +55,16 @@ module.exports = function(app, route) {
   }
 
   app.post('/order', function(req, res) {
+    if (!req.isAuthenticated()) {
+      console.error('Unauthenticated user attempted to place an order');
+      res.status(403).json({'error': 'no user currently logged in'}).end();
+
+      return false;
+    }
+
+    // Assign uid
+    req.body._uid = req.user.id;
+
     Item.findById(req.body.item_id, function(err, item) {
       if (err) return res.status(404).json({
         status: 'failure',
@@ -89,12 +100,27 @@ module.exports = function(app, route) {
   });
 
   app.get('/order/:id', function(req, res) {
+    if (!req.isAuthenticated()) {
+      console.error('Unauthenticated user attempted to place an order');
+      res.status(403).json({'error': 'no user currently logged in'}).end();
+
+      return false;
+    }
+
+    // Assign uid
+    req.body._uid = req.user.id;
+
     Order.findById(req.params.id, function(err, order) {
       if (err) res.status(404).json({
         status: 'failure',
         message: "Order not found."
       });
-      res.status(200).json(order);
+
+      if(!auth.isResOwner(req, order)) {
+        res.status(403).json({error: 'This user does not own this order'}).end();
+      } else {
+        res.status(200).json(order);
+      }
     });
   });
 

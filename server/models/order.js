@@ -41,6 +41,10 @@ var orderSchema = new mongoose.Schema({
     type: String,
     enum: ['ordered', 'paid', 'ready for pickup', 'picked up'],
     required: true
+  },
+  _uid: {
+    type: String,
+    required: true
   }
 });
 

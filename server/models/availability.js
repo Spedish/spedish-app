@@ -29,7 +29,11 @@ var availabilitySchema = new Schema({
     type: Number,
     required: true
   },
-  pickup_window: pickupWindows
+  pickup_window: pickupWindows,
+  _uid: {
+    type: String,
+    required: true
+  }
 }, {
   timestamps: true
 });
