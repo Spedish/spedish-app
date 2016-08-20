@@ -154,6 +154,14 @@ angular
   });
 })
 
+.factory('AvailabilityRestangular', function(Restangular) {
+  return Restangular.withConfig(function(RestangularConfigurer) {
+    RestangularConfigurer.setRestangularFields({
+      id: '_id'
+    });
+  });
+})
+
 // Provide the product factory
 .factory('Product', function(ProductRestangular) {
   return ProductRestangular.service('products');
@@ -172,4 +180,9 @@ angular
 // Provide the signup factory
 .factory('Signup', function(UserRestangular) {
   return UserRestangular.service('signup');
+})
+
+// Provide the availability factory
+.factory('Availability', function(AvailabilityRestangular) {
+  return AvailabilityRestangular.service('availability');
 })

@@ -10,7 +10,7 @@ var g_scope;
  * Controller of the clientApp
  */
 angular.module('clientApp')
-  .controller('ItemEditCtrl', function ($scope, Item, $routeParams, $location, $window) {
+  .controller('ItemEditCtrl', function ($scope, Item, $routeParams, $location, $window, Restangular) {
     g_scope = $scope;
 
     var galleryUrl = g_config.baseUrl + '/gallery';
@@ -41,6 +41,9 @@ angular.module('clientApp')
         $scope.item.category = $scope.item.category.join();
 
         $scope.item.save().then(function() {
+          console.log("update availability");
+          console.log(response);
+          Restangular.one("item", response._id).customPUT($scope.availability, "availability");
           $window.alert('Updated');
           $location.path('/item/' + $routeParams.id);
         });

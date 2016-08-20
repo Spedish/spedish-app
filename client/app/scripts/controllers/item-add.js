@@ -10,7 +10,7 @@ var g_scope;
  * Controller of the clientApp
  */
 angular.module('clientApp')
-  .controller('ItemAddCtrl', function ($rootScope, $scope, Item, $location, $window, AuthService, GalleryService) {
+  .controller('ItemAddCtrl', function ($rootScope, $scope, Item, $location, $window, AuthService, GalleryService, Restangular) {
     g_scope = $scope;
 
     $scope.preloadDone = false;
@@ -79,7 +79,12 @@ angular.module('clientApp')
       if ($scope.item.category && ($scope.item.category instanceof Array))
         $scope.item.category = $scope.item.category.join();
 
-      Item.post($scope.item).then(function() {
+      Item.post($scope.item).then(function(response) {
+        console.log("update availability");
+        console.log(response);
+        Restangular.one("item", response._id).customPUT($scope.availability, "availability");
+        //$scope.item.one('availability').put($scope.availability);
+        console.log("finish updating availability");
         $window.alert('Item added');
         $location.path('/item');
       });
