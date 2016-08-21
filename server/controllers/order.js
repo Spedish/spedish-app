@@ -1,25 +1,34 @@
 var Order = require('../models/order.js');
-var moment = require('moment');
+var moment = require('moment-timezone');
 var auth = require('../lib/auth');
 
 module.exports = function(app, route, passport) {
   var Item = app.models.item;
 
   var checkAvailability = function(item, order) {
-    var pickUpDate = moment(order.pick_up_date, '"YYYY-MM-DDTHH:mm:ss.SSSSZ"').utc();
-    var currentDateTime = moment().utc();
+    var timezone = item.availability.timezone;
+    //Set default timezone
+    moment.tz.setDefault(timezone);
+    var pickUpDate = moment(order.pick_up_date, '"YYYY-MM-DDTHH:mm:ss.SSSZ"');
+    var currentDateTime = moment();
     var pickUpTime = moment(pickUpDate);
-    pickUpTime.set('year', currentDateTime.get('year'))
-              .set('month', currentDateTime.get('month'))
-              .set('date', currentDateTime.get('date'));
     var pickUpDayOfWeek = pickUpDate.weekday();
 
+    // Modify the date portion of time to the date portion from the other date.
+    function setDate(time, date) {
+      return moment(time, 'HH:mm:ss.SSSSZ')
+                  .set('year', date.get('year'))
+                  .set('month', date.get('month'))
+                  .set('date', date.get('date'));
+    }
+
     var checkPickUpWindow = function(pickUpTime) {
-      //TODO: Need to check status of lunch and dinner window
-      var lunchWindowStartTime = moment(item.availability.pickup_window.lunch.start_time, 'HH:mm:ss.SSSSZ').utc();
-      var lunchWindowEndTime = moment(item.availability.pickup_window.lunch.end_time, 'HH:mm:ss.SSSSZ').utc();
-      var dinnerWindowStartTime = moment(item.availability.pickup_window.dinner.start_time, 'HH:mm:ss.SSSSZ').utc();
-      var dinnerWindowEndTime = moment(item.availability.pickup_window.dinner.end_time, 'HH:mm:ss.SSSSZ').utc();
+      // TODO: Need to check status of lunch and dinner window
+      // Set the date of the start and end time to the same day from the pickup date
+      var lunchWindowStartTime = setDate(item.availability.pickup_window.lunch.start_time, pickUpTime);
+      var lunchWindowEndTime = setDate(item.availability.pickup_window.lunch.end_time, pickUpTime);
+      var dinnerWindowStartTime = setDate(item.availability.pickup_window.dinner.start_time, pickUpTime);
+      var dinnerWindowEndTime = setDate(item.availability.pickup_window.dinner.end_time, pickUpTime);
       var isBetweenLunchHours = item.availability.pickup_window.lunch.status?
         pickUpTime.isBetween(lunchWindowStartTime, lunchWindowEndTime, null, '[]'): false
       var isBetweenDinnerHours = item.availability.pickup_window.dinner.status?

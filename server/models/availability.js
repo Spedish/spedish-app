@@ -30,6 +30,7 @@ var availabilitySchema = new Schema({
     required: true
   },
   pickup_window: pickupWindows,
+  timezone: String,
   _uid: {
     type: String,
     required: true
