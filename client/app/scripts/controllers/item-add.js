@@ -10,7 +10,7 @@ var g_scope;
  * Controller of the clientApp
  */
 angular.module('clientApp')
-  .controller('ItemAddCtrl', function ($rootScope, $scope, Item, $location, $window, AuthService, GalleryService, Restangular) {
+  .controller('ItemAddCtrl', function ($rootScope, $scope, Item, $location, $window, AuthService, GalleryService, Restangular, $timezone) {
     g_scope = $scope;
 
     $scope.preloadDone = false;
@@ -92,6 +92,8 @@ angular.module('clientApp')
 
     initialize();
     function initialize() {
+      // Add user timezone string
+      $scope.availability.timezone = $timezone.getName();
       // Initialize property
       $scope.availability.pickup_window = $scope.availability.pickup_window || {};
       $scope.availability.pickup_window.free_sell = false;

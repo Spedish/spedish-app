@@ -24,7 +24,8 @@ angular
     'ui.bootstrap.datetimepicker',
     'angularMoment',
     'multipleSelect',
-    'ui.bootstrap'
+    'ui.bootstrap',
+    'ngTimezone'
   ])
   .config(function(ENV, $httpProvider, $routeProvider, RestangularProvider) {
 
