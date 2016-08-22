@@ -10,7 +10,7 @@ var g_scope;
  * Controller of the clientApp
  */
 angular.module('clientApp')
-  .controller('ItemAddCtrl', function ($rootScope, $scope, Item, $location, $window, AuthService, GalleryService, Restangular, $timezone) {
+  .controller('ItemAddCtrl', function ($rootScope, $scope, Item, $location, $window, AuthService, GalleryService, Restangular, $timezone, itemUtil) {
     g_scope = $scope;
 
     $scope.preloadDone = false;
@@ -48,22 +48,12 @@ angular.module('clientApp')
     });
 
     //Config for angular bootstrap time picker
-    $scope.timeConfig = {
-      hstep: 1,
-      mstep: 10,
-      ismeridian: true
-    };
-    $scope.mealOptions = ['lunch', 'dinner'];
+    $scope.timeConfig = itemUtil.getTimePickerConfig();
+    $scope.mealTimeOptions = ['lunch', 'dinner'];
 
     // Keep the mealtype status be opposite to free_sell status
     $scope.updateMealtypeStatus = function () {
-      if($scope.availability.pickup_window.free_sell) {
-        for(var key in $scope.availability.pickup_window) {
-          // Reset mealtype status (checkbox)
-          if(key != 'free_sell')
-            $scope.availability.pickup_window[key].status = false;
-        }
-      }
+      itemUtil.updateMealTypeStatus($scope.availability.pickup_window);
     };
 
     // Convert date object JSON string to server expected date string
