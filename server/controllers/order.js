@@ -1,6 +1,7 @@
 var Order = require('../models/order.js');
 var moment = require('moment-timezone');
 var auth = require('../lib/auth');
+var ses = require('../lib/ses');
 
 module.exports = function(app, route, passport) {
   var Item = app.models.item;
@@ -98,7 +99,20 @@ module.exports = function(app, route, passport) {
               message: "Update inventory failed."
             });
             console.log('Inventory successfully updated!');
-            res.status(200).json(order);
+
+            // Give SES the details and let it construct the message for you.
+            ses.getClient().sendEmail({
+               to: 'huaxi.wang@gmail.com'
+             , from: 'huaxi.wang@gmail.com'
+             , cc: ''
+             , subject: 'greetings from spedish'
+             , message: 'spedish test'
+             , altText: 'plain text'
+           }, function (err, data, resonse) {
+              console.log(data);
+              console.log(res);
+              res.status(200).json(order);
+            });
           });
         });
       } else res.status(409).json({
