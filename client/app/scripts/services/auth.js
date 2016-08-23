@@ -71,8 +71,11 @@ angular.module('clientApp')
         });
     };
 
-    this.getProfile = function() {
-      return $http.get(g_config.baseUrl + '/profile');
+    this.getProfile = function(username) {
+      if (!username || username == undefined)
+        return $http.get(g_config.baseUrl + '/profile');
+      else
+        return $http.get(g_config.baseUrl + '/profile/' + username);
     };
 
     this.saveProfile = function(profile) {
