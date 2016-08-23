@@ -5,10 +5,11 @@ var nodeStatic  = require('node-static');
 var imageMagick = require('imagemagick');
 var randStr     = require('randomstring');
 var auth        = require('../lib/auth');
+var config      = require('config');
 
 var options    = {
-  tmpDir: '/tmp/t',
-  galleryDir: '/tmp/gallery',
+  tmpDir: config.get('server.tmpDir'),
+  galleryDir: config.get('server.galleryStore'),
   maxSize: 5000000, // 5MB
   minSize: 1000, // 1KB
   imageTypes: /\.(gif|jpe?g|png)$/i,

@@ -4,6 +4,8 @@
       "url": "mongodb://localhost/spedish"
     },
     "port": 4000,
-    "CORSOrigin": "http://spedish.com"
+    "CORSOrigin": "http://spedish.com",
+    "tmpDir": "/opt/spedish/tmp",
+    "galleryStore": "/opt/spedish/gallery"
   }
 }
