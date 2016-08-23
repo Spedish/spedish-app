@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('clientApp')
-  .controller('ProfileCtrl', function ($scope, AuthService) {
+  .controller('ProfileEditCtrl', function ($scope, AuthService) {
     AuthService.getProfile()
       .success(function(data, status) {
         $scope.user = data;
