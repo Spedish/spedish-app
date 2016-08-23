@@ -9,6 +9,10 @@ var orderSchema = new mongoose.Schema({
     type: String,
     required: true
   },
+  pick_up_date: {
+    type: Date,
+    required: true
+  },
   count: {
     type: Number,
     min: [0],
@@ -36,6 +40,10 @@ var orderSchema = new mongoose.Schema({
   status: {
     type: String,
     enum: ['ordered', 'paid', 'ready for pickup', 'picked up'],
+    required: true
+  },
+  _uid: {
+    type: String,
     required: true
   }
 });

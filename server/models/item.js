@@ -1,5 +1,6 @@
 var mongoose = require('mongoose');
 var orderModel = require('./order');
+var availabilityModel = require('./availability');
 
 var itemSchema = new mongoose.Schema({
   title: {
@@ -18,6 +19,10 @@ var itemSchema = new mongoose.Schema({
   inventory: {
     type: Number,
     required: true
+  },
+  availability: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Availability'
   },
   orders: [{
     type: mongoose.Schema.Types.ObjectId,
@@ -120,6 +125,7 @@ itemSchema.pre('save', function(next) {
 var autoPopulate = function(next) {
   this.populate('_gallery');
   this.populate('orders');
+  this.populate('availability');
   next();
 }
 

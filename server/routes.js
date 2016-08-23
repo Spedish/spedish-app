@@ -5,6 +5,7 @@ module.exports = {
   'order': require('./controllers/order'),
   'login': require('./controllers/auth/login'),
   'logout': require('./controllers/auth/logout'),
+  'availability': require('./controllers/availability'),
   'user_status': require('./controllers/auth/status'),
   'profile': require('./controllers/auth/profile'),
   'gallery': require('./controllers/gallery')

@@ -5,6 +5,7 @@
         <th>Count</th>
         <th>Unit Price</th>
         <th>Total Price</th>
+        <th>Pick Up Time</th>
         <th>Note</th>
         <th>Status</th>
         <th>Order Date</th>
@@ -16,6 +17,7 @@
             <td width="400px">{{ o.count }}</td>
             <td width="400px">${{ o.unit_price }}</td>
             <td width="400px">${{ o.total_price }}</td>
+            <td width="800px">{{ order.pick_up_date | amUtc | amLocal | amDateFormat:'YYYY-MM-DDTHH:mm:ss.SSSSZ' }}</td>
             <td width="400px">{{ o.note }}</td>
             <td width="400px">{{ o.status }}</td>
             <td width="400px">{{ o.create_date }}</td>

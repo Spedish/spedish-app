@@ -123,8 +123,57 @@
     <input type="text" ng-model="item.unit_price" id="price" />
   </div>
   <div>
-    <label>Inventory</label>
-    <input type="text" ng-model="item.inventory" id="inventory" />
+    <h4>Availability and schedule</h4>
+    <div>
+      <label>Inventory</label>
+      <input type="text" ng-model="item.inventory" id="inventory" />
+    </div>
+    <div>
+      <label>Prepare Time (mins)</label>
+      <input type="text" ng-model="availability.lead_time" id="prepareTime" />
+    </div>
+  </div>
+      <label>Weekly Schedule</label>
+      <p ng-repeat="day in days">
+        <input ng-model="availability.day_of_week[day.id]" ng-checked=false type="checkbox" />
+        {{day.day}}
+      </p>
+
+      <label>Daily Schedule</label>
+      <p>Is it available all day? <input ng-model="availability.pickup_window.free_sell" ng-change="updateMealtypeStatus()" type="checkbox" />
+      </p>
+
+      <!-- Not free sell, select lunch and dinner availbale time -->      
+      <div ng-if="!availability.pickup_window.free_sell">
+        <div>Which meal type do you provide?</div>
+        <!-- meal type selection -->
+        <label ng-repeat="meal in mealTimeOptions" class="checkbox-inline"><input type="checkbox" value="" ng-model="availability.pickup_window[meal].status">{{meal}}</label>
+
+        <!-- lunch time -->
+        <div style="display:table" class="lunch-time-selection" ng-if="availability.pickup_window.lunch.status">
+          <span style="display:table-cell;vertical-align:middle;">Lunch Time</span>
+          <!-- start time -->
+          <div style="display: inline;padding: 0px 15px 0px 15px" uib-timepicker ng-model="lunchStartTime" ng-change="formatDate('lunch', 'start_time', lunchStartTime)" hour-step="timeConfig.hstep" minute-step="timeConfig.mstep" show-meridian="timeConfig.ismeridian" mousewheel="timeConfig.mousewheel">
+          </div>
+          <span style="display:table-cell;vertical-align:middle;">to</span>
+          <!-- End time -->
+          <div style="display: inline;padding: 0px 15px 0px 15px" uib-timepicker ng-model="lunchEndTime" ng-change="formatDate('lunch', 'end_time', lunchEndTime)" hour-step="timeConfig.hstep" minute-step="timeConfig.mstep" show-meridian="timeConfig.ismeridian" mousewheel="timeConfig.mousewheel">
+          </div>
+        </div>
+
+        <!-- dinner time -->
+        <div style="display:table" class="dinner-time-selection" ng-if="availability.pickup_window.dinner.status">
+          <span style="display:table-cell;vertical-align:middle;">Dinner Time</span>
+          <!-- start time -->
+          <div style="display: inline;padding: 0px 15px 0px 15px" uib-timepicker ng-model="dinnerStartTime" ng-change="formatDate('dinner', 'start_time', dinnerStartTime)" hour-step="timeConfig.hstep" minute-step="timeConfig.mstep" show-meridian="timeConfig.ismeridian" mousewheel="timeConfig.mousewheel">
+          </div>
+          <span style="display:table-cell;vertical-align:middle;">to</span>
+          <!-- End time -->
+          <div style="display: inline;padding: 0px 15px 0px 15px" uib-timepicker ng-model="dinnerEndTime" ng-change="formatDate('dinner', 'end_time', dinnerEndTime)" hour-step="timeConfig.hstep" minute-step="timeConfig.mstep" show-meridian="timeConfig.ismeridian" mousewheel="timeConfig.mousewheel">
+          </div>
+        </div>  
+      </div>
+      <pre>{{availability|json}}</pre>
   </div>
   <div>
     <label>Street Address</label>

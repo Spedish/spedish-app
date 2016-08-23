@@ -21,7 +21,11 @@ angular
     'blueimp.fileupload',
     'ui.bootstrap',
     'ui.sortable',
-    'multipleSelect'
+    'ui.bootstrap.datetimepicker',
+    'angularMoment',
+    'multipleSelect',
+    'ui.bootstrap',
+    'ngTimezone'
   ])
   .config(function(ENV, $httpProvider, $routeProvider, RestangularProvider) {
 
@@ -151,6 +155,14 @@ angular
   });
 })
 
+.factory('AvailabilityRestangular', function(Restangular) {
+  return Restangular.withConfig(function(RestangularConfigurer) {
+    RestangularConfigurer.setRestangularFields({
+      id: '_id'
+    });
+  });
+})
+
 // Provide the product factory
 .factory('Product', function(ProductRestangular) {
   return ProductRestangular.service('products');
@@ -171,3 +183,7 @@ angular
   return UserRestangular.service('signup');
 })
 
+// Provide the availability factory
+.factory('Availability', function(AvailabilityRestangular) {
+  return AvailabilityRestangular.service('availability');
+})

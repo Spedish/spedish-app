@@ -2,7 +2,7 @@
   "name": "client",
   "version": "0.0.0",
   "dependencies": {
-    "angular": "^1.4.0",
+    "angular": "^1.5.8",
     "bootstrap-sass-official": "^3.2.0",
     "angular-animate": "^1.4.0",
     "angular-cookies": "^1.4.0",
@@ -16,7 +16,10 @@
     "ng-module": "^0.0.3",
     "angular-bootstrap": "^1.3.3",
     "angular-ui-sortable": "^0.14.3",
-    "angularMultipleSelect": "angular-multiple-select#^1.1.2"
+    "angular-ui-bootstrap-datetimepicker": "^1.4.0",
+    "angular-moment": "^1.0.0-beta.6",
+    "angularMultipleSelect": "angular-multiple-select#^1.1.2",
+    "ngTimezone": "*"
   },
   "devDependencies": {
     "angular-mocks": "^1.4.0"
