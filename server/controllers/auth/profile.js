@@ -20,6 +20,31 @@ module.exports = function(app, route, passport, User) {
     next();
   });
 
+  app.get('/profile/:username', function(req, res, next) {
+    var username = req.params.username;
+
+    app.models.user.findOne({username: username}, function(err, user) {
+      if (err || !user) {
+        console.error('Cannot find user ' + username);
+        res.status(404).json({error: 'user not found'});
+      } else {
+        res.status(200).json({
+          username: user.username,
+          email: user.email,
+          firstname: user.firstname,
+          lastname: user.lastname,
+          address: user.address,
+          city: user.city,
+          zip: user.zip,
+          contact: user.contact,
+          isSeller: user.isSeller
+        });
+      }
+
+      next();
+    });
+  });
+
   app.post('/profile', function(req, res, next) {
     if (!req.isAuthenticated()) {
       res.status(403).json({error: 'no logged in user'});
