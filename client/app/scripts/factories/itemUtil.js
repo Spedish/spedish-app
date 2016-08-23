@@ -25,10 +25,23 @@ angular.module('clientApp').factory('itemUtil', function(){
         }
       }
 	}
+
+	function getDays() {
+		var days = [{id:1, day: 'Monday'},{id:2, day: 'Tuesday'},{id:3, day: 'Wednesday'},{id:4, day: 'Thursday'}, {id:5, day: 'Friday'}, {id:6, day:'Saturday'}, {id:0, day:'Sunday'}];
+		return days;
+	}
+
+	function formatDate(dateObject) {
+		var dateString = dateObject.toISOString();
+      	var formattedDate = dateString.substring(dateString.indexOf("T") + 1);
+     	return formattedDate;
+	}
 	
 	//Return a public API
 	return {
 		getTimePickerConfig: getTimePickerConfig,
-		updateMealTypeStatus: updateMealTypeStatus
+		updateMealTypeStatus: updateMealTypeStatus,
+		getDays: getDays,
+		formatDate: formatDate
 	}
 });

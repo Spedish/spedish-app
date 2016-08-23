@@ -15,7 +15,7 @@ angular.module('clientApp')
 
     $scope.preloadDone = false;
     $scope.item = {};
-    $scope.days=[{id:1, day: 'Monday'},{id:2, day: 'Tuesday'},{id:3, day: 'Wednesday'},{id:4, day: 'Thursday'}, {id:5, day: 'Friday'}, {id:6, day:'Saturday'}, {id:0, day:'Sunday'}];
+    $scope.days=  itemUtil.getDays();
     $scope.availability = {};
     $scope.availability.day_of_week = {
                                 "1": false,
@@ -58,8 +58,7 @@ angular.module('clientApp')
 
     // Convert date object JSON string to server expected date string
     $scope.formatDate = function(mealType, timeSection, dateObject) {
-      var dateString = dateObject.toISOString();
-      var formattedDate = dateString.substring(dateString.indexOf("T") + 1);
+      var formattedDate = itemUtil.formatDate(dateObject);
       $scope.availability.pickup_window[mealType][timeSection] = formattedDate;
     };
 

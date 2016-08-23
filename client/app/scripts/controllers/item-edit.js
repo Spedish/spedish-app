@@ -21,6 +21,7 @@ angular.module('clientApp')
     $scope.preloadDone = true;
     $scope.editItem = true;
     $scope.item = {};
+    $scope.days=  itemUtil.getDays();
     //config for time picker
     $scope.timeConfig = itemUtil.getTimePickerConfig();
     $scope.mealTimeOptions = ['lunch', 'dinner'];
@@ -47,6 +48,12 @@ angular.module('clientApp')
     // Keep the mealtype status be opposite to free_sell status
     $scope.updateMealtypeStatus = function () {
       itemUtil.updateMealTypeStatus($scope.availability.pickup_window);
+    };
+
+    // Convert date object JSON string to server expected date string
+    $scope.formatDate = function(mealType, timeSection, dateObject) {
+      var formattedDate = itemUtil.formatDate(dateObject);
+      $scope.availability.pickup_window[mealType][timeSection] = formattedDate;
     };
 
     $scope.saveItem = function() {
