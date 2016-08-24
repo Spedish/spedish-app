@@ -25,8 +25,8 @@ npm install
 ### Install imagemagick (manage photos)
 ```
 brew install imagemagick
-mkdir /tmp/gallery/
-mkdir /tmp/t/
+mkdir -p "/opt/spedish/tmp"
+mkdir -p "/opt/spedish/gallery"
 ```
 
 ### Run
