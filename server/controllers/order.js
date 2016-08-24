@@ -1,6 +1,7 @@
 var Order = require('../models/order.js');
 var moment = require('moment-timezone');
 var auth = require('../lib/auth');
+var ses = require('../lib/ses');
 
 module.exports = function(app, route, passport) {
   var Item = app.models.item;
@@ -98,7 +99,17 @@ module.exports = function(app, route, passport) {
               message: "Update inventory failed."
             });
             console.log('Inventory successfully updated!');
-            res.status(200).json(order);
+            var orderDetails = "Thank you for order with us, you will receive" +
+            "another email when your meal is ready.";
+            ses.send(req.user.email,
+              `Spedish order ${order._id} confirmation`,
+              orderDetails, function (err, data, resonse) {
+                if (err) return res.status(500).json({
+                  status: 'failure',
+                  message: "Email notification sent failure."
+                });
+                res.status(200).json(order);
+            });
           });
         });
       } else res.status(409).json({

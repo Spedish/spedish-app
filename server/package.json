@@ -28,6 +28,7 @@
     "node-static": "^0.7.7",
     "moment": "2.14.1",
     "moment-timezone": "0.5.5",
-    "node-static": "^0.7.7"
+    "aws-sdk": "latest",
+    "node-ses": "2.0.0"
   }
 }
