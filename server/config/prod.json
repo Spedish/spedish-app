@@ -9,6 +9,8 @@
       "aws_access_key_id": "AKIAIUJBP6UY2Y2HUQGA",
       "aws_secret_access_key": "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",
       "region": "https://email.us-west-2.amazonaws.com"
-    }
+    },
+    "tmpDir": "/opt/spedish/tmp",
+    "galleryStore": "/opt/spedish/gallery"
   }
 }

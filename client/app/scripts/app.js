@@ -111,10 +111,15 @@ angular
         controllerAs: 'sellerSignup'
       })
       .when('/profile', {
-        templateUrl: 'views/profile.html',
-        controller: 'ProfileCtrl',
-        controllerAs: 'profile',
+        templateUrl: 'views/profile-edit.html',
+        controller: 'ProfileEditCtrl',
+        controllerAs: 'profileEdit',
         requireAuth: true
+      })
+      .when('/profile/:username', {
+        templateUrl: 'views/profile-view.html',
+        controller: 'ProfileViewCtrl',
+        controllerAs: 'profileView'
       })
       .otherwise({
         redirectTo: '/'
