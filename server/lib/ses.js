@@ -9,7 +9,7 @@ module.exports = {
   // Give SES the details and let it construct the message for you.
   return client.sendEmail({
        to: to
-     , from: 'huaxi.wang@gmail.com'
+     , from: 'master@spedish.com'
      , cc: ''
      , subject: subject
      , message: message
