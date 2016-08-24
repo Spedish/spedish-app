@@ -99,19 +99,16 @@ module.exports = function(app, route, passport) {
               message: "Update inventory failed."
             });
             console.log('Inventory successfully updated!');
-
-            // Give SES the details and let it construct the message for you.
-            ses.getClient().sendEmail({
-               to: 'huaxi.wang@gmail.com'
-             , from: 'huaxi.wang@gmail.com'
-             , cc: ''
-             , subject: 'greetings from spedish'
-             , message: 'spedish test'
-             , altText: 'plain text'
-           }, function (err, data, resonse) {
-              console.log(data);
-              console.log(res);
-              res.status(200).json(order);
+            var orderDetails = "Thank you for order with us, you will receive" +
+            "another email when your meal is ready.";
+            ses.send('huaxi.wang@gmail.com',
+              `Spedish order ${order._id} confirmation`,
+              orderDetails, function (err, data, resonse) {
+                if (err) return res.status(500).json({
+                  status: 'failure',
+                  message: "Email notification sent failure."
+                });
+                res.status(200).json(order);
             });
           });
         });
