@@ -2,9 +2,113 @@ var Order = require('../models/order.js');
 var moment = require('moment-timezone');
 var auth = require('../lib/auth');
 var ses = require('../lib/ses');
+var Resource = require('resourcejs');
 
 module.exports = function(app, route, passport) {
   var Item = app.models.item;
+
+  Resource(app, '', route, app.models.order)
+    .get({
+      before: function(req, res, next) {
+        if (!req.isAuthenticated()) {
+          console.error('Unauthenticated user attempted to place an order');
+          res.status(403).json({'error': 'no user currently logged in'}).end();
+          return false;
+        }
+
+        next();
+      },
+      after: function(req, res, next) {
+        if(!auth.isResOwner(req, res.resource.item)) {
+          res.status(403).json({error: 'This user does not own this order'}).end();
+        } else {
+          res.resource.item._doc.canEdit = true;
+        }
+        
+        next();
+      }
+    })
+    .post({
+      before: function(req, res, next) {
+        if (!req.isAuthenticated()) {
+          console.error('Unauthenticated user attempted to place an order');
+          res.status(403).json({'error': 'no user currently logged in'}).end();
+          return false;
+        }
+        // Assign uid
+        req.body._uid = req.user.id;
+
+        Item.findById(req.body.item_id, function(err, item) {
+          if (err) return res.status(404).json({
+            status: 'failure',
+            message: "Item not found."
+          });
+          //TODO: Provide details on the response instead of a boolean, consider
+          //throw exceptions
+          if (checkAvailability(item, req.body)) {
+            item.inventory = (item.inventory - req.body.count);
+            req.body.title = item.title;
+            req.body.unit_price = item.unit_price;
+            req.body.total_price = item.unit_price * req.body.count;
+          } else res.status(409).json({
+            status: 'failure',
+            message: "There's an issue processing your order, please try again later."
+          });
+
+          next();
+        });
+      },
+      after: function(req, res, next) {
+        Item.findById(req.body.item_id, function(err, item) {
+          if (err) return res.status(404).json({
+            status: 'failure',
+            message: "Item not found."
+          });
+          item.orders.push(res.resource.item._id);
+          item.save(function(err, docs) {
+            if (err) return res.status(500).json({
+              status: 'failure',
+              message: "Update inventory failed."
+            });
+            console.log('Inventory successfully updated!');
+            var orderDetails = "Thank you for order with us, you will receive" +
+            "another email when your meal is ready.";
+            ses.send(req.user.email,
+              `Spedish order ${res.resource.item._id} confirmation`,
+              orderDetails, function (err, data, resonse) {
+                if (err) return res.status(500).json({
+                  status: 'failure',
+                  message: "Email notification sent failure."
+              });
+            });
+          });
+        });
+
+        next();
+      }
+    })
+    .index({
+      before: function(req, res, next) {
+        if (!req.isAuthenticated()) {
+          console.error('Unauthenticated user attempted to retrieve all orders');
+          res.status(403).json({'error': 'no user currently logged in'}).end();
+
+          return false;
+        }
+
+        // Assign uid
+        req.body._uid = req.user.id;
+
+        next();
+      },
+      after: function(req, res, next) {
+        res.resource.item.forEach(function(item, idx, arr) {
+          item._doc.canEdit = true;
+        });
+
+        next();
+      }
+    })
 
   var checkAvailability = function(item, order) {
     var timezone = item.availability.timezone;
@@ -63,89 +167,6 @@ module.exports = function(app, route, passport) {
       return false;
     }
   }
-
-  app.post('/order', function(req, res) {
-    if (!req.isAuthenticated()) {
-      console.error('Unauthenticated user attempted to place an order');
-      res.status(403).json({'error': 'no user currently logged in'}).end();
-
-      return false;
-    }
-
-    // Assign uid
-    req.body._uid = req.user.id;
-
-    Item.findById(req.body.item_id, function(err, item) {
-      if (err) return res.status(404).json({
-        status: 'failure',
-        message: "Item not found."
-      });
-      //TODO: Provide details on the response instead of a boolean, consider
-      //throw exceptions
-      if (checkAvailability(item, req.body)) {
-        item.inventory = (item.inventory - req.body.count);
-        req.body.title = item.title;
-        req.body.unit_price = item.unit_price;
-        req.body.total_price = item.unit_price * req.body.count;
-        Order.create(req.body, function(err, order) {
-          if (err) return res.status(500).json({
-            status: 'failure',
-            message: "Create order failed."
-          });
-          item.orders.push(order._id);
-          item.save(function(err, docs) {
-            if (err) return res.status(500).json({
-              status: 'failure',
-              message: "Update inventory failed."
-            });
-            console.log('Inventory successfully updated!');
-            var orderDetails = "Thank you for order with us, you will receive" +
-            "another email when your meal is ready.";
-            ses.send(req.user.email,
-              `Spedish order ${order._id} confirmation`,
-              orderDetails, function (err, data, resonse) {
-                if (err) return res.status(500).json({
-                  status: 'failure',
-                  message: "Email notification sent failure."
-                });
-                res.status(200).json(order);
-            });
-          });
-        });
-      } else res.status(409).json({
-        status: 'failure',
-        message: "There's an issue processing your order, please try again later."
-      });
-    });
-  });
-
-  app.get('/order/:id', function(req, res) {
-    if (!req.isAuthenticated()) {
-      console.error('Unauthenticated user attempted to place an order');
-      res.status(403).json({'error': 'no user currently logged in'}).end();
-
-      return false;
-    }
-
-    // Assign uid
-    req.body._uid = req.user.id;
-
-    Order.findById(req.params.id, function(err, order) {
-      if (err) res.status(404).json({
-        status: 'failure',
-        message: "Order not found."
-      });
-
-      if(!auth.isResOwner(req, order)) {
-        res.status(403).json({error: 'This user does not own this order'}).end();
-      } else {
-        res.status(200).json(order);
-      }
-    });
-  });
-
-
-
   // Return middleware.
   return function(req, res, next) {
     next();
