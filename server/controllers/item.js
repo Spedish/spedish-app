@@ -36,14 +36,19 @@ module.exports = function(app, route, passport) {
       })
     .index({
         after: function(req, res, next) {
-          res.resource.item.forEach(function(item, idx, arr) {
+          // Disable caching for content files
+          res.header("Cache-Control", "no-cache, no-store, must-revalidate");
+          res.header("Pragma", "no-cache");
+          res.header("Expires", 0);
+
+          if(res.resource.item) {
+            res.resource.item.forEach(function(item, idx, arr) {
             if (auth.isResOwner(req, item))
               item._doc.canEdit = true;
-            else {
+            else
               item._doc.canEdit = false;
-            }
-          });
-
+            });
+          }
           next();
         }
       })
