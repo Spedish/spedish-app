@@ -24,7 +24,7 @@ module.exports = function(app, route, passport) {
         } else {
           res.resource.item._doc.canEdit = true;
         }
-        
+
         next();
       }
     })
@@ -95,6 +95,8 @@ module.exports = function(app, route, passport) {
 
           return false;
         }
+
+        req.modelQuery = this.model.where('_uid').equals(req.user.id)
 
         // Assign uid
         req.body._uid = req.user.id;
