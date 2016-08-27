@@ -50,6 +50,7 @@ module.exports = function(app, route, passport) {
             req.body.title = item.title;
             req.body.unit_price = item.unit_price;
             req.body.total_price = item.unit_price * req.body.count;
+            req.body._sid = item._uid;
           } else res.status(409).json({
             status: 'failure',
             message: "There's an issue processing your order, please try again later."

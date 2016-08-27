@@ -45,6 +45,10 @@ var orderSchema = new mongoose.Schema({
   _uid: {
     type: String,
     required: true
+  },
+  _sid: {
+    type: String,
+    required: true
   }
 });
 
