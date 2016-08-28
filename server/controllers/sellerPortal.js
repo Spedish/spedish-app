@@ -3,7 +3,18 @@ var auth = require('../lib/auth');
 
 module.exports = function(app, route, passport) {
   // Setup the controller for REST;
-  Resource(app, '', 'sellerPortal/order', app.models.order)
+  Resource(app, '/sellerPortal', 'order', app.models.order)
+    .patch({
+      before: function(req, res, next) {
+        if (!req.isAuthenticated()) {
+          console.error('Unauthenticated user attempted update an order');
+          res.status(403).json({'error': 'no user currently logged in'}).end();
+          return false;
+        }
+
+        return auth.isResOwnedBySellerResolveChained(req, res, next, req.params.orderId, app.models.order);
+      }
+    })
     .index({
         before: function(req, res, next) {
           if (!req.isAuthenticated()) {
@@ -27,7 +38,8 @@ module.exports = function(app, route, passport) {
           }
           next();
         }
-      })
+    })
+
   // Return middleware.
   return function(req, res, next) {
       next();

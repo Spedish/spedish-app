@@ -44,6 +44,38 @@ module.exports = {
         return false;
       }
     });
+  },
+
+  // This version checks whether this resource is owned by a seller
+  isResOwnedBySellerResolveChained: function(req, res, next, objId, objType) {
+    if (!req.isAuthenticated()) {
+      res.status(403).json({'error': 'user not logged in'});
+
+      return false;
+    }
+
+    // Get the object
+    objType.findOne({_id: objId}, function(err, obj) {
+      if (err || !obj) {
+        res.status(404).json({'error': 'object being edited does not exist'}).end();
+
+        return false;
+      }
+
+      // Check that the object has an id
+      if (!obj._sid) {
+        res.status(500).json({'error': 'model error'}).end();
+
+        return false;
+      }
+
+      if (obj._sid == req.user._id) {
+        next();
+      } else {
+        res.status(403).json({'error': 'you do not own this resource'}).end();
+
+        return false;
+      }
+    });
   }
 }
-
