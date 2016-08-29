@@ -12,7 +12,7 @@ module.exports = {
      , from: 'master@spedish.com'
      , cc: ''
      , subject: subject
-     , message: message
+     , message: message + "<br /><br />- spedish team"
      , altText: 'plain text'
     }, next);
   }

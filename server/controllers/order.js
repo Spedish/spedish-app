@@ -72,10 +72,10 @@ module.exports = function(app, route, passport) {
               message: "Update inventory failed."
             });
             console.log('Inventory successfully updated!');
-            var orderDetails = "Thank you for order with us, you will receive" +
-            "another email when your meal is ready.";
+            var orderDetails = "Thank you for ordering with us, please wait for your chef" +
+            "to confirm your order.";
             ses.send(req.user.email,
-              `Spedish order ${res.resource.item._id} confirmation`,
+              `Spedish order ${res.resource.item._id}`,
               orderDetails, function (err, data, resonse) {
                 if (err) return res.status(500).json({
                   status: 'failure',

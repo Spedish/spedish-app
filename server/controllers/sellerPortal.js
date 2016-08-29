@@ -1,9 +1,11 @@
 var Resource = require('resourcejs');
 var auth = require('../lib/auth');
+var ses = require('../lib/ses');
 
 module.exports = function(app, route, passport) {
-  // Setup the controller for REST;
-  Resource(app, '/sellerPortal', 'order', app.models.order)
+  var Order = app.models.order;
+
+  Resource(app, '/sellerPortal', 'order', Order)
     .patch({
       before: function(req, res, next) {
         if (!req.isAuthenticated()) {
@@ -12,7 +14,80 @@ module.exports = function(app, route, passport) {
           return false;
         }
 
-        return auth.isResOwnedBySellerResolveChained(req, res, next, req.params.orderId, app.models.order);
+        return auth.isResOwnedBySellerResolveChained(req, res, next, req.params.orderId, Order);
+      },
+      after: function(req, res, next) {
+        var updatedOrder = res.resource.item;
+        app.models.user.findById(updatedOrder._uid, function(err, user) {
+          if (err || !user) {
+            console.error('Cannot find user ' + updatedOrder._uid);
+            res.status(404).json({error: 'user not found'});
+          } else {
+            switch (updatedOrder.status) {
+              case "ordered":
+                var orderDetails = "Thank you for ordering with us, you will receive an email " +
+                  `when your order is confirmed by chef ${req.user.username}.`;
+                ses.send(user.email,
+                  `Spedish order ${res.resource.item._id}`,
+                  orderDetails, function (err, data, resonse) {
+                    if (err) return res.status(500).json({
+                      status: 'failure',
+                      message: "Email notification sent failure."
+                  });
+                });
+                break;
+              case "confirmed":
+                var orderDetails = "Thank you for ordering with us, your order is confirmed by chef " +
+                  `${req.user.username}. You will receive an email when your order is ready.`;
+                ses.send(user.email,
+                  `Spedish order ${res.resource.item._id}`,
+                  orderDetails, function (err, data, resonse) {
+                    if (err) return res.status(500).json({
+                      status: 'failure',
+                      message: "Email notification sent failure."
+                  });
+                });
+                break;
+              case "ready":
+                var orderDetails = "Thank you for ordering with us, your order is now ready for pick up.";
+                ses.send(user.email,
+                  `Spedish order ${res.resource.item._id}`,
+                  orderDetails, function (err, data, resonse) {
+                    if (err) return res.status(500).json({
+                      status: 'failure',
+                      message: "Email notification sent failure."
+                  });
+                });
+                break;
+              case "complete":
+                var orderDetails = `Thank you for picking up your ${res.resource.item.title}, we have you enjoy it! ` +
+                  `Meanwhile, please feel free to contact your chef ${req.user.username} at ${req.user.email} if you have any questions.`;
+                ses.send(user.email,
+                  `Spedish order ${res.resource.item._id}`,
+                  orderDetails, function (err, data, resonse) {
+                    if (err) return res.status(500).json({
+                      status: 'failure',
+                      message: "Email notification sent failure."
+                  });
+                });
+                break;
+              case "declined":
+                var orderDetails = `Chef ${req.user.username} has declined your order. Please feel ` +
+                  `free to contact your chef at ${req.user.email} if you have any questions.`
+                ses.send(user.email,
+                  `Spedish order ${res.resource.item._id}`,
+                  orderDetails, function (err, data, resonse) {
+                    if (err) return res.status(500).json({
+                      status: 'failure',
+                      message: "Email notification sent failure."
+                  });
+                });
+                break;
+            }
+          }
+        });
+
+        next();
       }
     })
     .index({

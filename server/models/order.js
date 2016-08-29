@@ -39,7 +39,7 @@ var orderSchema = new mongoose.Schema({
   },
   status: {
     type: String,
-    enum: ['ordered', 'confirmed', 'ready', 'complete', 'canceled'],
+    enum: ['ordered', 'confirmed', 'ready', 'complete', 'canceled', 'declined'],
     required: true
   },
   _uid: {
