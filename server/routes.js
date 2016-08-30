@@ -8,5 +8,6 @@ module.exports = {
   'availability': require('./controllers/availability'),
   'user_status': require('./controllers/auth/status'),
   'profile': require('./controllers/auth/profile'),
-  'gallery': require('./controllers/gallery')
+  'gallery': require('./controllers/gallery'),
+  'sellerPortal': require('./controllers/sellerPortal')
 };

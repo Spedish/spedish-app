@@ -24,7 +24,7 @@ module.exports = function(app, route, passport) {
         } else {
           res.resource.item._doc.canEdit = true;
         }
-        
+
         next();
       }
     })
@@ -50,6 +50,7 @@ module.exports = function(app, route, passport) {
             req.body.title = item.title;
             req.body.unit_price = item.unit_price;
             req.body.total_price = item.unit_price * req.body.count;
+            req.body._sid = item._uid;
           } else res.status(409).json({
             status: 'failure',
             message: "There's an issue processing your order, please try again later."
@@ -71,10 +72,10 @@ module.exports = function(app, route, passport) {
               message: "Update inventory failed."
             });
             console.log('Inventory successfully updated!');
-            var orderDetails = "Thank you for order with us, you will receive" +
-            "another email when your meal is ready.";
+            var orderDetails = "Thank you for ordering with us, please wait for your chef" +
+            "to confirm your order.";
             ses.send(req.user.email,
-              `Spedish order ${res.resource.item._id} confirmation`,
+              `Spedish order ${res.resource.item._id}`,
               orderDetails, function (err, data, resonse) {
                 if (err) return res.status(500).json({
                   status: 'failure',
@@ -95,6 +96,8 @@ module.exports = function(app, route, passport) {
 
           return false;
         }
+
+        req.modelQuery = this.model.where('_uid').equals(req.user.id)
 
         // Assign uid
         req.body._uid = req.user.id;

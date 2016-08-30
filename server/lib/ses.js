@@ -9,10 +9,10 @@ module.exports = {
   // Give SES the details and let it construct the message for you.
   return client.sendEmail({
        to: to
-     , from: 'master@spedish.com'
+     , from: 'notification@spedish.com'
      , cc: ''
      , subject: subject
-     , message: message
+     , message: message + "<br /><br />- spedish team"
      , altText: 'plain text'
     }, next);
   }
