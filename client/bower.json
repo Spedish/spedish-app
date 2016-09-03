@@ -19,7 +19,9 @@
     "angular-ui-bootstrap-datetimepicker": "^1.4.0",
     "angular-moment": "^1.0.0-beta.6",
     "angularMultipleSelect": "angular-multiple-select#^1.1.2",
-    "ngTimezone": "*"
+    "ngTimezone": "*",
+    "normalize-css": "^4.2.0",
+    "bootstrap-block-grid": "^1.1.7"
   },
   "devDependencies": {
     "angular-mocks": "^1.4.0"
