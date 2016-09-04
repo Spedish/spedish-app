@@ -14,7 +14,7 @@
 
         <!-- image of the item -->
         <!-- no image available-->
-        <div ng-if="!i.image" class=dish-image style="background-image: url(images/no-photo-available.png)"></div>
+        <div ng-if="!i.image" class=dish-image style="background-image: url(images/no-photo-available.png)" ng-click="goToItemPage(i)"></div>
         <!-- has image -->
         <div ng-if="i.image" class="dish-image" ng-style="{'background-image':'url({{i.image}})'}" ng-click="goToItemPage(i)"> 
         </div>

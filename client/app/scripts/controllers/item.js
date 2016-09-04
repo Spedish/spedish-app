@@ -82,10 +82,13 @@ angular.module('clientApp')
         // Form gallery links
         var galleryUrl = g_config.baseUrl + '/gallery';
         angular.forEach(responses, function(response) {
+
           var gid = response._gallery._id;
           // Has pic
-          if (response._gallery.order)
-            response.image = galleryUrl + '/' + gid + '/' + response._gallery.order;
+          if (response._gallery.order) {
+            response.image = galleryUrl + '/' + gid + '/';
+            response.image += response._gallery.order.length >1 ? response._gallery.order[0] : response._gallery.order;
+          } 
         });
 
         $scope.items = responses;

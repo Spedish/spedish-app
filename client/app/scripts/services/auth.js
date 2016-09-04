@@ -89,7 +89,7 @@ angular.module('clientApp')
       function(event, next, current) {
         AuthService.userSync();
 
-        if (next.$$route.requireAuth && !g_config.user)
+        if (next.$$route.requireAuth && (!g_config.user || g_config.user && !g_config.user.authenticated))
           $location.path('/login');
       });
   });
