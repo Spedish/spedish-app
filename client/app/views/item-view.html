@@ -1,13 +1,12 @@
 <ng-include src="'views/item-nav.html'" />
 
-<h4>Can be edited by this user? {{item.canEdit}}</h4>
-<br />
-
+<div ng-show="item.canEdit">
 <!-- Image carousel -->
 <div id="gallery" ng-controller="CarouselCtrl">
-  <div style="height: 500px; width: 888px">
+  <div class="col-xs-12 col-md-12 col-lg-12">
     <uib-carousel active="active" interval="rotateInterval" no-wrap="noWrapSlides">
-      <uib-slide ng-repeat="slide in slides track by slide.id" index="slide.id">
+      <!-- Now now, add max height for image, need to set a suggested height and width when buyer tries to upload a image -->
+      <uib-slide ng-repeat="slide in slides track by slide.id" index="slide.id" style="max-height:500px;">
         <img ng-src="{{slide.image}}" style="margin:auto;">
       </uib-slide>
     </uib-carousel>
@@ -24,3 +23,6 @@
   <p>Gallery ID: {{ item._gallery._id }}</p>
   <p>Image Order: {{ item._gallery.order }}</p>
 </div>
+</div>
+
+
