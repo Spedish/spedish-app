@@ -1,6 +1,8 @@
 var mongoose = require('mongoose');
 var orderModel = require('./order');
 var availabilityModel = require('./availability');
+var orderController = require("../controllers/order");
+
 
 var itemSchema = new mongoose.Schema({
   title: {
@@ -129,25 +131,37 @@ var autoPopulate = function(next) {
   next();
 }
 
+var order = {};
+order.count = 1;
+
 // apply complex logic filter
 var applyPreFilter = function(next) {
   this._postConditions = {};
 
   // Skip known keywords, since we will be doing post processing on it
-  if (this._conditions.abcd) {
-    this._postConditions['abcd'] = this._conditions.abcd;
-    delete this._conditions['abcd'];
+  if (this._conditions.pickup) {
+    this._postConditions['pickup'] = this._conditions.pickup;
+    order.pick_up_date = this._conditions.pickup;
+    delete this._conditions['pickup'];
   }
 
   next();
 }
 
-var applyPostFilter = function(results, next) {
-  if (this._postConditions.abcd)
+var isAvailable = function(item) {
+  return orderController.checkAvailability(item, order);
+}
+
+var applyPostFilter = function(result, next) {
+  if (this._postConditions.pickup)
   {
     console.log("perform post processing on this");
-  }
 
+    result = result.filter(isAvailable);
+
+    //console.log(aa);
+    console.log(result);
+  }
   next();
 }
 

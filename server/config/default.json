@@ -10,7 +10,7 @@
       "aws_secret_access_key": "3sVZIoUGVj8eQ37kAmO2bWLLZ3DCWmHI1/IvkHbs",
       "region": "https://email.us-west-2.amazonaws.com"
     },
-    "tmpDir": "/tmp/t",
-    "galleryStore": "/tmp/gallery"
+    "tmpDir": "/data/spedish/t",
+    "galleryStore": "/data/spedish/gallery"
   }
 }

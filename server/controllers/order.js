@@ -4,6 +4,63 @@ var auth = require('../lib/auth');
 var ses = require('../lib/ses');
 var Resource = require('resourcejs');
 
+var checkAvailability = function(item, order) {
+  var timezone = item.availability.timezone;
+  //Set default timezone
+  moment.tz.setDefault(timezone);
+  var pickUpDate = moment(order.pick_up_date, '"YYYY-MM-DDTHH:mm:ss.SSSZ"');
+  var currentDateTime = moment();
+  var pickUpTime = moment(pickUpDate);
+  var pickUpDayOfWeek = pickUpDate.weekday();
+
+  // Modify the date portion of time to the date portion from the other date.
+  function setDate(time, date) {
+    return moment(time, 'HH:mm:ss.SSSSZ')
+                .set('year', date.get('year'))
+                .set('month', date.get('month'))
+                .set('date', date.get('date'));
+  }
+
+  var checkPickUpWindow = function(pickUpTime) {
+    // TODO: Need to check status of lunch and dinner window
+    // Set the date of the start and end time to the same day from the pickup date
+    var lunchWindowStartTime = setDate(item.availability.pickup_window.lunch.start_time, pickUpTime);
+    var lunchWindowEndTime = setDate(item.availability.pickup_window.lunch.end_time, pickUpTime);
+    var dinnerWindowStartTime = setDate(item.availability.pickup_window.dinner.start_time, pickUpTime);
+    var dinnerWindowEndTime = setDate(item.availability.pickup_window.dinner.end_time, pickUpTime);
+    var isBetweenLunchHours = item.availability.pickup_window.lunch.status?
+      pickUpTime.isBetween(lunchWindowStartTime, lunchWindowEndTime, null, '[]'): false
+    var isBetweenDinnerHours = item.availability.pickup_window.dinner.status?
+      pickUpTime.isBetween(dinnerWindowStartTime, dinnerWindowEndTime, null, '[]'): false
+    return (isBetweenLunchHours || isBetweenDinnerHours);
+  }
+
+  //Inventory has to satify the order item count
+  if (order.count <= item.inventory) {
+    //If item is free sell, returns true
+    if (item.availability.pickup_window.free_sell) {
+      return true;
+    } else {
+      /*
+      If all following condition are satisfied, we will return true and process the order request:
+        1. Pickup date is on or after today
+        2. Item is available on this day of weekday
+        3. Pickup time is within lunch or dinner pickup window
+        4. Current time plus lead time is on or before pickup time
+      */
+      if (pickUpDate.isSameOrAfter(currentDateTime) &&
+          item.availability.day_of_week.get(pickUpDayOfWeek.toString()) &&
+          checkPickUpWindow(pickUpTime) &&
+          currentDateTime.add(item.availability.lead_time, 'minutes').isSameOrBefore(pickUpDate)) {
+        return order.count <= item.inventory;
+      } else {
+        return false;
+      }
+    }
+  } else {
+    return false;
+  }
+}
 module.exports = function(app, route, passport) {
   var Item = app.models.item;
 
@@ -113,65 +170,10 @@ module.exports = function(app, route, passport) {
       }
     })
 
-  var checkAvailability = function(item, order) {
-    var timezone = item.availability.timezone;
-    //Set default timezone
-    moment.tz.setDefault(timezone);
-    var pickUpDate = moment(order.pick_up_date, '"YYYY-MM-DDTHH:mm:ss.SSSZ"');
-    var currentDateTime = moment();
-    var pickUpTime = moment(pickUpDate);
-    var pickUpDayOfWeek = pickUpDate.weekday();
-
-    // Modify the date portion of time to the date portion from the other date.
-    function setDate(time, date) {
-      return moment(time, 'HH:mm:ss.SSSSZ')
-                  .set('year', date.get('year'))
-                  .set('month', date.get('month'))
-                  .set('date', date.get('date'));
-    }
-
-    var checkPickUpWindow = function(pickUpTime) {
-      // TODO: Need to check status of lunch and dinner window
-      // Set the date of the start and end time to the same day from the pickup date
-      var lunchWindowStartTime = setDate(item.availability.pickup_window.lunch.start_time, pickUpTime);
-      var lunchWindowEndTime = setDate(item.availability.pickup_window.lunch.end_time, pickUpTime);
-      var dinnerWindowStartTime = setDate(item.availability.pickup_window.dinner.start_time, pickUpTime);
-      var dinnerWindowEndTime = setDate(item.availability.pickup_window.dinner.end_time, pickUpTime);
-      var isBetweenLunchHours = item.availability.pickup_window.lunch.status?
-        pickUpTime.isBetween(lunchWindowStartTime, lunchWindowEndTime, null, '[]'): false
-      var isBetweenDinnerHours = item.availability.pickup_window.dinner.status?
-        pickUpTime.isBetween(dinnerWindowStartTime, dinnerWindowEndTime, null, '[]'): false
-      return (isBetweenLunchHours || isBetweenDinnerHours);
-    }
-
-    //Inventory has to satify the order item count
-    if (order.count <= item.inventory) {
-      //If item is free sell, returns true
-      if (item.availability.pickup_window.free_sell) {
-        return true;
-      } else {
-        /*
-        If all following condition are satisfied, we will return true and process the order request:
-          1. Pickup date is on or after today
-          2. Item is available on this day of weekday
-          3. Pickup time is within lunch or dinner pickup window
-          4. Current time plus lead time is on or before pickup time
-        */
-        if (pickUpDate.isSameOrAfter(currentDateTime) &&
-            item.availability.day_of_week.get(pickUpDayOfWeek.toString()) &&
-            checkPickUpWindow(pickUpTime) &&
-            currentDateTime.add(item.availability.lead_time, 'minutes').isSameOrBefore(pickUpDate)) {
-          return order.count <= item.inventory;
-        } else {
-          return false;
-        }
-      }
-    } else {
-      return false;
-    }
-  }
   // Return middleware.
   return function(req, res, next) {
     next();
   };
 };
+
+module.exports.checkAvailability = checkAvailability;
