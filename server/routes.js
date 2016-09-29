@@ -3,6 +3,7 @@ module.exports = {
   'item': require('./controllers/item'),
   'signup': require('./controllers/auth/signup'),
   'order': require('./controllers/order'),
+  'completeOrder': require('./controllers/completeOrder'),
   'login': require('./controllers/auth/login'),
   'logout': require('./controllers/auth/logout'),
   'availability': require('./controllers/availability'),

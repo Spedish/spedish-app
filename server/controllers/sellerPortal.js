@@ -49,7 +49,9 @@ module.exports = function(app, route, passport) {
                 });
                 break;
               case "ready":
-                var orderDetails = "Thank you for ordering with us, your order is now ready for pick up.";
+                var completeOrderUrl = "http://localhost:3000/completeOrder?orderId=" + updatedOrder._id + "&completeOrderId=" + updatedOrder.complete_order_id;
+                var orderDetails = "Thank you for ordering with us, your order is now ready for pick up. " +
+                "Plese click the following link to complete your order after picking up your meal: " + completeOrderUrl;
                 ses.send(user.email,
                   `Spedish order ${res.resource.item._id}`,
                   orderDetails, function (err, data, resonse) {

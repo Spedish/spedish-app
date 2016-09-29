@@ -3,6 +3,7 @@ var moment = require('moment-timezone');
 var auth = require('../lib/auth');
 var ses = require('../lib/ses');
 var Resource = require('resourcejs');
+var uuid = require('node-uuid');
 
 module.exports = function(app, route, passport) {
   var Item = app.models.item;
@@ -51,6 +52,7 @@ module.exports = function(app, route, passport) {
             req.body.unit_price = item.unit_price;
             req.body.total_price = item.unit_price * req.body.count;
             req.body._sid = item._uid;
+            req.body.complete_order_id = uuid.v4();
           } else res.status(409).json({
             status: 'failure',
             message: "There's an issue processing your order, please try again later."
@@ -72,11 +74,11 @@ module.exports = function(app, route, passport) {
               message: "Update inventory failed."
             });
             console.log('Inventory successfully updated!');
-            var orderDetails = "Thank you for ordering with us, please wait for your chef" +
+            var orderDetails = "Thank you for ordering with us, please wait for your chef " +
             "to confirm your order.";
             ses.send(req.user.email,
               `Spedish order ${res.resource.item._id}`,
-              orderDetails, function (err, data, resonse) {
+              orderDetails, function (err, data, res) {
                 if (err) return res.status(500).json({
                   status: 'failure',
                   message: "Email notification sent failure."

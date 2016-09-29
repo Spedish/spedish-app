@@ -49,6 +49,10 @@ var orderSchema = new mongoose.Schema({
   _sid: {
     type: String,
     required: true
+  },
+  complete_order_id: {
+    type: String,
+    require: true
   }
 });
 
