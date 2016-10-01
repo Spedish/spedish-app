@@ -49,7 +49,7 @@ module.exports = function(app, route, passport) {
                 });
                 break;
               case "ready":
-                var completeOrderUrl = "http://localhost:3000/completeOrder?orderId=" + updatedOrder._id + "&completeOrderId=" + updatedOrder.complete_order_id;
+                var completeOrderUrl = config.get('server.port') + "/order/" + updatedOrder._id + "/complete/" + updatedOrder.complete_order_id;
                 var orderDetails = "Thank you for ordering with us, your order is now ready for pick up. " +
                 "Plese click the following link to complete your order after picking up your meal: " + completeOrderUrl;
                 ses.send(user.email,

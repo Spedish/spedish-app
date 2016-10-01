@@ -11,6 +11,7 @@
       "region": "https://email.us-west-2.amazonaws.com"
     },
     "tmpDir": "/tmp/t",
-    "galleryStore": "/tmp/gallery"
+    "galleryStore": "/tmp/gallery",
+    "baseUrl": "http://localhost:3000"
   }
 }
