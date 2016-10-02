@@ -13,7 +13,7 @@ angular.module('clientApp').directive('itemView', function() {
 		},
         templateUrl: '/views/item-view-all-template.html',
         controller: function ($scope, $window) {
-            var sellerPage = $scope.sellerView === 'true';
+            var sellerMealsPage = $scope.sellerView === 'true';
 
             // Left pic add padding to right, right pic add padding to left
             $scope.getPaddingForDish = function(index) {
@@ -33,12 +33,12 @@ angular.module('clientApp').directive('itemView', function() {
 
             $scope.actionOnItem = function(i) {
                 var url = '/#/item/' + i._id + '/';
-                url += sellerPage ? 'edit' : 'order';
+                url += sellerMealsPage ? 'edit' : 'order';
                 $window.location.href = url;
             };
 
             $scope.getActionName = function() {
-                return sellerPage ? 'Edit' : 'Order';
+                return sellerMealsPage ? 'Edit' : 'Order';
             }
 
         }

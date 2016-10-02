@@ -22,7 +22,7 @@ angular.module('clientApp')
     };
 
     $scope.isSeller = function() {
-      return userUtil.canSell();
+      return userUtil.isSeller();
     }
     
   });
