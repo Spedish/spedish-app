@@ -1,4 +1,3 @@
-var Availability = require('../models/availability.js');
 var moment = require('moment');
 var auth = require('../lib/auth');
 

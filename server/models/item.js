@@ -1,6 +1,5 @@
 var mongoose = require('mongoose');
 var orderModel = require('./order');
-var availabilityModel = require('./availability');
 var orderController = require("../controllers/order");
 
 var dayOfWeek = new mongoose.Schema({
