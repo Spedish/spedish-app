@@ -1,6 +1,7 @@
 var Resource = require('resourcejs');
 var auth = require('../lib/auth');
 var ses = require('../lib/ses');
+var config = require('config');
 
 module.exports = function(app, route, passport) {
   var Order = app.models.order;
@@ -49,7 +50,7 @@ module.exports = function(app, route, passport) {
                 });
                 break;
               case "ready":
-                var completeOrderUrl = config.get('server.port') + "/order/" + updatedOrder._id + "/complete/" + updatedOrder.complete_order_id;
+                var completeOrderUrl = config.get('server.baseUrl') + "/order/" + updatedOrder._id + "/complete/" + updatedOrder.complete_order_id;
                 var orderDetails = "Thank you for ordering with us, your order is now ready for pick up. " +
                 "Plese click the following link to complete your order after picking up your meal: " + completeOrderUrl;
                 ses.send(user.email,
