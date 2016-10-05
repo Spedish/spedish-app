@@ -35,13 +35,6 @@ module.exports = function(app, route, passport) {
         }
       })
     .index({
-        // before: function(req, res, next) {
-        //   // if (req.query) {
-        //   //   //var query = 'availability.day_of_week.' +req.query.day_of_week
-        //   //   this.model.where('availability.day_of_week.' + req.query.day_of_week).equals('true');
-        //   // }
-        //   // req.modelQuery = this.model.where('age').gt(18);
-        // },
         after: function(req, res, next) {
           // Disable caching for content files
           res.header("Cache-Control", "no-cache, no-store, must-revalidate");
