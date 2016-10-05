@@ -13,6 +13,10 @@ angular.module('clientApp')
     $scope.viewItem = true;
 
     $scope.item = Item.one($routeParams.id).get().$object;
+
+    $scope.getEmbedMapSrc = function() {
+      return g_config.embeddedMapUrl + $scope.item.street + ',' + $scope.item.city + ',' + $scope.item.zip;
+    }
   })
 
 .controller('CarouselCtrl', function($scope, Item, $routeParams) {
