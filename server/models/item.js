@@ -152,15 +152,18 @@ var isAvailable = function(item) {
   return orderController.checkAvailability(item, order);
 }
 
-var applyPostFilter = function(result, next) {
+var applyPostFilter = function(results, next) {
   if (this._postConditions.pickup)
   {
     console.log("perform post processing on this");
 
-    result = result.filter(isAvailable);
+    // if (!isAvailable(JSON.stringify(docs))) {
+    //   docs.doc = {};
+    // }
+    results = results.filter(isAvailable);
 
     //console.log(aa);
-    console.log(result);
+    console.log(results);
   }
   next();
 }
