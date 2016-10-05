@@ -27,8 +27,13 @@ angular
     'ui.bootstrap',
     'ngTimezone'
   ])
-  .config(function(ENV, $httpProvider, $routeProvider, RestangularProvider) {
+  .config(function(ENV, $httpProvider, $routeProvider, RestangularProvider, $sceDelegateProvider) {
     initConfig(ENV);
+
+    $sceDelegateProvider.resourceUrlWhitelist([
+      'self',
+      'https://www.google.com/**'
+    ]);
 
     $httpProvider.defaults.withCredentials = true;
 
