@@ -1,0 +1,29 @@
+<ul class="dish-panel block-grid-xs-1 block-grid-sm-1 block-grid-md-2" style="margin: 0;">
+    <li class="dish-details" ng-repeat="i in items" ng-style="getPaddingForDish($index)">
+        <div class="dish-content-wrapper">
+
+        <!-- image of the item -->
+        <!-- no image available-->
+        <div ng-if="!i.image" class=dish-image style="background-image: url(images/no-photo-available.png)" ng-click="goToItemPage(i)"></div>
+        <!-- has image -->
+        <div ng-if="i.image" class="dish-image" ng-style="{'background-image':'url({{i.image}})'}" ng-click="goToItemPage(i)"> 
+        </div>
+
+        <!-- add extra space -->
+        <hr class="dish-image-content-spacer">
+
+        <!-- item title -->
+        <h4 class="dish-title">{{i.title}}</h4>
+
+        <!-- Seller -->
+        <!-- TODO: after adding seller page, update the link ng-href -->
+        <p class="dish-seller-name">By <a ng-href="">{{i.contact_name}}, {{i.city}}</a></p>
+
+        <!-- price -->
+        <div class="order-details">
+            <h4 class="dish-price">{{i.unit_price | currency:"$"}}</h4>
+            <button type="button" class="btn btn-primary" ng-click="actionOnItem(i)">{{getActionName()}}</button>
+        </div>
+        </div>
+    </li>
+</ul>

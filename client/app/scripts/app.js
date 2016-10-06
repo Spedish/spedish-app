@@ -27,8 +27,13 @@ angular
     'ui.bootstrap',
     'ngTimezone'
   ])
-  .config(function(ENV, $httpProvider, $routeProvider, RestangularProvider) {
+  .config(function(ENV, $httpProvider, $routeProvider, RestangularProvider, $sceDelegateProvider) {
     initConfig(ENV);
+
+    $sceDelegateProvider.resourceUrlWhitelist([
+      'self',
+      'https://www.google.com/**'
+    ]);
 
     $httpProvider.defaults.withCredentials = true;
 
@@ -81,6 +86,11 @@ angular
         controller: 'ItemCtrl',
         controllerAs: 'item'
       })
+      .when('/seller-meal', {
+        templateUrl: 'views/seller-meal.html',
+        controller: 'sellerMealCtrl',
+        controllerAs: 'mealCtrl'
+      })
       .when('/create/item', {
         templateUrl: 'views/item-add.html',
         controller: 'ItemAddCtrl',
@@ -115,7 +125,7 @@ angular
         controller: 'OrderViewCtrl',
         controllerAs: 'orderView'
       })
-      .when('/item/:id/orders', {
+      .when('/orders', {
         templateUrl: 'views/orders.html',
         controller: 'OrdersCtrl',
         controllerAs: 'orders'

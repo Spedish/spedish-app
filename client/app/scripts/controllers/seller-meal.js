@@ -1,14 +1,6 @@
 'use strict';
-
-/**
- * @ngdoc function
- * @name clientApp.controller:ItemCtrl
- * @description
- * # ItemCtrl
- * Controller of the clientApp
- */
 angular.module('clientApp')
-  .controller('ItemCtrl', function($scope, Item, $window) {
+  .controller('sellerMealCtrl', function($scope, Item, $window) {
 
     // Pagination config
     $scope.currentPage = 1;
@@ -33,24 +25,13 @@ angular.module('clientApp')
 
     function initialize() {
       getItem();
-      getNextSevenDays();
-    };
-
-    function getNextSevenDays() {
-      $scope.nextSevenDays = [];
-      // current day
-      var dateStart = moment().format('MMM DD');
-      $scope.nextSevenDays.push(dateStart);
-      for (var i = 1; i < 7; i++) {
-        var dateAfter = moment().add(i, 'd').format('MMM DD');
-        $scope.nextSevenDays.push(dateAfter);
-      }
     };
 
     function getItemOffset() {
       return ($scope.currentPage - 1) * $scope.limit;
     };
 
+    //TODO: Update this get call to only get item that belongs to the specific seller
     function getItem() {
       Item.getList(requestParams).then(function(responses) {
 

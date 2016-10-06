@@ -3,6 +3,7 @@ var moment = require('moment-timezone');
 var auth = require('../lib/auth');
 var ses = require('../lib/ses');
 var Resource = require('resourcejs');
+var uuid = require('node-uuid');
 
 var checkAvailability = function(item, order) {
   var timezone = item.availability.timezone;
@@ -64,6 +65,52 @@ var checkAvailability = function(item, order) {
 module.exports = function(app, route, passport) {
   var Item = app.models.item;
 
+  app.get('/order/:orderId/complete/:completeOrderId', function(req, res) {
+
+    var orderId = req.params.orderId;
+    var completeOrderId = req.params.completeOrderId;
+
+    Order.findById(orderId, function(err, order) {
+      if (err) {
+        res.status(404).json({
+          status: 'failure',
+          message: "Order with orderId " + orderId + " can not be found."
+        });
+      }
+      else {
+        if (order.status == 'complete') {
+          res.status(200).json("Order is already complete.");
+        }
+        else {
+          if (order.complete_order_id == completeOrderId) {
+            if (order.status == 'ready') {
+              order.status = 'complete';
+              order.save(function(err, order) {
+                if (err) res.status(500).json({
+                  status: 'failure',
+                  message: "Update order with orderId " + orderId + " failed."
+                });
+                res.status(200).json("Order is complete.");
+              });
+            }
+            else {
+              res.status(500).json({
+                status: 'failure',
+                message: "Can not complete order with orderId " + orderId + ". Order is not under ready status."
+              });
+            }
+          }
+          else {
+            res.status(404).json({
+              status: 'failure',
+              message: "Order with orderId " + orderId + " does not contain completeOrderId " + completeOrderId + " ."
+            });
+          }
+        }
+      }
+    });
+  });
+
   Resource(app, '', route, app.models.order)
     .get({
       before: function(req, res, next) {
@@ -108,6 +155,7 @@ module.exports = function(app, route, passport) {
             req.body.unit_price = item.unit_price;
             req.body.total_price = item.unit_price * req.body.count;
             req.body._sid = item._uid;
+            req.body.complete_order_id = uuid.v4();
           } else res.status(409).json({
             status: 'failure',
             message: "There's an issue processing your order, please try again later."
@@ -129,11 +177,11 @@ module.exports = function(app, route, passport) {
               message: "Update inventory failed."
             });
             console.log('Inventory successfully updated!');
-            var orderDetails = "Thank you for ordering with us, please wait for your chef" +
+            var orderDetails = "Thank you for ordering with us, please wait for your chef " +
             "to confirm your order.";
             ses.send(req.user.email,
               `Spedish order ${res.resource.item._id}`,
-              orderDetails, function (err, data, resonse) {
+              orderDetails, function (err, data, res) {
                 if (err) return res.status(500).json({
                   status: 'failure',
                   message: "Email notification sent failure."

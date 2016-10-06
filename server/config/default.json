@@ -11,6 +11,7 @@
       "region": "https://email.us-west-2.amazonaws.com"
     },
     "tmpDir": "/data/spedish/t",
-    "galleryStore": "/data/spedish/gallery"
+    "galleryStore": "/data/spedish/gallery",
+    "baseUrl": "http://localhost:3000"
   }
 }

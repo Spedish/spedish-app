@@ -29,6 +29,7 @@
     "moment": "2.14.1",
     "moment-timezone": "0.5.5",
     "aws-sdk": "latest",
-    "node-ses": "2.0.0"
+    "node-ses": "2.0.0",
+    "node-uuid": "1.4.7"
   }
 }

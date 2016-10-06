@@ -24,8 +24,8 @@ body {
 
 /* Custom page header */
 .header {
-  border-bottom: 1px solid #e5e5e5;
   margin-bottom: 10px;
+
 
   /* Make the masthead heading the same height as the navigation */
   h3 {
@@ -89,3 +89,70 @@ body {
     border-bottom: 0;
   }
 }
+.grid-item-time {
+  border: .0625rem solid #e0e7e9;
+  border-right: none;
+}
+
+.grid-item-time:last-child {
+  border-right: .0625rem solid #e0e7e9;
+}
+
+#delivery-time-selector {
+  height: 55px;
+}
+
+.dish-details {
+  margin-top: 15px;
+  height:35rem;
+  list-style-position:inside;
+}
+
+.dish-content-wrapper {
+  height: 100%;
+  border: .0625rem solid #d2dcdf;
+}
+
+.dish-image {
+  height: 20rem;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  border: none;
+  left: 0;
+  top: 0;
+  cursor: pointer;
+}
+
+hr.dish-image-content-spacer {
+  margin: 0;
+  padding: 1rem;
+  border: none;
+}
+
+.dish-title, .dish-price {
+  font-style: normal;
+  font-weight: 300;
+  margin: 0;
+  margin-left: 1.5rem;
+ }
+
+ .dish-seller-name {
+  cursor: pointer;
+  padding-top: 1rem;
+  color:#757575;
+  margin-left: 1.5rem;
+ }
+
+ .dish-price {
+  display:inline;
+  vertical-align: -webkit-baseline-middle;
+ }
+
+ .order-details {
+  position: relative;
+ }
+ .order-details button {
+    right: 2rem;
+    position: absolute;
+ }
