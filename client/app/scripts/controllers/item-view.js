@@ -10,8 +10,6 @@
 angular.module('clientApp')
   .controller('ItemViewCtrl', function($scope, Item, $routeParams) {
 
-    $scope.viewItem = true;
-
     $scope.item = Item.one($routeParams.id).get().$object;
 
     $scope.getEmbedMapSrc = function() {
