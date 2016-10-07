@@ -11,3 +11,4 @@ client/app/scripts/helper.js
 
 # Server stuff #
 *nohup*
+*.DS_Store
