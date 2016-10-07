@@ -223,5 +223,3 @@ module.exports = function(app, route, passport) {
     next();
   };
 };
-
-module.exports.checkAvailability = checkAvailability;
