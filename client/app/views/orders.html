@@ -24,4 +24,47 @@
         </tr>
     </tbody>
 </table> -->
-Coming soon
+<div ng-repeat="order in orders">
+    <table class="table order-basic-info">
+        <thead>
+            <tr class="no-border">
+                <th>Order Placed</th>
+                <th>Pick Up Time</th>
+                <th>Order Number</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            <tr class="no-border">
+                <td>{{order.create_date | amUtc | amLocal | amDateFormat:'MM.DD.YYYY HH:mm'}}</td>
+                <td>{{order.pick_up_date | amUtc | amLocal | amDateFormat:'MM.DD.YYYY HH:mm'}}</td>
+                <td>{{order._id}}</td>
+                <td>{{order.status}}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="table order-detail-info">
+        <!-- TODO: Redesign mobile view -->
+        <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2 order-item-image" style="background-image: url(images/image-coming-soon.png)"">
+        </div>
+        <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4 order-item-info" style="height:100%;">
+            <ul>
+                <li><span></span></li>
+                <li><span style="font-size:18px;">Title</span></li>
+                <li><span>Sold by</span></li>
+                <li><span>Pick up location</span></li>
+            </ul>
+        </div>
+        <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4 order-item-info" style="height:100%;display:table">
+        </div>
+
+        <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2 buton-action-container">
+            <div class="button-wrapper">
+                <button type="button" class="btn btn-xs btn-danger order-cancel-button" style="white-space: normal;">Cancel</button>
+            </div>
+            
+        </div>
+    </div>
+</div>

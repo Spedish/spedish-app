@@ -156,3 +156,66 @@ hr.dish-image-content-spacer {
     right: 2rem;
     position: absolute;
  }
+
+/*view order page style*/
+.no-border th{
+  border-bottom: 0 !important;
+}
+
+.no-border td{
+  border-top: 0 !important;
+}
+
+.order-basic-info {
+  background-color: #f6f6f6;
+  border: .0625rem solid #d2dcdf;
+}
+
+.order-detail-info{
+  margin-top:-20px;
+  border-bottom: .0625rem solid #d2dcdf;
+  border-left: .0625rem solid #d2dcdf;
+  border-right: .0625rem solid #d2dcdf;
+  height:185px;
+}
+
+.order-item-image{
+  height: 100%;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: contain;
+  border: none;
+  left: 0;
+  top: 0;
+  cursor: pointer;
+}
+.buton-action-container{
+  display: table;
+  height:100%
+}
+
+.button-wrapper{
+  display: table-cell;
+  vertical-align: middle;
+  text-align: center;
+}
+
+.order-cancel-button{
+  vertical-align: middle;
+  display: block;
+  margin: 0 auto;
+}
+
+.order-item-info ul{
+    height:100%;
+    display: table;
+    table-layout: fixed;
+    width: 100%;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+.order-item-info li
+{
+    display: table-row;
+}
