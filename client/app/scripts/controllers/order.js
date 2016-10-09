@@ -24,7 +24,7 @@ angular.module('clientApp')
     var dateInAWeek = (new Date(dateTimeNow)).setDate(dateTimeNow.getDate() + 7);
 
     Item.one($routeParams.id).get().then(function(item) {
-      $scope.order.item_id = $scope.item._id;
+      $scope.order.item = $scope.item._id;
       $scope.order.status = 'ordered';
       $scope.order.pick_up_date = new Date();
       $scope.showDateTimePicker = $scope.item.availability.pickup_window.free_sell;
