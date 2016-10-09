@@ -150,7 +150,6 @@ module.exports = function(app, route, passport) {
           //TODO: Provide details on the response instead of a boolean, consider
           //throw exceptions
           if (checkAvailability(item, req.body)) {
-            item.inventory = (item.inventory - req.body.count);
             req.body.title = item.title;
             req.body.unit_price = item.unit_price;
             req.body.total_price = item.unit_price * req.body.count;
@@ -165,30 +164,33 @@ module.exports = function(app, route, passport) {
         });
       },
       after: function(req, res, next) {
-        Item.findById(req.body.item, function(err, item) {
-          if (err) return res.status(404).json({
-            status: 'failure',
-            message: "Item not found."
-          });
-          item.orders.push(res.resource.item._id);
-          item.save(function(err, docs) {
-            if (err) return res.status(500).json({
+        if (res.statusCode != 409) {
+          Item.findById(req.body.item, function(err, item) {
+            if (err) return res.status(404).json({
               status: 'failure',
-              message: "Update inventory failed."
+              message: "Item not found."
             });
-            console.log('Inventory successfully updated!');
-            var orderDetails = "Thank you for ordering with us, please wait for your chef " +
-            "to confirm your order.";
-            ses.send(req.user.email,
-              `Spedish order ${res.resource.item._id}`,
-              orderDetails, function (err, data, res) {
-                if (err) return res.status(500).json({
-                  status: 'failure',
-                  message: "Email notification sent failure."
+            item.orders.push(res.resource.item._id);
+            item.inventory = (item.inventory - req.body.count);
+            item.save(function(err, docs) {
+              if (err) return res.status(500).json({
+                status: 'failure',
+                message: "Update inventory failed."
+              });
+              console.log('Inventory successfully updated!');
+              var orderDetails = "Thank you for ordering with us, please wait for your chef " +
+              "to confirm your order.";
+              ses.send(req.user.email,
+                `Spedish order ${res.resource.item._id}`,
+                orderDetails, function (err, data, res) {
+                  if (err) return res.status(500).json({
+                    status: 'failure',
+                    message: "Email notification sent failure."
+                });
               });
             });
           });
-        });
+        }
 
         next();
       }
