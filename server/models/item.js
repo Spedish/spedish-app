@@ -159,7 +159,6 @@ itemSchema.pre('save', function(next) {
 // populate all referenced collections on item
 var autoPopulate = function(next) {
   this.populate('_gallery');
-  this.populate('orders');
   next();
 }
 
