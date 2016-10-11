@@ -131,6 +131,14 @@ var itemSchema = new mongoose.Schema({
       message: '{VALUE} contains invalid option'
     }
   },
+  rating_count: {
+    type: Number,
+    required: false
+  },
+  review_count: {
+    type: Number,
+    required: false
+  },
   _gallery: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'gallery',
