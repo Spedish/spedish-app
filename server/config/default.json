@@ -22,7 +22,7 @@
       "url": "mongodb://localhost:27017/spedish"
     },
     "port": 3000,
-    "CORSOrigin": "http://spedish:9000",
+    "CORSOrigin": "http://spedish.com:9000",
     "awsKeys": {
       "aws_access_key_id": "AKIAIUJBP6UY2Y2HUQGA",
       "aws_secret_access_key": "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",
