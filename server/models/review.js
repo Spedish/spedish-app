@@ -3,7 +3,8 @@ var reviewModel = require('./review');
 
 var reviewSchema = new mongoose.Schema({
   rating: {
-    type: number,
+    type: Number,
+    // update enum regex.
     enum: [1, 2, 3, 4, 5],
     required: true
   },
@@ -37,9 +38,12 @@ var reviewSchema = new mongoose.Schema({
    _sid: {
      type: String,
      required: true
-   },
+   }
+ },
+ {
    timestamps: true
- });
+ }
+);
 
 // Export the model.
 var Review = mongoose.model('Review', reviewSchema);

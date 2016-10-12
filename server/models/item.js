@@ -25,20 +25,22 @@ var pickupWindows = new mongoose.Schema({
 });
 
 var availabilitySchema = new mongoose.Schema({
-  day_of_week: dayOfWeek,
-  lead_time: {
-    type: Number,
-    required: true
+    day_of_week: dayOfWeek,
+    lead_time: {
+      type: Number,
+      required: true
+    },
+    pickup_window: pickupWindows,
+    timezone: String,
+    _uid: {
+      type: String,
+      required: true
+    }
   },
-  pickup_window: pickupWindows,
-  timezone: String,
-  _uid: {
-    type: String,
-    required: true
+  {
+    timestamps: true
   }
-}, {
-  timestamps: true
-});
+);
 
 var itemSchema = new mongoose.Schema({
   title: {
