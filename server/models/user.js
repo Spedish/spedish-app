@@ -33,8 +33,13 @@ var userSchema = mongoose.Schema({
   thirdParty_id: String,
   thirdParty_token: String,
   thirdParty_email: String,
-  thirdParty_name: String
+  thirdParty_name: String,
 
+  _gallery: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'gallery',
+    required: false
+  }
 });
 
 // methods ======================
