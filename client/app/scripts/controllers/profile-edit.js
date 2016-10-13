@@ -1,5 +1,7 @@
 'use strict';
 
+var g_scope;
+
 angular.module('clientApp')
   .controller('ProfileEditCtrl', function ($scope, AuthService, GalleryService) {
     AuthService.getProfile()
@@ -7,10 +9,19 @@ angular.module('clientApp')
         $scope.user = data;
       });
 
+    // TODO: very ugly... need to get rid of this
+    g_scope = $scope;
+
     $scope.startGallery = function() {
       GalleryService.createGID()
         .then(function(data) {
           $scope.user._gallery = data.data.gid;
+          // TODO: This needs to be changed, its tied to item
+          $scope.item = {};
+          $scope.item._gallery = data.data.gid;
+          $scope.preloadDone = true;
+          // TODO: Remove the need for this option, its tied to item
+          $scope.addItem = true;
         });
     }
 
