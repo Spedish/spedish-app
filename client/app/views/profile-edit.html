@@ -2,6 +2,13 @@
 <h3 ng-if="user.isSeller">Congrats! You can sell stuff</h3>
 <h3 ng-if="!user.isSeller">You are not yet a seller</h3>
 
+<div ng-if="!user._gallery">
+  <button type="button" ng-click="startGallery()">Upload profile photo</button>
+</div>
+<div ng-if="user._gallery">
+  <div ng-include src="'views/gallery.html'" />
+</div>
+
 <div>
   <form name="profile" id="profile">
     <div>
@@ -31,6 +38,9 @@
     <div>
       <label>Contact:</label>
       <input type="text" ng-model="user.contact" name="contact" id="contact" />
+    </div>
+    <div>
+      <input type="text" ng-value="{{profile._gallery}}" />
     </div>
 
     <input type="submit" ng-click="saveProfile()" value="Update" />

@@ -1,11 +1,18 @@
 'use strict';
 
 angular.module('clientApp')
-  .controller('ProfileEditCtrl', function ($scope, AuthService) {
+  .controller('ProfileEditCtrl', function ($scope, AuthService, GalleryService) {
     AuthService.getProfile()
       .success(function(data, status) {
         $scope.user = data;
       });
+
+    $scope.startGallery = function() {
+      GalleryService.createGID()
+        .then(function(data) {
+          $scope.user._gallery = data.data.gid;
+        });
+    }
 
     $scope.saveProfile = function() {
       var user = {
