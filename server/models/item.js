@@ -135,10 +135,12 @@ var itemSchema = new mongoose.Schema({
   },
   rating_count: {
     type: Number,
+    default: 0,
     required: false
   },
   review_count: {
     type: Number,
+    default: 0,
     required: false
   },
   _gallery: {
