@@ -5,6 +5,8 @@ module.exports = function(app, route, passport) {
 
   var Item = app.models.item;
   var Review = app.models.review;
+  var Order = app.models.order;
+
   // Setup the controller for REST;
   Resource(app, '', route, Review)
     .get({
@@ -34,7 +36,7 @@ module.exports = function(app, route, passport) {
           if (review) {
             return res.status(409).json({
               status: 'failure',
-              message: "A review is already posted by this user."
+              message: "A review is already posted for this order."
             });
           }
           // Assign uid
@@ -47,7 +49,7 @@ module.exports = function(app, route, passport) {
             });
             //Assign seller id to the review
             req.body._sid = item._uid;
-            next();
+            return auth.isResOwnerResolveChained(req, res, next, req.body.order, Order);
           });
         });
       },
