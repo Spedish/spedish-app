@@ -26,31 +26,40 @@ module.exports = function(app, route, passport) {
           return res.status(403).json({'error': 'no user currently logged in'}).end();
         }
 
-        Review.findOne({ 'order': req.body.order}, function(err, review) {
-          if (err) {
-            return res.status(404).json({
-              status: 'failure',
-              message: "System error"
-            });
-          }
-          if (review) {
+        Order.findById(req.body.order, function(err, order) {
+          if (order.status != "complete") {
             return res.status(409).json({
               status: 'failure',
-              message: "A review is already posted for this order."
+              message: "Order is not completed yet."
+            });
+          } else {
+            Review.findOne({ 'order': req.body.order}, function(err, review) {
+              if (err) {
+                return res.status(404).json({
+                  status: 'failure',
+                  message: "System error"
+                });
+              }
+              if (review) {
+                return res.status(409).json({
+                  status: 'failure',
+                  message: "A review is already posted for this order."
+                });
+              }
+              // Assign uid
+              req.body._uid = req.user.id;
+
+              Item.findById(req.body.item, function(err, item) {
+                if (err) return res.status(404).json({
+                  status: 'failure',
+                  message: "Item not found."
+                });
+                //Assign seller id to the review
+                req.body._sid = item._uid;
+                return auth.isResOwnerResolveChained(req, res, next, req.body.order, Order);
+              });
             });
           }
-          // Assign uid
-          req.body._uid = req.user.id;
-
-          Item.findById(req.body.item, function(err, item) {
-            if (err) return res.status(404).json({
-              status: 'failure',
-              message: "Item not found."
-            });
-            //Assign seller id to the review
-            req.body._sid = item._uid;
-            return auth.isResOwnerResolveChained(req, res, next, req.body.order, Order);
-          });
         });
       },
       after: function(req, res, next) {
