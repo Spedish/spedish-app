@@ -180,8 +180,8 @@ module.exports = function(app, route, passport) {
               console.log('Inventory successfully updated!');
               var orderDetails = "Thank you for ordering with us, please wait for your chef " +
               "to confirm your order.";
-              ses.send(req.user.email,
-                `Spedish order ${res.resource.item._id}`,
+              ses.send(req.user,
+                `order ${res.resource.item._id}`,
                 orderDetails, function (err, data, res) {
                   if (err) return res.status(500).json({
                     status: 'failure',

@@ -1,11 +1,14 @@
 var Resource = require('resourcejs');
 var auth = require('../lib/auth');
+var ses = require('../lib/ses');
+var config = require('config');
 
 module.exports = function(app, route, passport) {
 
   var Item = app.models.item;
   var Review = app.models.review;
   var Order = app.models.order;
+  var User = app.models.user;
 
   // Setup the controller for REST;
   Resource(app, '', route, Review)
@@ -92,6 +95,27 @@ module.exports = function(app, route, passport) {
     .patch({
         before: function(req, res, next) {
           return auth.isResOwnerResolveChained(req, res, next, req.params.reviewId, app.models.review);
+        },
+        after: function(req, res, next) {
+          User.findById(res.resource.item._uid, function(err, user) {
+            if (err || !user) {
+              console.error('Cannot find user ' + res.resource.item._uid);
+              return res.status(404).json({error: 'user not found'});
+            } else {
+              var reviewResponseUrl = config.get('server.baseUrl') + "/review/" + res.resource.item._id;
+              var reviewResponse = `Your chef has replied to your review comment, please check it here: ` +
+                `${reviewResponseUrl}`;
+              ses.send(user,
+                "new review response",
+                reviewResponse, function (err, data, resonse) {
+                  if (err) return res.status(500).json({
+                    status: 'failure',
+                    message: "Email notification sent failure."
+                });
+              });
+              next();
+            }
+          });
         }
       })
     .index({
