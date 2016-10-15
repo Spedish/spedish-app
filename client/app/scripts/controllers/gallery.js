@@ -35,7 +35,7 @@ angular.module('clientApp')
 
             var that = this;
             data.scope.$apply(function () {
-                data.handleResponse.call(that, e, data);
+              data.handleResponse.call(that, e, data);
             });
 
             if (data.result && data.result.order && data.result.gid) {
