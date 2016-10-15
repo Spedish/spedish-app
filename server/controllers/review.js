@@ -66,7 +66,8 @@ module.exports = function(app, route, passport) {
         });
       },
       after: function(req, res, next) {
-        if (res.statusCode == 200) {
+        if (res.resource.status >= 200 && res.resource.status < 300) {
+          // first update the review count and rating on item
           Item.findById(req.body.item, function(err, item) {
             if (err) return res.status(404).json({
               status: 'failure',
@@ -77,13 +78,28 @@ module.exports = function(app, route, passport) {
             item.save(function(err, docs) {
               if (err) return res.status(500).json({
                 status: 'failure',
-                message: "Update review counts failed."
+                message: "Update review counts on item failed."
               });
               console.log('Review counts successfully updated on item!');
             });
+            // then update the review count and rating on user
+            User.findById(item._uid, function(err, user) {
+              if (err) return res.status(404).json({
+                status: 'failure',
+                message: "User not found."
+              });
+              user.rating_count += req.body.rating;
+              user.review_count++;
+              user.save(function(err, docs) {
+                if (err) return res.status(500).json({
+                  status: 'failure',
+                  message: "Update review counts on user account failed."
+                });
+                console.log('Review counts successfully updated on user account!');
+              });
+            });
           });
         }
-
         next();
       }
     })
@@ -102,6 +118,7 @@ module.exports = function(app, route, passport) {
               console.error('Cannot find user ' + res.resource.item._uid);
               return res.status(404).json({error: 'user not found'});
             } else {
+              // TODO: Update the url to the actual review page on the ui
               var reviewResponseUrl = config.get('server.baseUrl') + "/review/" + res.resource.item._id;
               var reviewResponse = `Your chef has replied to your review comment, please check it here: ` +
                 `${reviewResponseUrl}`;
@@ -143,23 +160,45 @@ module.exports = function(app, route, passport) {
               status: 'failure',
               message: "Review not found."
             });
-            Item.findById(review.item, function(err, item) {
+            req.review = review;
+          });
+          return auth.isResOwnerResolveChained(req, res, next, req.params.reviewId, app.models.review);
+        },
+        after: function(req, res, next) {
+          if (res.resource.status >= 200 && res.resource.status < 300) {
+            Item.findById(req.review.item, function(err, item) {
               if (err) return res.status(404).json({
                 status: 'failure',
                 message: "Item not found."
               });
-              item.rating_count -= review.rating;
+              item.rating_count -= req.review.rating;
               item.review_count--;
               item.save(function(err, docs) {
                 if (err) return res.status(500).json({
                   status: 'failure',
-                  message: "Update review counts failed."
+                  message: "Update review counts on item failed."
                 });
                 console.log('Review counts successfully updated on item!');
               });
+              // then update the review count and rating on user
+              User.findById(item._uid, function(err, user) {
+                if (err) return res.status(404).json({
+                  status: 'failure',
+                  message: "User not found."
+                });
+                user.rating_count -= req.review.rating;
+                user.review_count--;
+                user.save(function(err, docs) {
+                  if (err) return res.status(500).json({
+                    status: 'failure',
+                    message: "Update review counts on user account failed."
+                  });
+                  console.log('Review counts successfully updated on user account!');
+                });
+              });
             });
-          });
-          return auth.isResOwnerResolveChained(req, res, next, req.params.reviewId, app.models.review);
+          }
+          next();
         }
       })
 

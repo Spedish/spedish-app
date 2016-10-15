@@ -37,10 +37,12 @@ var userSchema = mongoose.Schema({
   // rating_count/review_count rounds to .5 will be the star rating for this seller
   rating_count: {
     type: Number,
+    default: 0,
     required: false
   },
   review_count: {
     type: Number,
+    default: 0,
     required: false
   }
 });

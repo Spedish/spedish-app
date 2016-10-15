@@ -1,7 +1,6 @@
 var mongoose = require('mongoose');
 var reviewModel = require('./review');
 var _ = require('lodash');
-var ha = "value";
 
 var reviewSchema = new mongoose.Schema({
   rating: {

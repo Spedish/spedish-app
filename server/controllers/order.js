@@ -164,7 +164,7 @@ module.exports = function(app, route, passport) {
         });
       },
       after: function(req, res, next) {
-        if (res.statusCode != 409) {
+        if (res.resource.status >= 200 && res.resource.status < 300) {
           Item.findById(req.body.item, function(err, item) {
             if (err) return res.status(404).json({
               status: 'failure',
@@ -212,9 +212,11 @@ module.exports = function(app, route, passport) {
         next();
       },
       after: function(req, res, next) {
-        res.resource.item.forEach(function(item, idx, arr) {
-          item._doc.canEdit = true;
-        });
+        if (res.resource.status >= 200 && res.resource.status < 300) {
+          res.resource.item.forEach(function(item, idx, arr) {
+            item._doc.canEdit = true;
+          });
+        }
 
         next();
       }
