@@ -1,11 +1,18 @@
 var mongoose = require('mongoose');
 var reviewModel = require('./review');
+var _ = require('lodash');
+var ha = "value";
 
 var reviewSchema = new mongoose.Schema({
   rating: {
     type: Number,
     // update enum regex.
-    enum: [1, 2, 3, 4, 5],
+    validate: {
+      validator: function(value) {
+        return _.contains([1, 2, 3, 4, 5], value);
+      },
+      message: "Accepted value for rating is [1, 2, 3, 4, 5]."
+    },
     required: true
   },
    buyer_review: {
