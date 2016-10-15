@@ -110,7 +110,7 @@ module.exports = function(app, route, passport) {
       })
     .patch({
         before: function(req, res, next) {
-          return auth.isResOwnerResolveChained(req, res, next, req.params.reviewId, app.models.review);
+          return auth.isResOwnedBySellerResolveChained(req, res, next, req.params.reviewId, app.models.review);
         },
         after: function(req, res, next) {
           User.findById(res.resource.item._uid, function(err, user) {
