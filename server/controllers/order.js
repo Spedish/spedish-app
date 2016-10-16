@@ -164,7 +164,7 @@ module.exports = function(app, route, passport) {
         });
       },
       after: function(req, res, next) {
-        if (res.statusCode != 409) {
+        if (res.resource.status >= 200 && res.resource.status < 300) {
           Item.findById(req.body.item, function(err, item) {
             if (err) return res.status(404).json({
               status: 'failure',
@@ -180,8 +180,8 @@ module.exports = function(app, route, passport) {
               console.log('Inventory successfully updated!');
               var orderDetails = "Thank you for ordering with us, please wait for your chef " +
               "to confirm your order.";
-              ses.send(req.user.email,
-                `Spedish order ${res.resource.item._id}`,
+              ses.send(req.user,
+                `order ${res.resource.item._id}`,
                 orderDetails, function (err, data, res) {
                   if (err) return res.status(500).json({
                     status: 'failure',
@@ -212,9 +212,11 @@ module.exports = function(app, route, passport) {
         next();
       },
       after: function(req, res, next) {
-        res.resource.item.forEach(function(item, idx, arr) {
-          item._doc.canEdit = true;
-        });
+        if (res.resource.status >= 200 && res.resource.status < 300) {
+          res.resource.item.forEach(function(item, idx, arr) {
+            item._doc.canEdit = true;
+          });
+        }
 
         next();
       }
