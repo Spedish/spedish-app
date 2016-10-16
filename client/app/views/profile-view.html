@@ -2,6 +2,8 @@
 <h3 ng-if="user.isSeller">This user is a seller</h3>
 <h3 ng-if="!user.isSeller">This user is not a seller</h3>
 
+<img ng-if="profileImage" ng-src="{{profileImage}}" />
+
 <div>Full name: {{user.firstname}} {{user.lastname}}</div>
 <div>Email: {{user.email}}</div>
 <div>Contact: {{user.contact}}</div>

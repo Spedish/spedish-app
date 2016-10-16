@@ -33,12 +33,7 @@
         <div class="progress-extended">&nbsp;</div>
     </div>
   </div>
-  <div ng-if="editItem">
-    <input type="text" id="gid" name="gid" value="{{item._gallery._id}}" />
-  </div>
-  <div ng-if="addItem">
-    <input type="text" id="gid" name="gid" value="{{item._gallery}}" />
-  </div>
+  <input type="text" id="gid" name="gid" value="{{gid}}" />
   <!-- The table listing the files available for upload/download -->
   <table id="uploaderTable" class="table table-striped files ng-cloak">
     <tr data-ng-repeat="file in queue" data-ng-class="{'processing': file.$processing()}">
@@ -89,7 +84,7 @@
 
 <!-- Gallery Viewer and Controllers -->
 <div ng-controller="SortableCtrl">
-  <div id="galleryViewerWrapper" ng-class="{'noDisp': addItem}">
+  <div id="galleryViewerWrapper" ng-class="{'noDisp': galleryHideViewer}">
     <p>Drag the images to reorder them</p>
     <ul id="galleryViewer" ui-sortable="galleryViewer" ng-model="images">
       <li ng-repeat="img in images"><img ng-src="{{img}}" /></li>

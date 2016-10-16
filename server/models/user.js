@@ -33,8 +33,13 @@ var userSchema = mongoose.Schema({
   thirdParty_id: String,
   thirdParty_token: String,
   thirdParty_email: String,
-  thirdParty_name: String
+  thirdParty_name: String,
 
+  _gallery: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'gallery',
+    required: false
+  }
 });
 
 // methods ======================
@@ -47,6 +52,14 @@ userSchema.methods.generateHash = function(password) {
 userSchema.methods.validPassword = function(password) {
   return bcrypt.compareSync(password, this.password);
 };
+
+// populate all referenced collections on item
+var autoPopulate = function(next) {
+  this.populate('_gallery');
+  next();
+}
+
+userSchema.pre('findOne', autoPopulate);
 
 // create the model for users and expose it to our app
 module.exports = mongoose.model('User', userSchema);
