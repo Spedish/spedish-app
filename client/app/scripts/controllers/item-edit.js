@@ -13,8 +13,6 @@ angular.module('clientApp')
   .controller('ItemEditCtrl', function ($scope, Item, $routeParams, $location, $window, Restangular, itemUtil) {
     g_scope = $scope;
 
-    var galleryUrl = g_config.baseUrl + '/gallery';
-
     $scope.categories = ['CatA', 'CatB'];
     $scope.mealOptions = ['Vegetarian', 'Vegan'];
 
@@ -41,7 +39,7 @@ angular.module('clientApp')
       console.log('Recevied gallery order: ' + item._gallery.order);
 
       angular.forEach(item._gallery.order, function(val) {
-        $scope.images.push(galleryUrl + '/' + item._gallery._id + '/thumbnail_' + val);
+        $scope.images.push(g_config.galleryUrl + '/' + item._gallery._id + '/thumbnail_' + val);
       });
     });
 

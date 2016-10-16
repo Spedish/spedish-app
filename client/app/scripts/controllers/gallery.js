@@ -9,7 +9,7 @@ angular.module('clientApp')
     function ($httpProvider, fileUploadProvider) {
       delete $httpProvider.defaults.headers.common['X-Requested-With'];
 
-      var galleryUrl = g_config.baseUrl + '/gallery/';
+      var galleryUrl = g_config.galleryUrl;
 
       // Override settings
       angular.extend(fileUploadProvider.defaults, {
@@ -62,7 +62,7 @@ angular.module('clientApp')
     '$scope', '$http', '$filter', '$window',
     function($scope) {
 
-      var galleryUrl = g_config.baseUrl + '/gallery';
+      var galleryUrl = g_config.galleryUrl;
 
       $scope.options = {
         url: galleryUrl
@@ -83,7 +83,7 @@ angular.module('clientApp')
 
   .controller('SortableCtrl', function($scope, GalleryService) {
 
-    var galleryUrl = g_config.baseUrl + '/gallery/';
+    var galleryUrl = g_config.galleryUrl;
 
     $scope.saveOrder = 'none';
     $scope.deleteImage = 'none';
