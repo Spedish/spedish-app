@@ -31,6 +31,10 @@ angular.module('clientApp')
     GalleryService.createGID()
       .then(function(data) {
         $scope.item._gallery = data.data.gid;
+
+        // Gallery module config
+        $scope.gid = data.data.gid;
+        $scope.galleryHideViewer = true;
         $scope.preloadDone = true;
       });
 

@@ -41,6 +41,8 @@ angular.module('clientApp')
       angular.forEach(item._gallery.order, function(val) {
         $scope.images.push(g_config.galleryUrl + '/' + item._gallery._id + '/thumbnail_' + val);
       });
+
+      $scope.gid = item._gallery._id;
     });
 
     // Keep the mealtype status be opposite to free_sell status

@@ -19,6 +19,9 @@ angular.module('clientApp')
             $scope.images.push(g_config.galleryUrl + '/' + $scope.user._gallery._id + '/thumbnail_' + val);
           });
 
+          // Gallery module config
+          $scope.gid = $scope.user._gallery._id;
+          $scope.galleryHideViewer = false;
           $scope.preloadDone = true;
         }
       });
@@ -28,12 +31,11 @@ angular.module('clientApp')
       GalleryService.createGID()
         .then(function(data) {
           $scope.user._gallery = data.data.gid;
-          // TODO: This needs to be changed, its tied to item
-          $scope.item = {};
-          $scope.item._gallery = data.data.gid;
+
+          // Gallery module config
+          $scope.gid = data.data.gid;
+          $scope.galleryHideViewer = true;
           $scope.preloadDone = true;
-          // TODO: Remove the need for this option, its tied to item
-          $scope.addItem = true;
         });
     }
 
