@@ -5,9 +5,6 @@ var g_scope;
 angular.module('clientApp')
   .controller('ProfileEditCtrl', function ($scope, AuthService, GalleryService) {
 
-    // TODO: why do i need this?
-    $scope.hasGallery = 0;
-
     // TODO: very ugly... need to get rid of this
     g_scope = $scope;
     $scope.images = [];
@@ -16,16 +13,12 @@ angular.module('clientApp')
       .success(function(data, status) {
         $scope.user = data;
         if ($scope.user._gallery) {
-          // TODO: don't need this
-          $scope.hasGallery = $scope.user._gallery.id;
-
           console.log('Recevied gallery order: ' + $scope.user._gallery.order);
 
           angular.forEach($scope.user._gallery.order, function(val) {
             $scope.images.push(g_config.galleryUrl + '/' + $scope.user._gallery._id + '/thumbnail_' + val);
           });
 
-          // TODO: collapse this with the below
           $scope.preloadDone = true;
         }
       });
@@ -41,8 +34,6 @@ angular.module('clientApp')
           $scope.preloadDone = true;
           // TODO: Remove the need for this option, its tied to item
           $scope.addItem = true;
-          // TODO: consider, maybe we dont need so many copies
-          $scope.hasGallery = data.data.gid;
         });
     }
 
@@ -60,7 +51,7 @@ angular.module('clientApp')
       // If the gallery has been populated then it means this
       // gallery already exists so we dont need to save id again
       if (!($scope.user._gallery && $scope.user._gallery.id))
-        user._gallery = $scope.hasGallery;
+        user._gallery = $scope.user._gallery;
 
       AuthService.saveProfile(user);
     }
