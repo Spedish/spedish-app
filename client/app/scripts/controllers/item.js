@@ -16,10 +16,13 @@ angular.module('clientApp')
     $scope.totalItems;
 
     // initial pagination params
-    var requestParams = {
+    var paginationParams = {
       limit: $scope.limit,
       skip: 0
     };
+
+    var dayOfWeekParams = {};
+    var mealChoiceParams = {};
 
     // Initialize
     initialize();
@@ -27,7 +30,7 @@ angular.module('clientApp')
     // Page changed fn
     $scope.pageChanged = function() {
       // Set pagination params
-      requestParams.skip = getItemOffset();
+      paginationParams.skip = getItemOffset();
       getItem();
     };
 
@@ -52,6 +55,8 @@ angular.module('clientApp')
     };
 
     function getItem() {
+      var requestParams = {};
+      Object.assign(requestParams, paginationParams, dayOfWeekParams, mealChoiceParams);
       Item.getList(requestParams).then(function(responses) {
 
         // Form gallery links
@@ -62,7 +67,7 @@ angular.module('clientApp')
           if (response._gallery.order) {
             response.image = g_config.galleryUrl + '/' + gid + '/';
             response.image += response._gallery.order.length >1 ? response._gallery.order[0] : response._gallery.order;
-          } 
+          }
         });
 
         $scope.items = responses;
@@ -73,6 +78,26 @@ angular.module('clientApp')
       }).catch(function() {
         $scope.items = [];
       });
+    };
+
+    $scope.filterByDayOfWeek = function(day) {
+      var dayOfWeek = "availability.day_of_week." + moment(day).day();
+      dayOfWeekParams = {
+        [dayOfWeek]: true
+      }
+      getItem();
+    };
+
+    $scope.filterByMealChoice = function(time) {
+      if (time == "free_sell") {
+        var mealChoice = "availability.pickup_window.free_sell";
+      } else {
+        var mealChoice = `availability.pickup_window.${time}.status`;
+      }
+      mealChoiceParams = {
+        [mealChoice]: true
+      }
+      getItem();
     };
 
   });

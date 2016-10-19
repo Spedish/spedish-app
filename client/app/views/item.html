@@ -1,7 +1,12 @@
 <!-- time selection filter -->
 <div id="delivery-time-selector">
     <ul class="block-grid-xs-7" style="margin: 0;">
-        <li class="grid-item-time" ng-repeat="day in nextSevenDays">{{day}}</li>
+        <li class="grid-item-time" ng-repeat="day in nextSevenDays" ng-click="filterByDayOfWeek(day)">{{day}}</li>
+    </ul>
+    <ul class="block-grid-xs-3" style="margin: 0;">
+        <li class="grid-item-time" ng-click="filterByMealChoice('lunch')">Lunch</li>
+        <li class="grid-item-time" ng-click="filterByMealChoice('dinner')">Dinner</li>
+        <li class="grid-item-time" ng-click="filterByMealChoice('free_sell')">Available all day</li>
     </ul>
 </div>
 
