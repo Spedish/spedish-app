@@ -14,14 +14,14 @@ angular.module('clientApp').factory('itemUtil', function(){
     	return config;
 	};
 
-	//common function to update mealtype status 
+	//common function to update mealtype status
 	//both item-add and item-edit controller use this fn
 	function updateMealTypeStatus(pickup_window) {
 		if(pickup_window.free_sell) {
         for(var key in pickup_window) {
           // Reset mealtype status (checkbox)
           if(key != 'free_sell' && key !="_id")
-            pickup_window[key].status = false;
+            pickup_window[key].status = true;
         }
       }
 	}
@@ -36,7 +36,7 @@ angular.module('clientApp').factory('itemUtil', function(){
       	var formattedDate = dateString.substring(dateString.indexOf("T") + 1);
      	return formattedDate;
 	}
-	
+
 	//Return a public API
 	return {
 		getTimePickerConfig: getTimePickerConfig,
