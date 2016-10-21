@@ -1,6 +1,46 @@
 var mongoose = require('mongoose');
 var orderModel = require('./order');
-var availabilityModel = require('./availability');
+var orderController = require("../controllers/order");
+
+var dayOfWeek = new mongoose.Schema({
+  "1": Boolean,
+  "2": Boolean,
+  "3": Boolean,
+  "4": Boolean,
+  "5": Boolean,
+  "6": Boolean,
+  "0": Boolean
+});
+
+var pickupWindow = new mongoose.Schema({
+  start_time: String,
+  end_time: String,
+  status: Boolean
+});
+
+var pickupWindows = new mongoose.Schema({
+  lunch: pickupWindow,
+  dinner: pickupWindow,
+  free_sell: Boolean
+});
+
+var availabilitySchema = new mongoose.Schema({
+    day_of_week: dayOfWeek,
+    lead_time: {
+      type: Number,
+      required: true
+    },
+    pickup_window: pickupWindows,
+    timezone: String,
+    _uid: {
+      type: String,
+      required: true
+    }
+  },
+  {
+    timestamps: true
+  }
+);
 
 var itemSchema = new mongoose.Schema({
   title: {
@@ -20,10 +60,7 @@ var itemSchema = new mongoose.Schema({
     type: Number,
     required: true
   },
-  availability: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Availability'
-  },
+  availability: availabilitySchema,
   orders: [{
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Order'
@@ -96,6 +133,16 @@ var itemSchema = new mongoose.Schema({
       message: '{VALUE} contains invalid option'
     }
   },
+  rating_count: {
+    type: Number,
+    default: 0,
+    required: false
+  },
+  review_count: {
+    type: Number,
+    default: 0,
+    required: false
+  },
   _gallery: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'gallery',
@@ -124,8 +171,6 @@ itemSchema.pre('save', function(next) {
 // populate all referenced collections on item
 var autoPopulate = function(next) {
   this.populate('_gallery');
-  this.populate('orders');
-  this.populate('availability');
   next();
 }
 

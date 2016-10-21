@@ -1,9 +1,10 @@
 var mongoose = require('mongoose');
+var orderModel = require('./order');
 
 var orderSchema = new mongoose.Schema({
-  item_id: {
-    type: String,
-    required: true
+  item: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Item'
   },
   title: {
     type: String,

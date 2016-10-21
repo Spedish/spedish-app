@@ -4,5 +4,5 @@ module.exports = {
   order: require('./order'),
   user: require('./user'),
   gallery: require('./gallery'),
-  availability: require('./availability')
+  review: require('./review')
 };

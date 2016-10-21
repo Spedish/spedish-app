@@ -9,5 +9,6 @@ module.exports = {
   'user_status': require('./controllers/auth/status'),
   'profile': require('./controllers/auth/profile'),
   'gallery': require('./controllers/gallery'),
-  'sellerPortal': require('./controllers/sellerPortal')
+  'sellerPortal': require('./controllers/sellerPortal'),
+  'review': require('./controllers/review')
 };

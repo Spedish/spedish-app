@@ -5,6 +5,10 @@ module.exports = function(app, route, passport) {
   // Setup the controller for REST;
   Resource(app, '', route, app.models.item)
     .get({
+        before: function(req, res, next) {
+          req.modelQuery = this.model.where().populate('orders');
+          next();
+        },
         after: function(req, res, next) {
           if (auth.isResOwner(req, res.resource.item))
             res.resource.item._doc.canEdit = true;
@@ -35,6 +39,10 @@ module.exports = function(app, route, passport) {
         }
       })
     .index({
+        before: function(req, res, next) {
+          req.modelQuery = this.model.where().populate('orders');
+          next();
+        },
         after: function(req, res, next) {
           // Disable caching for content files
           res.header("Cache-Control", "no-cache, no-store, must-revalidate");

@@ -26,14 +26,13 @@ angular.module('clientApp')
   Item.one($routeParams.id).get().then(function(data) {
 
     // Form gallery links
-    var galleryUrl = g_config.baseUrl + '/gallery'; /* '//54.183.97.63:3000/gallery'; */
     var gid = data._gallery._id;
 
     $scope.slides = [];
 
     angular.forEach(data._gallery.order, function(val) {
       $scope.slides.push({
-        image: galleryUrl + '/' + gid + '/' + val,
+        image: g_config.galleryUrl + '/' + gid + '/' + val,
         id: currIdx++
       });
     });
