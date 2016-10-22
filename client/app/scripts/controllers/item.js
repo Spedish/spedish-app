@@ -15,6 +15,8 @@ angular.module('clientApp')
     $scope.limit = 4;
     $scope.totalItems;
 
+    $scope.dayIndex;
+
     // initial pagination params
     var paginationParams = {
       limit: $scope.limit,
@@ -80,7 +82,8 @@ angular.module('clientApp')
       });
     };
 
-    $scope.filterByDayOfWeek = function(day) {
+    $scope.filterByDayOfWeek = function(day, index) {
+      $scope.dayIndex = index;
       var dayOfWeek = "availability.day_of_week." + moment(day).day();
       dayOfWeekParams = {
         [dayOfWeek]: true
@@ -89,6 +92,7 @@ angular.module('clientApp')
     };
 
     $scope.filterByMealChoice = function(time) {
+      $scope.mealType = time;
       if (time == "free_sell") {
         var mealChoice = "availability.pickup_window.free_sell";
       } else {
