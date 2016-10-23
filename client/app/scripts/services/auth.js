@@ -1,7 +1,8 @@
 function clearUser() {
   g_config.user = {
     authenticated: false,
-    isSeller: false
+    isSeller: false,
+    isFacebookUser: false
   };
 }
 
@@ -11,12 +12,47 @@ angular.module('clientApp')
     this.login = function(user, pass) {
       var deferred = $q.defer();
 
-      $http.post(g_config.baseUrl + '/login', {username: user, password: pass})
+      $http.post(g_config.baseUrl + '/login', {
+          username: user,
+          password: pass
+        })
         .success(function(data, status) {
           if (status === 200) {
             g_config.user = {
               authenticated: true,
-              isSeller: data.isSeller
+              isSeller: data.isSeller,
+              isFacebookUser: false
+            };
+            deferred.resolve();
+          } else {
+            clearUser();
+            deferred.reject();
+          }
+        })
+        .error(function(data) {
+          clearUser();
+          deferred.reject();
+        });
+
+      return deferred.promise;
+    };
+
+    this.facebookLogin = function(id, name, email, token) {
+      var deferred = $q.defer();
+
+      $http.post(g_config.baseUrl + '/facebookLogin', {
+          thirdParty_source: "Facebook",
+          thirdParty_id: id,
+          thirdParty_name: name,
+          thirdParty_email: email,
+          thirdParty_token: token
+        })
+        .success(function(data, status) {
+          if (status === 200) {
+            g_config.user = {
+              authenticated: true,
+              isSeller: data.isSeller,
+              isFacebookUser: true
             };
             deferred.resolve();
           } else {
@@ -33,7 +69,7 @@ angular.module('clientApp')
     };
 
     this.isLoggedIn = function() {
-      if(g_config.user)
+      if (g_config.user)
         return g_config.user.authenticated;
       else
         return false;
@@ -41,6 +77,12 @@ angular.module('clientApp')
 
     this.logout = function() {
       var deferred = $q.defer();
+
+      if (g_config.user.isFacebookUser) {
+        FB.logout(function(response) {
+          // user is now logged out
+        });
+      }
 
       $http.get(g_config.baseUrl + '/logout')
         .success(function(data, status) {
@@ -61,7 +103,8 @@ angular.module('clientApp')
           if (data.status) {
             g_config.user = {
               authenticated: true,
-              isSeller: data.isSeller
+              isSeller: data.isSeller,
+              isFacebookUser: data.isFacebookUser
             };
           } else
             clearUser();
@@ -84,13 +127,44 @@ angular.module('clientApp')
   });
 
 angular.module('clientApp')
-  .run(function($rootScope, $location, $route, AuthService) {
+  .run(function($rootScope, $window, $location, $route, AuthService) {
     $rootScope.$on('$routeChangeStart',
       function(event, next, current) {
         AuthService.userSync();
 
-        if (next.$$route.requireAuth && (!g_config.user || g_config.user && !g_config.user.authenticated))
+        if (next.$$route.requireAuth && (!g_config.user || g_config.user &&
+            !g_config.user.authenticated))
           $location.path('/login');
       });
-  });
 
+    $window.fbAsyncInit = function() {
+      // Executed when the SDK is loaded
+      FB.init({
+        appId: '254674478245315',
+        status: true,
+        cookie: true,
+        xfbml: true,
+        version: 'v2.8'
+      });
+    };
+
+    (function(d) {
+      // load the Facebook javascript SDK
+      var js,
+        id = 'facebook-jssdk',
+        ref = d.getElementsByTagName('script')[0];
+
+      if (d.getElementById(id)) {
+        return;
+      }
+
+      js = d.createElement('script');
+      js.id = id;
+      js.async = true;
+      js.src = "https://connect.facebook.net/en_US/sdk.js";
+
+      ref.parentNode.insertBefore(js, ref);
+
+    }(document));
+
+  });
