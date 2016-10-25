@@ -83,24 +83,39 @@ angular.module('clientApp')
     };
 
     $scope.filterByDayOfWeek = function(day, index) {
-      $scope.dayIndex = index;
-      var dayOfWeek = "availability.day_of_week." + moment(day).day();
-      dayOfWeekParams = {
-        [dayOfWeek]: true
+      //unselect if already selected
+      if($scope.dayIndex == index) {
+        $scope.dayIndex = -1;
+        dayOfWeekParams = {};
+      }else {
+        $scope.dayIndex = index;
+        var dayOfWeek = "availability.day_of_week." + moment(day).day();
+        dayOfWeekParams = {
+          [dayOfWeek]: true
+        }
       }
+     
       getItem();
     };
 
     $scope.filterByMealChoice = function(time) {
-      $scope.mealType = time;
-      if (time == "free_sell") {
-        var mealChoice = "availability.pickup_window.free_sell";
-      } else {
-        var mealChoice = `availability.pickup_window.${time}.status`;
+      // Unselect if already selected
+      if($scope.mealType == time) {
+        $scope.mealType = '';
+        mealChoiceParams = {};
       }
-      mealChoiceParams = {
-        [mealChoice]: true
+      else {
+        $scope.mealType = time;
+        if (time == "free_sell") {
+          var mealChoice = "availability.pickup_window.free_sell";
+        } else {
+          var mealChoice = `availability.pickup_window.${time}.status`;
+        }
+        mealChoiceParams = {
+          [mealChoice]: true
+        }
       }
+     
       getItem();
     };
 
