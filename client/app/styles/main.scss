@@ -180,14 +180,14 @@ hr.dish-image-content-spacer {
 }
 
 .order-item-image{
-  height: 100%;
+  margin-top:14px;
+  height: 85%;
   background-position: center;
   background-repeat: no-repeat;
   background-size: contain;
   border: none;
   left: 0;
   top: 0;
-  cursor: pointer;
 }
 .buton-action-container{
   display: table;
@@ -213,6 +213,7 @@ hr.dish-image-content-spacer {
     width: 100%;
     -moz-box-sizing: border-box;
     box-sizing: border-box;
+    padding-left: 0px;
 }
 
 .order-item-info li
