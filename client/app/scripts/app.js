@@ -76,11 +76,6 @@ angular
         controller: 'AboutCtrl',
         controllerAs: 'about'
       })
-      .when('/products', {
-        templateUrl: 'views/products.html',
-        controller: 'ProductsCtrl',
-        controllerAs: 'products'
-      })
       .when('/item', {
         templateUrl: 'views/item.html',
         controller: 'ItemCtrl',
@@ -163,14 +158,6 @@ angular
 
 // Override the restangular framework's id keyword from id to _id,
 // as _id is used in nodejs
-.factory('ProductRestangular', function(Restangular) {
-  return Restangular.withConfig(function(RestangularConfigurer) {
-    RestangularConfigurer.setRestangularFields({
-      id: '_id'
-    });
-  });
-})
-
 .factory('ItemRestangular', function(Restangular) {
   return Restangular.withConfig(function(RestangularConfigurer) {
     RestangularConfigurer.setRestangularFields({
@@ -203,17 +190,12 @@ angular
   });
 })
 
-// Provide the product factory
-.factory('Product', function(ProductRestangular) {
-  return ProductRestangular.service('products');
-})
-
 // Provide the item factory
 .factory('Item', function(ItemRestangular) {
   return ItemRestangular.service('item');
 })
 
-// Provide the product factory
+// Provide the order factory
 .factory('Order', function(OrderRestangular) {
   return OrderRestangular.service('order');
 })

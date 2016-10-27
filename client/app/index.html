@@ -53,7 +53,6 @@
             <ul class="nav navbar-nav" style="cursor:pointer;">
               <li class="active"><a href="#/">Home</a></li>
               <li><a ng-href="#/item">Items</a></li>
-              <li><a ng-href="#/products">Products</a></li>
               <li ng-if="!isLoggedIn()"><a ng-href="#/sellerSignup">Become a Chef</a></li>
               <li ng-if="!isLoggedIn()"><a ng-href="#/buyerSignup">Sign Up</a></li>
               <li ng-if="!isLoggedIn()"><a ng-href="#/login">Login</a></li>
@@ -139,7 +138,6 @@
         <script src="scripts/controllers/gallery.js"></script>
         <script src="scripts/controllers/main.js"></script>
         <script src="scripts/controllers/about.js"></script>
-        <script src="scripts/controllers/products.js"></script>
         <script src="scripts/controllers/item.js"></script>
         <script src="scripts/controllers/item-add.js"></script>
         <script src="scripts/controllers/item-view.js"></script>
@@ -159,7 +157,7 @@
         <script src="scripts/factories/itemUtil.js"></script>
         <script src="scripts/factories/userUtil.js"></script>
 
-        <!-- include directives-->        
+        <!-- include directives-->
         <script src="scripts/directives/directive.itemView.js"></script>
 
         <!-- endbuild -->
