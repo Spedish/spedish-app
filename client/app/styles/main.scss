@@ -90,8 +90,17 @@ body {
   }
 }
 .grid-item-time {
+  cursor: pointer;
   border: .0625rem solid #e0e7e9;
   border-right: none;
+}
+
+.grid-item-time.active-time {
+  color: #ff7f50;
+}
+
+.grid-item-time:hover {
+  background-color: rgba(235,243,245,0.3);
 }
 
 .grid-item-time:last-child {
@@ -100,6 +109,23 @@ body {
 
 #delivery-time-selector {
   height: 55px;
+}
+
+.time-selector-text-wrappper{
+  height:100%;
+  display:table;
+  padding-right:0px;
+}
+
+.date-selector {
+  margin: 0;
+  padding-left: 0px;
+}
+
+.time-selector-text {
+  display: table-cell;
+  vertical-align: middle;
+  font-weight: bold;
 }
 
 .dish-details {
