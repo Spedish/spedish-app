@@ -35,7 +35,7 @@ module.exports = function(app, route, passport) {
         newUser.thirdParty_name = req.body.thirdParty_name;
         newUser.thirdParty_email = req.body.thirdParty_email;
 
-        newUser.username = uuid.v4(); // Create a temp username
+        newUser.username = req.body.thirdParty_name;
         newUser.password = uuid.v4(); // Create a temp password
         newUser.email = req.body.thirdParty_email;
         newUser.isSeller = "false";
