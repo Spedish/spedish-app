@@ -77,13 +77,6 @@ angular.module('clientApp')
 
     this.logout = function() {
       var deferred = $q.defer();
-
-      if (g_config.user.isFacebookUser) {
-        FB.logout(function(response) {
-          // user is now logged out
-        });
-      }
-
       $http.get(g_config.baseUrl + '/logout')
         .success(function(data, status) {
           clearUser();
