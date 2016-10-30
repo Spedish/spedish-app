@@ -14,6 +14,8 @@
     <link rel="stylesheet" href="bower_components/angularMultipleSelect/build/multiple-select.min.css" />
     <link rel="stylesheet" href="bower_components/normalize-css/normalize.css" />
     <link rel="stylesheet" href="bower_components/bootstrap-block-grid/dist/bootstrap3-block-grid.min.css" />
+    <link rel="stylesheet" href="bower_components/font-awesome/css/font-awesome.min.css" />
+    <link rel="stylesheet" href="bower_components/textAngular/dist/textAngular.css" />
     <!-- endbower -->
     <!-- endbuild -->
 
@@ -59,7 +61,7 @@
               <li ng-if="isSeller()"><a ng-href="#/seller-meal">My Meals</a></li>
               <li ng-if="isLoggedIn()"><a ng-href="#/orders">My orders</a></li>
               <li ng-if="isLoggedIn()"><a ng-href="#/profile">Profile</a></li>
-              <li ng-if="isLoggedIn()"><a ng-click="logout()">Logout</a></li>
+              <li ng-if="isLoggedIn()"><a ng-click="logout()" style="cursor: pointer;">Logout</a></li>
             </ul>
           </div>
         </div>
@@ -112,6 +114,15 @@
     <script src="bower_components/bootstrap/dist/js/bootstrap.js"></script>
     <script src="bower_components/angularMultipleSelect/build/multiple-select.min.js"></script>
     <script src="bower_components/ngTimezone/ngTimezone.js"></script>
+    <script src="bower_components/rangy/rangy-core.js"></script>
+    <script src="bower_components/rangy/rangy-classapplier.js"></script>
+    <script src="bower_components/rangy/rangy-highlighter.js"></script>
+    <script src="bower_components/rangy/rangy-selectionsaverestore.js"></script>
+    <script src="bower_components/rangy/rangy-serializer.js"></script>
+    <script src="bower_components/rangy/rangy-textrange.js"></script>
+    <script src="bower_components/textAngular/dist/textAngular.js"></script>
+    <script src="bower_components/textAngular/dist/textAngular-sanitize.js"></script>
+    <script src="bower_components/textAngular/dist/textAngularSetup.js"></script>
     <!-- endbower -->
     <!-- endbuild -->
 
