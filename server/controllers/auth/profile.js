@@ -13,13 +13,15 @@ module.exports = function(app, route, passport, User) {
         city: req.user.city,
         zip: req.user.zip,
         contact: req.user.contact,
-        isSeller: req.user.isSeller
+        isSeller: req.user.isSeller,
+        _gallery: req.user._gallery
       });
     }
 
     next();
   });
 
+  // TODO: Why do we have this even? this should be combined with the above
   app.get('/profile/:username', function(req, res, next) {
     var username = req.params.username;
 
@@ -37,7 +39,8 @@ module.exports = function(app, route, passport, User) {
           city: user.city,
           zip: user.zip,
           contact: user.contact,
-          isSeller: user.isSeller
+          isSeller: user.isSeller,
+         _gallery: req.user._gallery
         });
       }
 

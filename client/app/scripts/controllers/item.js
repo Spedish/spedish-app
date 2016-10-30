@@ -15,11 +15,16 @@ angular.module('clientApp')
     $scope.limit = 4;
     $scope.totalItems;
 
+    $scope.dayIndex;
+
     // initial pagination params
-    var requestParams = {
+    var paginationParams = {
       limit: $scope.limit,
       skip: 0
     };
+
+    var dayOfWeekParams = {};
+    var mealChoiceParams = {};
 
     // Initialize
     initialize();
@@ -27,7 +32,7 @@ angular.module('clientApp')
     // Page changed fn
     $scope.pageChanged = function() {
       // Set pagination params
-      requestParams.skip = getItemOffset();
+      paginationParams.skip = getItemOffset();
       getItem();
     };
 
@@ -52,18 +57,19 @@ angular.module('clientApp')
     };
 
     function getItem() {
+      var requestParams = {};
+      Object.assign(requestParams, paginationParams, dayOfWeekParams, mealChoiceParams);
       Item.getList(requestParams).then(function(responses) {
 
         // Form gallery links
-        var galleryUrl = g_config.baseUrl + '/gallery';
         angular.forEach(responses, function(response) {
 
           var gid = response._gallery._id;
           // Has pic
           if (response._gallery.order) {
-            response.image = galleryUrl + '/' + gid + '/';
+            response.image = g_config.galleryUrl + '/' + gid + '/';
             response.image += response._gallery.order.length >1 ? response._gallery.order[0] : response._gallery.order;
-          } 
+          }
         });
 
         $scope.items = responses;
@@ -74,6 +80,43 @@ angular.module('clientApp')
       }).catch(function() {
         $scope.items = [];
       });
+    };
+
+    $scope.filterByDayOfWeek = function(day, index) {
+      //unselect if already selected
+      if($scope.dayIndex == index) {
+        $scope.dayIndex = -1;
+        dayOfWeekParams = {};
+      }else {
+        $scope.dayIndex = index;
+        var dayOfWeek = "availability.day_of_week." + moment(day).day();
+        dayOfWeekParams = {
+          [dayOfWeek]: true
+        }
+      }
+     
+      getItem();
+    };
+
+    $scope.filterByMealChoice = function(time) {
+      // Unselect if already selected
+      if($scope.mealType == time) {
+        $scope.mealType = '';
+        mealChoiceParams = {};
+      }
+      else {
+        $scope.mealType = time;
+        if (time == "free_sell") {
+          var mealChoice = "availability.pickup_window.free_sell";
+        } else {
+          var mealChoice = `availability.pickup_window.${time}.status`;
+        }
+        mealChoiceParams = {
+          [mealChoice]: true
+        }
+      }
+     
+      getItem();
     };
 
   });

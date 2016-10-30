@@ -1,8 +1,26 @@
 <!-- time selection filter -->
 <div id="delivery-time-selector">
-    <ul class="block-grid-xs-7" style="margin: 0;">
-        <li class="grid-item-time" ng-repeat="day in nextSevenDays">{{day}}</li>
-    </ul>
+	<!-- select date -->
+	<div style="height:100%">
+		<div class="col-md-2 col-sm-2 col-xs-1 time-selector-text-wrappper">
+			<div class="time-selector-text">Pick a Date:</div>
+		</div>
+	    <ul class="block-grid-xs-7  col-md-10 col-sm-10 col-xs-11 date-selector">
+	        <li class="grid-item-time" ng-class="{'active-time': $index == dayIndex}" ng-repeat="day in nextSevenDays" ng-click="filterByDayOfWeek(day, $index)" style="margin-bottom: 20px;">{{day}}</li>
+	    </ul>
+    </div>
+
+    <!-- select meal type -->
+    <div style="height:100%">
+		<div class="col-md-2 col-sm-2 col-xs-1 time-selector-text-wrappper">
+			<div class="time-selector-text">Pick a Type:</div>
+		</div>
+	    <ul class="block-grid-xs-3 col-md-10 col-sm-10 col-xs-11" style="margin: 0;">
+	        <li class="grid-item-time" ng-class="{'active-time': 'lunch' == mealType}" ng-click="filterByMealChoice('lunch')">Lunch</li>
+	        <li class="grid-item-time" ng-class="{'active-time': 'dinner' == mealType}" ng-click="filterByMealChoice('dinner')">Dinner</li>
+	        <li class="grid-item-time" ng-class="{'active-time': 'free_sell' == mealType}" ng-click="filterByMealChoice('free_sell')">Available all day</li>
+	    </ul>
+    </div>
 </div>
 
 <item-view item="items" seller-view="false"></item-view>
