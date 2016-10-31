@@ -1,20 +1,44 @@
 'use strict';
 
-angular.module('clientApp').controller('OrdersCtrl', function($scope, Order) {
+angular.module('clientApp').controller('OrdersCtrl', function($scope, Order, SellerPortal, userUtil) {
     // Pagination config
     $scope.currentPage = 1;
+    $scope.currentPageForSeller = 1;
     $scope.limit = 4;
     $scope.totalItems;
 
     var requestParams = {
-        limit: $scope.limit,
-        skip: 0
+      limit: $scope.limit,
+      skip: 0
     };
 
+    var sellerPortalParams = {
+      limit: $scope.limit,
+      skip: 0
+    }
+
+    // Track seller's received order/ placed order tab selection
+    $scope.receivedOrderMode = true;
+
+    $scope.isSeller = userUtil.isSeller();
+    // is seller
+    if($scope.isSeller) {
+        getSellerReceivedOrder();
+    }
     getOrder();
 
+    $scope.showPlacedOrder = function() {
+      return !$scope.isSeller || ($scope.isSeller && !$scope.receivedOrderMode);
+    };
+
+    $scope.setReceivedOrderMode = function(isReceivedOrderMode) {
+     $scope.receivedOrderMode = isReceivedOrderMode;
+    }
+
     $scope.hasImage = function(order) {
-      return order.item._gallery.order && order.item._gallery.order.length > 0;
+      if(order && order.item && order.item_gallery)
+        return order.item._gallery.order && order.item._gallery.order.length > 0;
+      return false;
     };
 
     $scope.getOrderImage = function(order) {
@@ -31,19 +55,37 @@ angular.module('clientApp').controller('OrdersCtrl', function($scope, Order) {
       getOrder();
     };
 
+    $scope.sellerPageChanged = function() {
+      sellerPortalParams.skip = ($scope.currentPageForSeller - 1) * $scope.limit;
+      getSellerReceivedOrder();
+    }
+
     function getItemOffset() {
       return ($scope.currentPage - 1) * $scope.limit;
     };
-    
+
     function getOrder() {
+      // get user placed order
       Order.getList(requestParams).then(function(responses) {
         $scope.orders = responses;
         // update page numbers
         if (responses && responses.pagination) {
           $scope.totalItems = responses.pagination.total;
         }
+        }).catch(function() {
+          $scope.orders = [];
+      });
+    };
+
+    function getSellerReceivedOrder() {
+      SellerPortal.one('order').get(sellerPortalParams).then(function(responses) {
+          $scope.receivedOrders = responses;
+          // update page numbers
+          if (responses && responses.pagination) {
+            $scope.sellerTotal = responses.pagination.total;
+          }
       }).catch(function() {
-        $scope.orders = [];
+          $scope.receivedOrders = [];
       });
     };
 

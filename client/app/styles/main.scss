@@ -89,21 +89,22 @@ body {
     border-bottom: 0;
   }
 }
-.grid-item-time {
-  cursor: pointer;
+
+.grid-item-time, .order-option{
   border: .0625rem solid #e0e7e9;
   border-right: none;
+  cursor: pointer;
 }
 
-.grid-item-time.active-time {
+.grid-item-time.active-time, .active.order-option {
   color: #ff7f50;
 }
 
-.grid-item-time:hover {
+.grid-item-time:hover, .order-option:hover{
   background-color: rgba(235,243,245,0.3);
 }
 
-.grid-item-time:last-child {
+.grid-item-time:last-child, .order-option:last-child {
   border-right: .0625rem solid #e0e7e9;
 }
 
@@ -245,4 +246,14 @@ hr.dish-image-content-spacer {
 .order-item-info li
 {
     display: table-row;
+}
+
+.order-selection-tab{
+  margin: 0px;
+  padding-bottom: 15px;
+}
+
+.order-option {
+  padding-top: 10px;
+  padding-bottom: 10px;
 }
