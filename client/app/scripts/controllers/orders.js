@@ -36,7 +36,7 @@ angular.module('clientApp').controller('OrdersCtrl', function($scope, Order, Sel
     }
 
     $scope.hasImage = function(order) {
-      if(order && order.item && order.item_gallery)
+      if(order && order.item && order.item._gallery)
         return order.item._gallery.order && order.item._gallery.order.length > 0;
       return false;
     };
@@ -58,6 +58,10 @@ angular.module('clientApp').controller('OrdersCtrl', function($scope, Order, Sel
     $scope.sellerPageChanged = function() {
       sellerPortalParams.skip = ($scope.currentPageForSeller - 1) * $scope.limit;
       getSellerReceivedOrder();
+    };
+
+    $scope.getOrderStatusClass = function(status) {
+      return 'order-status-' + status;
     }
 
     function getItemOffset() {

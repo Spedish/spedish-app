@@ -24,7 +24,7 @@
                     <td>{{order.create_date | amUtc | amLocal | amDateFormat:'MM.DD.YYYY HH:mm'}}</td>
                     <td>{{order.pick_up_date | amUtc | amLocal | amDateFormat:'MM.DD.YYYY HH:mm'}}</td>
                     <td>{{order._id}}</td>
-                    <td>{{order.status}}</td>
+                    <td ng-class="getOrderStatusClass(order.status)">{{order.status}}</td>
                 </tr>
             </tbody>
         </table>
@@ -85,7 +85,7 @@
                     <td>{{order.create_date | amUtc | amLocal | amDateFormat:'MM.DD.YYYY HH:mm'}}</td>
                     <td>{{order.pick_up_date | amUtc | amLocal | amDateFormat:'MM.DD.YYYY HH:mm'}}</td>
                     <td>{{order._id}}</td>
-                    <td>{{order.status}}</td>
+                    <td class="order-status" ng-class="getOrderStatusClass(order.status)">{{order.status}}</td>
                 </tr>
             </tbody>
         </table>

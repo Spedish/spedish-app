@@ -257,3 +257,27 @@ hr.dish-image-content-spacer {
   padding-top: 10px;
   padding-bottom: 10px;
 }
+
+.order-status-ordered {
+  color: #fcae05;
+}
+
+.order-status-confirmed {
+  color: #0522fc;
+}
+
+.order-status-ready {
+  color: #fc7d05;
+}
+
+.order-status-complete {
+  color: #18b004;
+}
+
+.order-status-canceled, .order-status-declined {
+  color: #C90404;
+}
+
+.order-status {
+  text-transform: capitalize;
+}
