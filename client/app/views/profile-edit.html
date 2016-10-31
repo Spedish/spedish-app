@@ -2,17 +2,16 @@
 <h3 ng-if="user.isSeller">Congrats! You can sell stuff</h3>
 <h3 ng-if="!user.isSeller">You are not yet a seller</h3>
 
-<div ng-if="!user._gallery">
-  <button type="button" ng-click="startGallery()">Upload profile photo</button>
+<div ng-if="!user.profile_image">
+  No image
 </div>
-<div ng-if="user._gallery">
-  <span>You may upload multiple images, only the first one will be used for profile</span>
-  <br />
-  <div ng-include src="'views/gallery.html'" />
+<div ng-if="user.profile_image">
+  Display image here
 </div>
 
 <div>
   <form name="profile" id="profile">
+    <input type="file" file-model="image" />
     <div>
       <label>Email:</label>
       <input type="text" ng-model="user.email" name="email" id="email" />

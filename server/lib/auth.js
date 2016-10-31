@@ -1,4 +1,10 @@
 module.exports = {
+
+  getUserId: function(req) {
+    debugger;
+    return req.user._id;
+  },
+
   isResOwner: function(req, obj) {
     if (!req.isAuthenticated()) {
       return false;

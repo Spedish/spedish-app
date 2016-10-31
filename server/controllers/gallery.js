@@ -106,6 +106,7 @@ UploadHandler.prototype.post = function (app, req, res) {
   form.on('fileBegin', function (name, file) {
       tmpFiles.push(file.path);
       var fileInfo = new FileInfo(file, handler.req, true);
+      console.log("New file");
       fileInfo.safeName();
       map[path.basename(file.path)] = fileInfo;
       files.push(fileInfo);
@@ -113,7 +114,11 @@ UploadHandler.prototype.post = function (app, req, res) {
   // If there is a gallery ID, save it
   }).on('field', function (name, value) {
       if (name === 'gid')
-          gid = value;
+        gid = value;
+      if (name === 'profile') {
+        console.log("Profile mode");
+        gid = 'profiles';
+      }
 
   // On error delete all the temporary files that were uploaded
   }).on('aborted', function () {
@@ -135,12 +140,17 @@ UploadHandler.prototype.post = function (app, req, res) {
   // Once the full form is processed, save the files and call the handler
   }).on('end', function () {
 
-      var processFiles = function(gallery) {
-        var gid = gallery._id;
+      var processFiles = function(req, gallery) {
+        var gid;
         var order = [];
 
-        if (gallery.order)
-          order = gallery.order;
+        if (gallery !== 'profiles') {
+          gid = gallery._id;
+          if (gallery.order)
+            order = gallery.order;
+        }
+
+        var uid = auth.getUserId(req);
 
         // Go through the files we received and move them to gallery
         console.log(tmpFiles);
@@ -153,7 +163,7 @@ UploadHandler.prototype.post = function (app, req, res) {
           }
 
           // Copy the file to the correct place
-          console.log('Saving ' + file + ' to ' + options.galleryDir + '/' + gid + '/' + fileInfo.name);
+          console.log('Saving for uid ' + uid + ' file ' + file + ' to ' + options.galleryDir + '/' + gid + '/' + fileInfo.name);
           fs.renameSync(file, options.galleryDir + '/' + gid + '/' + fileInfo.name);
 
           // Newly added file goes to the back of the picture order
@@ -177,44 +187,63 @@ UploadHandler.prototype.post = function (app, req, res) {
           }
         });
 
-        console.log('Gallery order update: ' + order);
+        if (gallery !== 'profiles') {
+          console.log('Gallery order update: ' + order);
 
-        gallery.update({order: order}).then(function() {
-          console.log('Gallery update finished: ' + order);
-          finish(req, res, gid, order);
-        }).catch(function(err) {
-          // This error handling is incomplete as we will never return
-          console.error(err);
-        });
+          gallery.update({order: order}).then(function() {
+            console.log('Gallery update finished: ' + order);
+            finish(req, res, gid, order);
+          }).catch(function(err) {
+            // This error handling is incomplete as we will never return
+            console.error(err);
+          });
+        } else {
+          app.models.user.find({_id: uid}, function(err, us) {
+            if (err || !us || us.length != 1) {
+              console.error('Retrieving gallery failed');
+              handler.req.connection.destroy();
+            } else {
+              console.log('Successfully retrieved user with uid ' + uid);
+              us[0].update({profile_image: fileInfo.name}).then(function() {
+                console.log('User updated with profile');
+                finish(req, res, gid, undefined);
+              });
+            }
+          });
+        }
       };
 
       // There must be a gallery ID at this point
       if (gid != undefined) {
-        // Check gallery is valid first
-        app.models.gallery.find({_id: gid}, function(err, gs) {
-          if (err || !gs || gs.length != 1) {
-            console.error('Retrieving gallery failed');
-            handler.req.connection.destroy();
-          } else {
-            console.log('Successfully retrieved gallery with gid ' + gid);
-
-            /*
-             * Ideally we want to check the below as well, however the upload UI is using
-             * jquery still which will not set cookies on CORS :(
-             *
-             * The other interfaces are fine since they are coming through AngularJS
-             *
-            if(!auth.isResOwner(req, gs[0])) {
-              res.status(403).json({error: 'This user does not own this gallery'}).end();
+        if (gid !== 'profiles') {
+          // Check gallery is valid first
+          app.models.gallery.find({_id: gid}, function(err, gs) {
+            if (err || !gs || gs.length != 1) {
+              console.error('Retrieving gallery failed');
+              handler.req.connection.destroy();
             } else {
-              processFiles(gs[0]);
-            }
-            */
-            processFiles(gs[0]);
-          }
-        });
-      }
+              console.log('Successfully retrieved gallery with gid ' + gid);
 
+              /*
+               * Ideally we want to check the below as well, however the upload UI is using
+               * jquery still which will not set cookies on CORS :(
+               *
+               * The other interfaces are fine since they are coming through AngularJS
+               *
+              if(!auth.isResOwner(req, gs[0])) {
+                res.status(403).json({error: 'This user does not own this gallery'}).end();
+              } else {
+                processFiles(gs[0]);
+              }
+              */
+              processFiles(req, gs[0]);
+            }
+          });
+        } else {
+          // We just need to upload the image to the top level profiles/
+          processFiles(req, gid);
+        }
+      }
   }).parse(handler.req);
 };
 
