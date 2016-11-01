@@ -47,8 +47,8 @@ angular.module('clientApp')
       $http.post(g_config.galleryUrl, fd, {
         transformRequest: angular.identity,
         headers: {'Content-Type': undefined}
+      }).then(function() {
+        AuthService.saveProfile(user).then(alert('saved'));
       });
-
-      //AuthService.saveProfile(user);
     }
   });
