@@ -14,7 +14,7 @@ module.exports = function(app, route, passport, User) {
         zip: req.user.zip,
         contact: req.user.contact,
         isSeller: req.user.isSeller,
-        _gallery: req.user._gallery
+        profileImage: req.user.profile_image
       });
     }
 
@@ -40,7 +40,7 @@ module.exports = function(app, route, passport, User) {
           zip: user.zip,
           contact: user.contact,
           isSeller: user.isSeller,
-         _gallery: req.user._gallery
+          profileImage: req.user.profile_image
         });
       }
 

@@ -19,7 +19,14 @@ angular.module('clientApp')
 
   .controller('ProfileEditCtrl', function ($scope, $http, AuthService, GalleryService) {
 
-    $scope.uploadUrl = g_config.galleryUrl;
+    AuthService.getProfile()
+      .success(function(data, status) {
+        $scope.user = data;
+
+        if (data.profileImage) {
+          $scope.profileImgUrl = g_config.galleryUrl + '/profiles/' + 'thumbnail_' + data.profileImage;
+        }
+      });
 
     $scope.saveProfile = function() {
       var user = {
