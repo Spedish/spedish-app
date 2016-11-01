@@ -40,15 +40,19 @@ angular.module('clientApp')
       };
 
       var file = $scope.image;
-      var fd = new FormData();
-      fd.append('profile_mode', 'true');
-      fd.append('file', file);
+      if (file) {
+        var fd = new FormData();
+        fd.append('profile_mode', 'true');
+        fd.append('file', file);
 
-      $http.post(g_config.galleryUrl, fd, {
-        transformRequest: angular.identity,
-        headers: {'Content-Type': undefined}
-      }).then(function() {
+        $http.post(g_config.galleryUrl, fd, {
+          transformRequest: angular.identity,
+          headers: {'Content-Type': undefined}
+        }).then(function() {
+          AuthService.saveProfile(user).then(alert('saved'));
+        });
+      } else {
         AuthService.saveProfile(user).then(alert('saved'));
-      });
+      }
     }
   });
