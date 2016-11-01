@@ -115,7 +115,7 @@ UploadHandler.prototype.post = function (app, req, res) {
   }).on('field', function (name, value) {
       if (name === 'gid')
         gid = value;
-      if (name === 'profile') {
+      if (name === 'profile_mode') {
         console.log("Profile mode");
         gid = 'profiles';
       }
@@ -148,6 +148,8 @@ UploadHandler.prototype.post = function (app, req, res) {
           gid = gallery._id;
           if (gallery.order)
             order = gallery.order;
+        } else {
+          gid = gallery;
         }
 
         var uid = auth.getUserId(req);
@@ -204,7 +206,7 @@ UploadHandler.prototype.post = function (app, req, res) {
               handler.req.connection.destroy();
             } else {
               console.log('Successfully retrieved user with uid ' + uid);
-              us[0].update({profile_image: fileInfo.name}).then(function() {
+              us[0].update({profile_image: order[0]}).then(function() {
                 console.log('User updated with profile');
                 finish(req, res, gid, undefined);
               });

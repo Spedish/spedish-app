@@ -34,7 +34,7 @@ angular.module('clientApp')
 
       var file = $scope.image;
       var fd = new FormData();
-      fd.append('profile', 'true');
+      fd.append('profile_mode', 'true');
       fd.append('file', file);
 
       $http.post(g_config.galleryUrl, fd, {
