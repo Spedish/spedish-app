@@ -32,7 +32,8 @@ angular
 
     $sceDelegateProvider.resourceUrlWhitelist([
       'self',
-      'https://www.google.com/**'
+      'https://www.google.com/**',
+      'http://spedish.com:3000/**',
     ]);
 
     $httpProvider.defaults.withCredentials = true;
