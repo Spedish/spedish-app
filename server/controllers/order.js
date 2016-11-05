@@ -178,15 +178,32 @@ module.exports = function(app, route, passport) {
                 message: "Update inventory failed."
               });
               console.log('Inventory successfully updated!');
-              var orderDetails = "Thank you for ordering with us, please wait for your chef " +
-              "to confirm your order.";
-              ses.send(req.user,
-                `order ${res.resource.item._id}`,
-                orderDetails, function (err, data, res) {
-                  if (err) return res.status(500).json({
-                    status: 'failure',
-                    message: "Email notification sent failure."
-                });
+              app.models.user.findById(res.resource.item._sid, function(err, user) {
+                if (err || !user) {
+                  console.error('Cannot find user ' + res.resource.item._sid);
+                  res.status(404).json({error: 'user not found'});
+                } else {
+                  var emailBodyForBuyer = "Thank you for ordering with us, please wait for your chef " +
+                    "to confirm your order.";
+                  var emailBodyForSeller = `${req.user.username} has placed an order on ${item.title}. ` +
+                    `Please confirm at your earliest convenience. Thank you Chef!`;
+                  ses.send(req.user,
+                    `order ${res.resource.item._id}`,
+                    emailBodyForBuyer, function (err, data, res) {
+                      if (err) return res.status(500).json({
+                        status: 'failure',
+                        message: "Email notification sent failure."
+                    });
+                  });
+                  ses.send(user,
+                    `New order ${res.resource.item._id}`,
+                    emailBodyForSeller, function (err, data, resonse) {
+                      if (err) return res.status(500).json({
+                        status: 'failure',
+                        message: "Email notification sent failure."
+                    });
+                  });
+                }
               });
             });
           });
@@ -215,6 +232,87 @@ module.exports = function(app, route, passport) {
         if (res.resource.status >= 200 && res.resource.status < 300) {
           res.resource.item.forEach(function(item, idx, arr) {
             item._doc.canEdit = true;
+          });
+        }
+
+        next();
+      }
+    })
+    .patch({
+      before: function(req, res, next) {
+        if (!req.isAuthenticated()) {
+          console.error('Unauthenticated user attempted update an order');
+          return res.status(403).json({'error': 'no user currently logged in'}).end();
+        }
+
+        Order.findById(req.params.orderId, function(err, item) {
+          if (err) return res.status(404).json({
+            status: 'failure',
+            message: "Order not found."
+          });
+          switch (req.body[0].value) {
+            case "canceled":
+              if (item.status != "ordered") {
+                return res.status(409).json({
+                  status: 'failure',
+                  message: "Order cannot be canceled after it is being confirmed by chef."
+                });
+              }
+            default:
+              return res.status(409).json({
+                status: 'failure',
+                message: "Buyer can only change order status to canceled."
+              });
+          }
+          return auth.isResOwnerResolveChained(req, res, next, req.params.orderId, Order);
+        });
+      },
+      after: function(req, res, next) {
+        if (res.resource.status >= 200 && res.resource.status < 300) {
+          var updatedOrder = res.resource.item;
+          app.models.user.findById(updatedOrder._sid, function(err, user) {
+            if (err || !user) {
+              console.error('Cannot find user ' + updatedOrder._sid);
+              res.status(404).json({error: 'user not found'});
+            } else {
+              switch (updatedOrder.status) {
+                case "canceled":
+                  var emailBodyForBuyer = "We have canceled your order with chef " +
+                    `${user.username}. We look forward to your next order in the future.`;
+                  var emailBodyForSeller = `${req.user.username} has canceled order ${res.resource.item._id}.`;
+                  ses.send(req.user,
+                    `order ${res.resource.item._id}`,
+                    emailBodyForBuyer, function (err, data, resonse) {
+                      if (err) return res.status(500).json({
+                        status: 'failure',
+                        message: "Email notification sent failure."
+                    });
+                  });
+                  ses.send(user,
+                    `order ${res.resource.item._id}`,
+                    emailBodyForSeller, function (err, data, resonse) {
+                      if (err) return res.status(500).json({
+                        status: 'failure',
+                        message: "Email notification sent failure."
+                    });
+                  });
+                  break;
+                // TODO: Migrate complete order api to call this route instead.
+                //
+                // case "complete":
+                //   var orderDetails = `Thank you for picking up your ${res.resource.item.title}, we have you enjoy it! ` +
+                //     `Meanwhile, please feel free to contact your chef ${req.user.username} at ${req.user.email} if you have any questions.`;
+                //   ses.send(user,
+                //     `order ${res.resource.item._id}`,
+                //     orderDetails, function (err, data, resonse) {
+                //       if (err) return res.status(500).json({
+                //         status: 'failure',
+                //         message: "Email notification sent failure."
+                //     });
+                //   });
+                //   break;
+              }
+            }
           });
         }
 

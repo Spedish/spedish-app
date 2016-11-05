@@ -25,18 +25,6 @@ module.exports = function(app, route, passport) {
             res.status(404).json({error: 'user not found'});
           } else {
             switch (updatedOrder.status) {
-              case "ordered":
-                var orderDetails = "Thank you for ordering with us, you will receive an email " +
-                  `when your order is confirmed by chef ${req.user.username}.`;
-                ses.send(user,
-                  `order ${res.resource.item._id}`,
-                  orderDetails, function (err, data, resonse) {
-                    if (err) return res.status(500).json({
-                      status: 'failure',
-                      message: "Email notification sent failure."
-                  });
-                });
-                break;
               case "confirmed":
                 var orderDetails = "Thank you for ordering with us, your order is confirmed by chef " +
                   `${req.user.username}. You will receive an email when your order is ready.`;
@@ -53,18 +41,6 @@ module.exports = function(app, route, passport) {
                 var completeOrderUrl = config.get('server.baseUrl') + "/order/" + updatedOrder._id + "/complete/" + updatedOrder.complete_order_id;
                 var orderDetails = "Thank you for ordering with us, your order is now ready for pick up. " +
                 "Plese click the following link to complete your order after picking up your meal: " + completeOrderUrl;
-                ses.send(user,
-                  `order ${res.resource.item._id}`,
-                  orderDetails, function (err, data, resonse) {
-                    if (err) return res.status(500).json({
-                      status: 'failure',
-                      message: "Email notification sent failure."
-                  });
-                });
-                break;
-              case "complete":
-                var orderDetails = `Thank you for picking up your ${res.resource.item.title}, we have you enjoy it! ` +
-                  `Meanwhile, please feel free to contact your chef ${req.user.username} at ${req.user.email} if you have any questions.`;
                 ses.send(user,
                   `order ${res.resource.item._id}`,
                   orderDetails, function (err, data, resonse) {
