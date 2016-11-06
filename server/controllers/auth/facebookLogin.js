@@ -25,33 +25,85 @@ module.exports = function(app, route, passport) {
           });
         });
       } else {
-        console.log("Create a new user.");
-        var newUser = new User();
-
-        // set all of the information in our user model
-        newUser.thirdParty_source = req.body.thirdParty_source;
-        newUser.thirdParty_id = req.body.thirdParty_id; // set the users facebook id
-        newUser.thirdParty_token = req.body.thirdParty_token; // Save the token that facebook provides to the user
-        newUser.thirdParty_name = req.body.thirdParty_name;
-        newUser.thirdParty_email = req.body.thirdParty_email;
-
-        newUser.username = req.body.thirdParty_name;
-        newUser.password = uuid.v4(); // Create a temp password
-        newUser.email = req.body.thirdParty_email;
-        newUser.isSeller = "false";
-
-        // save our user to the database
-        newUser.save(function(err, user) {
+        User.findOne({
+          'email': req.body.thirdParty_email
+        }, function(err, user) {
           if (err) {
             return res.status(500).json({
-              error: 'unable to save the new user to the database'
+              error: 'unable to connect to the database'
+            });
+          }
+
+          if (user) {
+            console.log("Merge with an existing local user.");
+
+            // set all of the information in our user model
+            user.thirdParty_source = req.body.thirdParty_source;
+            user.thirdParty_id = req.body.thirdParty_id; // set the users facebook id
+            user.thirdParty_token = req.body.thirdParty_token; // Save the token that facebook provides to the user
+            user.thirdParty_name = req.body.thirdParty_name;
+            user.thirdParty_email = req.body.thirdParty_email;
+
+            // save the updated user to the database
+            user.save(function(err, user) {
+              if (err) {
+                return res.status(500).json({
+                  error: 'unable to save the new user to the database'
+                });
+              } else {
+                req.logIn(user, function() {
+                  res.status(200).send({
+                    isSeller: user.isSeller
+                  });
+                })
+              }
             });
           } else {
-            req.logIn(user, function() {
-              res.status(200).send({
-                isSeller: user.isSeller
+            console.log("Create a new user.");
+
+            var newUser = new User();
+
+            // set all of the information in our user model
+            newUser.thirdParty_source = req.body.thirdParty_source;
+            newUser.thirdParty_id = req.body.thirdParty_id; // set the users facebook id
+            newUser.thirdParty_token = req.body.thirdParty_token; // Save the token that facebook provides to the user
+            newUser.thirdParty_name = req.body.thirdParty_name;
+            newUser.thirdParty_email = req.body.thirdParty_email;
+
+            newUser.password = uuid.v4(); // Create a temp password
+            newUser.email = req.body.thirdParty_email;
+            newUser.isSeller = "false";
+
+            User.findOne({
+              'username': req.body.thirdParty_name
+            }, function(err, user) {
+              if (err) {
+                return res.status(500).json({
+                  error: 'unable to connect to the database'
+                });
+              }
+
+              if (!user) {
+                newUser.username = req.body.thirdParty_name;
+              } else {
+                newUser.username = uuid.v4(); // Create a temp username.
+              }
+
+              // save our user to the database
+              newUser.save(function(err, user) {
+                if (err) {
+                  return res.status(500).json({
+                    error: 'unable to save the new user to the database'
+                  });
+                } else {
+                  req.logIn(user, function() {
+                    res.status(200).send({
+                      isSeller: user.isSeller
+                    });
+                  })
+                }
               });
-            })
+            });
           }
         });
       }
