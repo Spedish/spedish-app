@@ -25,6 +25,7 @@ module.exports = function(app, route, passport) {
           });
         });
       } else {
+        // Check if exist a local user with the same email
         User.findOne({
           'email': req.body.thirdParty_email
         }, function(err, user) {
@@ -74,6 +75,7 @@ module.exports = function(app, route, passport) {
             newUser.email = req.body.thirdParty_email;
             newUser.isSeller = "false";
 
+            // Check if exist a local user with the same username
             User.findOne({
               'username': req.body.thirdParty_name
             }, function(err, user) {

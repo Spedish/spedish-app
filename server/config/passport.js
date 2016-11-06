@@ -39,7 +39,7 @@ module.exports = function(passport) {
       // User.findOne wont fire unless data is sent back
       process.nextTick(function() {
 
-        // find a user whose username is the same as the forms username
+        // find a user whose username is the same as the form's username
         // we are checking to see if the user trying to login already exists
         User.findOne({
           'username': username
@@ -48,41 +48,61 @@ module.exports = function(passport) {
           if (err)
             return done(err);
 
-          // check to see if there is already a user with that username
           if (user) {
             return done(null, false, {
               message: 'Username is already taken.'
             });
           } else {
-            // if there is no user with that username
-            // create the user
-            var newUser = new User();
-
-            // set the user's required information
-            newUser.username = username;
-            newUser.password = newUser.generateHash(password);
-            newUser.email = req.body.email;
-            newUser.isSeller = req.body.isSeller;
-
-            // set the user's other information
-            newUser.firstname = req.body.firstname;
-            newUser.lastname = req.body.lastname;
-            newUser.address = req.body.address;
-            newUser.city = req.body.city;
-            newUser.zip = req.body.zip;
-            newUser.contact = req.body.contact;
-            newUser.about = req.body.about;
-
-            // save the user
-            newUser.save(function(err) {
-              if (err) {
+            // find a user whose email is the same as the form's email
+            User.findOne({
+              'email': req.body.email
+            }, function(err, user) {
+              // if there are any errors, return the error
+              if (err)
                 return done(err);
+
+              if (user) {
+                return done(null, false, {
+                  message: 'Email is already signed up.'
+                });
               } else {
-                return done(null, newUser);
+                // if there is no user with that username and email
+                // create the user
+                var newUser = new User();
+
+                // set the user's required information
+                newUser.username = username;
+                newUser.password = newUser.generateHash(
+                  password);
+                newUser.email = req.body.email;
+                newUser.isSeller = req.body.isSeller;
+
+                // set the user's other information
+                newUser.firstname = req.body.firstname;
+                newUser.lastname = req.body.lastname;
+                newUser.address = req.body.address;
+                newUser.city = req.body.city;
+                newUser.zip = req.body.zip;
+                newUser.contact = req.body.contact;
+                newUser.about = req.body.about;
+
+                // save the user
+                newUser.save(function(err) {
+                  if (err) {
+                    return done(err);
+                  } else {
+                    return done(null, newUser);
+                  }
+                });
               }
             });
           }
+
+
         });
+
+
+
       });
     }));
 
@@ -97,7 +117,7 @@ module.exports = function(passport) {
     },
     function(req, username, password, done) { // callback with username and password from our form
 
-      // find a user whose username is the same as the forms username
+      // find a user whose username is the same as the form's username
       // we are checking to see if the user trying to login already exists
       User.findOne({
         'username': username
