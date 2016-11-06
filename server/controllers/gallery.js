@@ -143,6 +143,7 @@ UploadHandler.prototype.post = function (app, req, res) {
       var processFiles = function(req, gallery) {
         var gid;
         var order = [];
+        var uid;
 
         if (gallery !== 'profiles') {
           gid = gallery._id;
@@ -150,9 +151,9 @@ UploadHandler.prototype.post = function (app, req, res) {
             order = gallery.order;
         } else {
           gid = gallery;
+          uid = auth.getUserId(req);
         }
 
-        var uid = auth.getUserId(req);
 
         // Go through the files we received and move them to gallery
         console.log(tmpFiles);
@@ -165,7 +166,10 @@ UploadHandler.prototype.post = function (app, req, res) {
           }
 
           // Copy the file to the correct place
-          console.log('Saving for uid ' + uid + ' file ' + file + ' to ' + options.galleryDir + '/' + gid + '/' + fileInfo.name);
+          if (gallery !== 'profiles')
+            console.log('Saving for gallery mode file ' + file + ' to ' + options.galleryDir + '/' + gid + '/' + fileInfo.name);
+          else
+            console.log('Saving for profile photo for uid ' + uid + ' file ' + file + ' to ' + options.galleryDir + '/' + gid + '/' + fileInfo.name);
           fs.renameSync(file, options.galleryDir + '/' + gid + '/' + fileInfo.name);
 
           // Newly added file goes to the back of the picture order
