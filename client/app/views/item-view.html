@@ -10,10 +10,11 @@
   </div>
 </div>
 
-<div>
+<div ng-controller="CarouselCtrl">
   <h2>{{ item.title }}</h2>
   <h3>Category: {{ item.category }}</h3>
-  <p>Description: {{ item.description }}</p>
+  <p>Description:</p>
+  <p ta-bind ng-model="description"></p>
   <p>Price/Inventory: ${{ item.unit_price }} @ {{ item.inventory }}</p>
   <p>Options: {{ item.meal_options }}</p>
   <br />

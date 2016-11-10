@@ -25,9 +25,11 @@ angular
     'angularMoment',
     'multipleSelect',
     'ui.bootstrap',
-    'ngTimezone'
+    'ngTimezone',
+    'textAngular'
   ])
-  .config(function(ENV, $httpProvider, $routeProvider, RestangularProvider, $sceDelegateProvider) {
+  .config(function(ENV, $httpProvider, $routeProvider, RestangularProvider,
+    $sceDelegateProvider) {
     initConfig(ENV);
 
     $sceDelegateProvider.resourceUrlWhitelist([
@@ -42,28 +44,29 @@ angular
 
     // Function to add pagination info to response
     // Any response with pagination can use the pagination property
-    RestangularProvider.addResponseInterceptor(function (data, operation, what, url, response, deferred) {
-        var responseData = response.data;
-        var contentRange = response.headers('Content-Range');
+    RestangularProvider.addResponseInterceptor(function(data, operation, what,
+      url, response, deferred) {
+      var responseData = response.data;
+      var contentRange = response.headers('Content-Range');
 
-        if (contentRange) {
-            var rangeFields = contentRange.split(/\s|-|\//);
+      if (contentRange) {
+        var rangeFields = contentRange.split(/\s|-|\//);
 
-            var paginationFrom = parseInt(rangeFields[0]) + 1;
-            var paginationTo = parseInt(rangeFields[1]) + 1;
-            var paginationTotal = parseInt(rangeFields[2]);
-            var paginationSubTotal = parseInt(paginationTo - paginationFrom);
+        var paginationFrom = parseInt(rangeFields[0]) + 1;
+        var paginationTo = parseInt(rangeFields[1]) + 1;
+        var paginationTotal = parseInt(rangeFields[2]);
+        var paginationSubTotal = parseInt(paginationTo - paginationFrom);
 
-            responseData.pagination = {
-                from: paginationFrom,
-                to: paginationTo,
-                total: paginationTotal,
-                numPages: Math.ceil(paginationTotal / paginationSubTotal),
-                currentPage: Math.ceil(paginationFrom / paginationSubTotal)
-            };
-        }
+        responseData.pagination = {
+          from: paginationFrom,
+          to: paginationTo,
+          total: paginationTotal,
+          numPages: Math.ceil(paginationTotal / paginationSubTotal),
+          currentPage: Math.ceil(paginationFrom / paginationSubTotal)
+        };
+      }
 
-        return responseData;
+      return responseData;
     });
 
     $routeProvider
