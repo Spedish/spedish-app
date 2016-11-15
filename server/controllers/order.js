@@ -246,6 +246,7 @@ module.exports = function(app, route, passport) {
         }
 
         Order.findById(req.params.orderId, function(err, item) {
+          console.error(req.body[0].value);
           if (err) return res.status(404).json({
             status: 'failure',
             message: "Order not found."
@@ -259,10 +260,10 @@ module.exports = function(app, route, passport) {
                 });
               }
             default:
-              return res.status(409).json({
-                status: 'failure',
-                message: "Buyer can only change order status to canceled."
-              });
+              // return res.status(409).json({
+              //   status: 'failure',
+              //   message: "Buyer can only change order status to canceled."
+              // });
           }
           return auth.isResOwnerResolveChained(req, res, next, req.params.orderId, Order);
         });

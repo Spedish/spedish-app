@@ -77,15 +77,16 @@ angular.module('clientApp').controller('OrdersCtrl', function($scope, Order, Sel
     };
 
     $scope.changePlacedOrderStatus = function(orderId, status, index) {
-      // var updated = [{ "op": "replace", 
-      //                 "path": "/status", 
-      //                 "value": status
-      //               }];
-      // Order.one(orderId).patch(updated).then(function (data) {
-      //   $scope.orders[index] = data;
-      // },function(error) {
-      //   console.log(error);
-      // });
+      debugger;
+      var updated = [{"value": status,
+                      "op": "replace", 
+                      "path": "/status"
+                    }];
+      Order.one(orderId).patch(updated).then(function (data) {
+        $scope.orders[index] = data;
+      },function(error) {
+        console.log(error);
+      });
     };
 
     function getItemOffset() {
