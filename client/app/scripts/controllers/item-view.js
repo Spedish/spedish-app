@@ -13,7 +13,8 @@ angular.module('clientApp')
     $scope.item = Item.one($routeParams.id).get().$object;
 
     $scope.getEmbedMapSrc = function() {
-      return g_config.embeddedMapUrl + $scope.item.street + ',' + $scope.item.city + ',' + $scope.item.zip;
+      return g_config.embeddedMapUrl + $scope.item.street + ',' + $scope.item
+        .city + ',' + $scope.item.zip;
     }
   })
 
@@ -27,6 +28,8 @@ angular.module('clientApp')
 
     // Form gallery links
     var gid = data._gallery._id;
+
+    $scope.description = data.description;
 
     $scope.slides = [];
 

@@ -3,6 +3,7 @@ module.exports = {
   'signup': require('./controllers/auth/signup'),
   'order': require('./controllers/order'),
   'login': require('./controllers/auth/login'),
+  'facebookLogin': require('./controllers/auth/facebookLogin'),
   'logout': require('./controllers/auth/logout'),
   'availability': require('./controllers/availability'),
   'user_status': require('./controllers/auth/status'),
