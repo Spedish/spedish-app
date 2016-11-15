@@ -233,7 +233,7 @@ hr.dish-image-content-spacer {
   margin: 0 auto;
 }
 
-.order-item-info ul{
+.order-item-info ul, .buton-action-container ul{
     height:100%;
     display: table;
     table-layout: fixed;
@@ -243,7 +243,7 @@ hr.dish-image-content-spacer {
     padding-left: 0px;
 }
 
-.order-item-info li
+.order-item-info li, .buton-action-container li
 {
     display: table-row;
 }
@@ -280,4 +280,20 @@ hr.dish-image-content-spacer {
 
 .order-status {
   text-transform: capitalize;
+}
+
+.btn-outline-primary {
+    color: #0275d8;
+    background-image: none;
+    background-color: transparent;
+    border-color: #0275d8;
+}
+
+.btn-outline-primary:hover {
+    color: #fff;
+    background-color: #0275d8;
+    border-color: #0275d8;
+}
+.buton-action-container ul li button {
+  width: 90%;
 }

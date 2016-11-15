@@ -100,7 +100,7 @@ module.exports = function(app, route, passport) {
             res.status(403).json({'error': 'no user currently logged in'}).end();
             return false;
           }
-          req.modelQuery = this.model.where('_sid').equals(req.user.id);
+          req.modelQuery = this.model.where().populate('item');
           next();
         },
         after: function(req, res, next) {

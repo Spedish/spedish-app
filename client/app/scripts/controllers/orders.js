@@ -62,7 +62,31 @@ angular.module('clientApp').controller('OrdersCtrl', function($scope, Order, Sel
 
     $scope.getOrderStatusClass = function(status) {
       return 'order-status-' + status;
-    }
+    };
+
+    $scope.changeReceivedOrderStatus = function(orderId, status, index) {
+      var updated = [{ "op": "replace", 
+                      "path": "/status", 
+                      "value": status
+                    }];
+      SellerPortal.one('order').one(orderId).patch(updated).then(function (data) {
+        $scope.receivedOrders[index] = data;
+      },function(error) {
+        console.log(error);
+      });
+    };
+
+    $scope.changePlacedOrderStatus = function(orderId, status, index) {
+      // var updated = [{ "op": "replace", 
+      //                 "path": "/status", 
+      //                 "value": status
+      //               }];
+      // Order.one(orderId).patch(updated).then(function (data) {
+      //   $scope.orders[index] = data;
+      // },function(error) {
+      //   console.log(error);
+      // });
+    };
 
     function getItemOffset() {
       return ($scope.currentPage - 1) * $scope.limit;

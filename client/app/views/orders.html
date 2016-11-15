@@ -24,7 +24,7 @@
                     <td>{{order.create_date | amUtc | amLocal | amDateFormat:'MM.DD.YYYY HH:mm'}}</td>
                     <td>{{order.pick_up_date | amUtc | amLocal | amDateFormat:'MM.DD.YYYY HH:mm'}}</td>
                     <td>{{order._id}}</td>
-                    <td ng-class="getOrderStatusClass(order.status)">{{order.status}}</td>
+                    <td class="order-status" ng-class="getOrderStatusClass(order.status)">{{order.status}}</td>
                 </tr>
             </tbody>
         </table>
@@ -46,7 +46,7 @@
                     <li><span>{{order.item.street}}, {{order.item.city}}, {{order.item.zip}}</span></li>
                 </ul>
             </div>
-            <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3 order-item-info" style="height:100%;display:table">
+            <div style="height:100%;display:table" class="col-lg-3 col-md-3 col-sm-3 col-xs-3 order-item-info">
                 <ul style="padding-left:0px;">
                     <li><span></span></li>
                     <li><span">Price: {{order.unit_price | currency:"$"}}</span></li>
@@ -56,10 +56,12 @@
             </div>
 
             <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2 buton-action-container">
-                <div class="button-wrapper">
-                    <button type="button" class="btn btn-xs btn-danger order-cancel-button" style="white-space: normal;">Cancel</button>
-                </div>
-                
+                <ul style="padding-left:0px;">
+                    <li><span></span></li>
+                    <li><button type="button" class="btn btn-outline-primary">Contact</button></li>
+
+                    <li ng-if="order.status=='ordered'"><button type="button" class="btn btn-outline-primary" ng-click="changePlacedOrderStatus(order._id, 'canceled', $index)">Cancel</button></li>
+                </ul>
             </div>
         </div>
     </div>
@@ -117,13 +119,23 @@
             </div>
 
             <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2 buton-action-container">
-                <div class="button-wrapper">
-                    <button type="button" class="btn btn-xs btn-danger order-cancel-button" style="white-space: normal;">Cancel</button>
-                </div>
-                
+                <ul style="padding-left:0px;">
+                    <li><span></span></li>
+                    <li><button type="button" class="btn btn-outline-primary">Contact</button></li>
+
+                    <li ng-if="order.status=='confirmed'"><button type="button" class="btn btn-outline-primary" ng-click="changeReceivedOrderStatus(order._id, 'ready', $index)">Ready</button></li>
+
+                     <li ng-if="order.status=='ready'"><button type="button" class="btn btn-outline-primary" ng-click="changeReceivedOrderStatus(order._id, 'complete', $index)">Delivered</button></li>
+
+                    <li ng-if="order.status=='ordered'"><button type="button" class="btn btn-outline-primary" ng-click="changeReceivedOrderStatus(order._id, 'confirmed', $index)">Confirm</button></li>
+
+                    <li ng-if="order.status=='ordered'"><button type="button" class="btn btn-outline-primary" ng-click="changeReceivedOrderStatus(order._id, 'canceled', $index)">Cancel</button></li>
+                </ul>
             </div>
+                
         </div>
     </div>
-
     <ul style="float:right;" uib-pagination items-per-page="limit" total-items="sellerTotal" ng-model="currentPageForSeller" ng-change="sellerPageChanged()"></ul>
 </div>
+
+    
