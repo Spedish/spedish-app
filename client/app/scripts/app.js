@@ -155,6 +155,18 @@ angular
         controller: 'ProfileViewCtrl',
         controllerAs: 'profileView'
       })
+      .when('/item/:id/order/:oid/review', {
+        templateUrl: 'views/review-add.html',
+        controller: 'ReviewAddCtrl',
+        controllerAs: 'reviewAdd',
+        requireAuth: true
+      })
+      .when('/manage-reviews', {
+        templateUrl: 'views/review-manage.html',
+        controller: 'ReviewManageCtrl',
+        controllerAs: 'reviewManage',
+        requireAuth: true
+      })
       .otherwise({
         redirectTo: '/'
       });
@@ -194,6 +206,14 @@ angular
   });
 })
 
+.factory('ReviewRestangular', function(Restangular) {
+  return Restangular.withConfig(function(RestangularConfigurer) {
+    RestangularConfigurer.setRestangularFields({
+      id: '_id'
+    });
+  });
+})
+
 // Provide the item factory
 .factory('Item', function(ItemRestangular) {
   return ItemRestangular.service('item');
@@ -212,4 +232,9 @@ angular
 // Provide the availability factory
 .factory('Availability', function(AvailabilityRestangular) {
   return AvailabilityRestangular.service('availability');
+})
+
+// Provide the review factory
+.factory('Review', function(ReviewRestangular) {
+  return ReviewRestangular.service('review');
 })

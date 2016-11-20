@@ -1,0 +1,26 @@
+<div ng-app="app" ng-controller="ReviewAddCtrl as review" class="container">
+<!-- image of the item -->
+<!-- no image available-->
+<div ng-if="!item.image" class=dish-image style="background-image: url(images/no-photo-available.png)"></div>
+<!-- has image -->
+<div ng-if="item.image" class="dish-image" ng-style="{'background-image':'url({{item.image[0]}})'}"></div>
+<!-- item title -->
+<h4 class="dish-title">{{item.title}}</h4>
+
+<!-- Seller -->
+<!-- TODO: after adding seller page, update the link ng-href -->
+<p class="dish-seller-name">By <a ng-href="">{{item.contact_name}}</a></p>
+<div>
+  <label>Rating</label>
+  <br/>
+  <span uib-rating ng-model="review.rating" max="5"></span>
+  <br/>
+  <label>Review Content</label>
+  <br/>
+  <textarea ng-model="review.buyer_review" id="review"></textarea>
+  <br/>
+</div>
+<a class="btn btn-primary" ng-click="saveReview()">Submit</a>
+<a class="btn btn-primary">Cancel</a>
+</div>
+</div>
