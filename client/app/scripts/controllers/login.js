@@ -20,9 +20,9 @@ angular.module('clientApp')
           $scope.disabled = false;
           $scope.loginForm = {};
         })
-        .catch(function() {
+        .catch(function(message) {
           $scope.error = true;
-          $scope.errorMessage = 'Failed to log in';
+          $scope.errorMessage = message;
           $scope.disabled = false;
           $scope.loginForm = {};
         });
@@ -50,7 +50,6 @@ angular.module('clientApp')
                 $scope.disabled = false;
                 $scope.loginForm = {};
               });
-
           });
         } else {
           console.log(
