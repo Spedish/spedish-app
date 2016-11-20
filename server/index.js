@@ -46,6 +46,7 @@ app.use(function(req, res, next) {
 });
 
 // Connect to MongoDB
+mongoose.Promise = global.Promise;
 mongoose.connect(config.get('server.dbConfig.url'));
 mongoose.connection.on('error', console.error.bind(console, 'connection error:'));
 mongoose.connection.once('open', function() {
