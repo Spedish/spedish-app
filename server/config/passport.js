@@ -45,8 +45,9 @@ module.exports = function(passport) {
           'username': username
         }, function(err, user) {
           // if there are any errors, return the error
-          if (err)
+          if (err) {
             return done(err);
+          }
 
           if (user) {
             return done(null, false, {
@@ -58,8 +59,9 @@ module.exports = function(passport) {
               'email': req.body.email
             }, function(err, user) {
               // if there are any errors, return the error
-              if (err)
+              if (err) {
                 return done(err);
+              }
 
               if (user) {
                 return done(null, false, {
@@ -97,12 +99,7 @@ module.exports = function(passport) {
               }
             });
           }
-
-
         });
-
-
-
       });
     }));
 
@@ -123,25 +120,26 @@ module.exports = function(passport) {
         'username': username
       }, function(err, user) {
         // if there are any errors, return the error before anything else
-        if (err)
+        if (err) {
           return done(err);
+        }
 
         // if no user is found, return the message
-        if (!user)
+        if (!user) {
           return done(null, false, {
             message: 'Username is incorrect.'
           });
+        }
 
         // if the user is found but the password is wrong
-        if (!user.validPassword(password))
+        if (!user.validPassword(password)) {
           return done(null, false, {
             message: 'Oops! Wrong password.'
           });
+        }
 
         // all is well, return successful user
         return done(null, user);
       });
-
     }));
-
 };
