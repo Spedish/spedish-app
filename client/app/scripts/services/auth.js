@@ -16,22 +16,17 @@ angular.module('clientApp')
           username: user,
           password: pass
         })
-        .success(function(data, status) {
-          if (status === 200) {
-            g_config.user = {
-              authenticated: true,
-              isSeller: data.isSeller,
-              isFacebookUser: false
-            };
-            deferred.resolve();
-          } else {
-            clearUser();
-            deferred.reject();
-          }
+        .success(function(data) {
+          g_config.user = {
+            authenticated: true,
+            isSeller: data.isSeller,
+            isFacebookUser: false
+          };
+          deferred.resolve();
         })
         .error(function(data) {
           clearUser();
-          deferred.reject();
+          deferred.reject(data.message);
         });
 
       return deferred.promise;
@@ -47,18 +42,13 @@ angular.module('clientApp')
           thirdParty_email: email,
           thirdParty_token: token
         })
-        .success(function(data, status) {
-          if (status === 200) {
-            g_config.user = {
-              authenticated: true,
-              isSeller: data.isSeller,
-              isFacebookUser: true
-            };
-            deferred.resolve();
-          } else {
-            clearUser();
-            deferred.reject();
-          }
+        .success(function(data) {
+          g_config.user = {
+            authenticated: true,
+            isSeller: data.isSeller,
+            isFacebookUser: true
+          };
+          deferred.resolve();
         })
         .error(function(data) {
           clearUser();
