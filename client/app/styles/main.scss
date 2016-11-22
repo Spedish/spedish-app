@@ -90,21 +90,22 @@ body {
     border-bottom: 0;
   }
 }
-.grid-item-time {
-  cursor: pointer;
+
+.grid-item-time, .order-option{
   border: .0625rem solid #e0e7e9;
   border-right: none;
+  cursor: pointer;
 }
 
-.grid-item-time.active-time {
+.grid-item-time.active-time, .active.order-option {
   color: #ff7f50;
 }
 
-.grid-item-time:hover {
+.grid-item-time:hover, .order-option:hover{
   background-color: rgba(235,243,245,0.3);
 }
 
-.grid-item-time:last-child {
+.grid-item-time:last-child, .order-option:last-child {
   border-right: .0625rem solid #e0e7e9;
 }
 
@@ -183,3 +184,117 @@ hr.dish-image-content-spacer {
     right: 2rem;
     position: absolute;
  }
+
+/*view order page style*/
+.no-border th{
+  border-bottom: 0 !important;
+}
+
+.no-border td{
+  border-top: 0 !important;
+}
+
+.order-basic-info {
+  background-color: #f6f6f6;
+  border: .0625rem solid #d2dcdf;
+}
+
+.order-detail-info{
+  margin-top:-20px;
+  border-bottom: .0625rem solid #d2dcdf;
+  border-left: .0625rem solid #d2dcdf;
+  border-right: .0625rem solid #d2dcdf;
+  height:185px;
+}
+
+.order-item-image{
+  margin-top:14px;
+  height: 85%;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: contain;
+  border: none;
+  left: 0;
+  top: 0;
+}
+.buton-action-container{
+  display: table;
+  height:100%
+}
+
+.button-wrapper{
+  display: table-cell;
+  vertical-align: middle;
+  text-align: center;
+}
+
+.order-cancel-button{
+  vertical-align: middle;
+  display: block;
+  margin: 0 auto;
+}
+
+.order-item-info ul, .buton-action-container ul{
+    height:100%;
+    display: table;
+    table-layout: fixed;
+    width: 100%;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    padding-left: 0px;
+}
+
+.order-item-info li, .buton-action-container li
+{
+    display: table-row;
+}
+
+.order-selection-tab{
+  margin: 0px;
+  padding-bottom: 15px;
+}
+
+.order-option {
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+
+.order-status-ordered {
+  color: #fcae05;
+}
+
+.order-status-confirmed {
+  color: #0522fc;
+}
+
+.order-status-ready {
+  color: #fc7d05;
+}
+
+.order-status-complete {
+  color: #18b004;
+}
+
+.order-status-canceled, .order-status-declined {
+  color: #C90404;
+}
+
+.order-status {
+  text-transform: capitalize;
+}
+
+.btn-outline-primary {
+    color: #0275d8;
+    background-image: none;
+    background-color: transparent;
+    border-color: #0275d8;
+}
+
+.btn-outline-primary:hover {
+    color: #fff;
+    background-color: #0275d8;
+    border-color: #0275d8;
+}
+.buton-action-container ul li button {
+  width: 90%;
+}

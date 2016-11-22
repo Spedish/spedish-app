@@ -1,27 +1,141 @@
-<!-- <table>
-    <thead>
-        <th>Id</th>
-        <th>Count</th>
-        <th>Unit Price</th>
-        <th>Total Price</th>
-        <th>Pick Up Time</th>
-        <th>Note</th>
-        <th>Status</th>
-        <th>Order Date</th>
-        <th>Update Date</th>
-    </thead>
-    <tbody>
-        <tr ng-repeat="o in orders">
-            <td width="400px"><a ng-href="/#/order/{{ o._id }}">{{ o._id }}</a></td>
-            <td width="400px">{{ o.count }}</td>
-            <td width="400px">${{ o.unit_price }}</td>
-            <td width="400px">${{ o.total_price }}</td>
-            <td width="800px">{{ order.pick_up_date | amUtc | amLocal | amDateFormat:'YYYY-MM-DDTHH:mm:ss.SSSSZ' }}</td>
-            <td width="400px">{{ o.note }}</td>
-            <td width="400px">{{ o.status }}</td>
-            <td width="400px">{{ o.create_date }}</td>
-            <td width="400px">{{ o.update_date }}</td>
-        </tr>
-    </tbody>
-</table> -->
-Coming soon
+<div class="order-tab-wrapper" ng-if="isSeller"> 
+    <div class="col-md-3"></div>
+    <ul class="block-grid-xs-2 col-md-6 order-selection-tab">
+        <li class="order-option" ng-click="setReceivedOrderMode(true)" ng-class="{'active': receivedOrderMode == true}">Received Orders</li>
+        <li class="order-option" ng-click="setReceivedOrderMode(false)" ng-class="{'active': receivedOrderMode == false}">Placed Orders</li>
+    </ul>
+</div>
+
+<!-- placed order -->
+<div ng-show="showPlacedOrder()">
+    <div ng-repeat="order in orders">
+        <table class="table order-basic-info">
+            <thead>
+                <tr class="no-border">
+                    <th>Order Placed</th>
+                    <th>Pick Up Time</th>
+                    <th>Order Number</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                <tr class="no-border">
+                    <td>{{order.create_date | amUtc | amLocal | amDateFormat:'MM.DD.YYYY HH:mm'}}</td>
+                    <td>{{order.pick_up_date | amUtc | amLocal | amDateFormat:'MM.DD.YYYY HH:mm'}}</td>
+                    <td>{{order._id}}</td>
+                    <td class="order-status" ng-class="getOrderStatusClass(order.status)">{{order.status}}</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="table order-detail-info">
+            <!-- No Image to show -->
+            <div ng-if="!hasImage(order)" class="col-lg-2 col-md-2 col-sm-2 col-xs-2 order-item-image" style="background-image: url(images/image-coming-soon.png)">
+            </div>
+
+            <!-- Has image -->
+            <div ng-if="hasImage(order)" class="col-lg-2 col-md-2 col-sm-2 col-xs-2 order-item-image" ng-style="{'background-image':'url({{getOrderImage(order)}})'}">
+            </div>
+
+            <div class="col-lg-5 col-md-5 col-sm-5 col-xs-5 order-item-info" style="height:100%;">
+                <ul>
+                    <li><span></span></li>
+                    <li><span style="font-size:18px;">{{order.item.title}}</span></li>
+                    <li><span>Sold by: {{order.item.contact_name}}</span></li>
+                    <li><span>{{order.item.street}}, {{order.item.city}}, {{order.item.zip}}</span></li>
+                </ul>
+            </div>
+            <div style="height:100%;display:table" class="col-lg-3 col-md-3 col-sm-3 col-xs-3 order-item-info">
+                <ul style="padding-left:0px;">
+                    <li><span></span></li>
+                    <li><span">Price: {{order.unit_price | currency:"$"}}</span></li>
+                    <li><span>Orders: {{order.count}}</span></li>
+                    <li><span>Total: {{order.total_price | currency:"$"}}</span></li>
+                </ul>
+            </div>
+
+            <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2 buton-action-container">
+                <ul style="padding-left:0px;">
+                    <li><span></span></li>
+                    <li><button type="button" class="btn btn-outline-primary">Contact</button></li>
+
+                    <li ng-if="order.status=='ordered'"><button type="button" class="btn btn-outline-primary" ng-click="changePlacedOrderStatus(order._id, 'canceled', $index)">Cancel</button></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <ul style="float:right;" uib-pagination items-per-page="limit" total-items="totalItems" ng-model="currentPage" ng-change="pageChanged()"></ul>
+</div>
+
+<!-- received order -->
+<div ng-show="!showPlacedOrder()">
+    <div ng-repeat="order in receivedOrders">
+        <table class="table order-basic-info">
+            <thead>
+                <tr class="no-border">
+                    <th>Order Placed</th>
+                    <th>Pick Up Time</th>
+                    <th>Order Number</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                <tr class="no-border">
+                    <td>{{order.create_date | amUtc | amLocal | amDateFormat:'MM.DD.YYYY HH:mm'}}</td>
+                    <td>{{order.pick_up_date | amUtc | amLocal | amDateFormat:'MM.DD.YYYY HH:mm'}}</td>
+                    <td>{{order._id}}</td>
+                    <td class="order-status" ng-class="getOrderStatusClass(order.status)">{{order.status}}</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="table order-detail-info">
+            <!-- No Image to show -->
+            <div ng-if="!hasImage(order)" class="col-lg-2 col-md-2 col-sm-2 col-xs-2 order-item-image" style="background-image: url(images/image-coming-soon.png)">
+            </div>
+
+            <!-- Has image -->
+            <div ng-if="hasImage(order)" class="col-lg-2 col-md-2 col-sm-2 col-xs-2 order-item-image" ng-style="{'background-image':'url({{getOrderImage(order)}})'}">
+            </div>
+
+            <div class="col-lg-5 col-md-5 col-sm-5 col-xs-5 order-item-info" style="height:100%;">
+                <ul>
+                    <li><span></span></li>
+                    <li><span style="font-size:18px;">{{order.item.title}}</span></li>
+                    <li><span>Ordered by: {{order.item.contact_name}}</span></li>
+                    <li><span>{{order.item.street}}, {{order.item.city}}, {{order.item.zip}}</span></li>
+                </ul>
+            </div>
+            <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3 order-item-info" style="height:100%;display:table">
+                <ul style="padding-left:0px;">
+                    <li><span></span></li>
+                    <li><span">Price: {{order.unit_price | currency:"$"}}</span></li>
+                    <li><span>Orders: {{order.count}}</span></li>
+                    <li><span>Total: {{order.total_price | currency:"$"}}</span></li>
+                </ul>
+            </div>
+
+            <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2 buton-action-container">
+                <ul style="padding-left:0px;">
+                    <li><span></span></li>
+                    <li><button type="button" class="btn btn-outline-primary">Contact</button></li>
+
+                    <li ng-if="order.status=='confirmed'"><button type="button" class="btn btn-outline-primary" ng-click="changeReceivedOrderStatus(order._id, 'ready', $index)">Ready</button></li>
+
+                     <li ng-if="order.status=='ready'"><button type="button" class="btn btn-outline-primary" ng-click="changeReceivedOrderStatus(order._id, 'complete', $index)">Delivered</button></li>
+
+                    <li ng-if="order.status=='ordered'"><button type="button" class="btn btn-outline-primary" ng-click="changeReceivedOrderStatus(order._id, 'confirmed', $index)">Confirm</button></li>
+
+                    <li ng-if="order.status=='ordered'"><button type="button" class="btn btn-outline-primary" ng-click="changeReceivedOrderStatus(order._id, 'canceled', $index)">Cancel</button></li>
+                </ul>
+            </div>
+                
+        </div>
+    </div>
+    <ul style="float:right;" uib-pagination items-per-page="limit" total-items="sellerTotal" ng-model="currentPageForSeller" ng-change="sellerPageChanged()"></ul>
+</div>
+
+    

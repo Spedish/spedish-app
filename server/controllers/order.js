@@ -245,6 +245,7 @@ module.exports = function(app, route, passport) {
         }
 
         Order.findById(req.params.orderId, function(err, item) {
+          console.error(req.body[0].value);
           if (err) return res.status(404).json({
             status: 'failure',
             message: "Order not found."

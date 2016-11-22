@@ -178,6 +178,15 @@ angular
   });
 })
 
+.factory('SellerRestangular', function(Restangular) {
+  return Restangular.withConfig(function(RestangularConfigurer) {
+    RestangularConfigurer.setRestangularFields({
+      id: '_id'
+    });
+  });
+})
+
+
 .factory('UserRestangular', function(Restangular) {
   return Restangular.withConfig(function(RestangularConfigurer) {
     RestangularConfigurer.setRestangularFields({
@@ -202,6 +211,10 @@ angular
 // Provide the order factory
 .factory('Order', function(OrderRestangular) {
   return OrderRestangular.service('order');
+})
+
+.factory('SellerPortal', function(SellerRestangular) {
+  return SellerRestangular.service('sellerPortal');
 })
 
 // Provide the signup factory
