@@ -20,6 +20,7 @@ angular.module('clientApp')
           g_config.user = {
             authenticated: true,
             isSeller: data.isSeller,
+            id: data.id,
             isFacebookUser: false
           };
           deferred.resolve();
@@ -85,6 +86,7 @@ angular.module('clientApp')
         .success(function(data) {
           if (data.status) {
             g_config.user = {
+              id: data.id,
               authenticated: true,
               isSeller: data.isSeller,
               isFacebookUser: data.isFacebookUser

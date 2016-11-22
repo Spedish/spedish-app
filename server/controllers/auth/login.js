@@ -7,7 +7,7 @@ module.exports = function(app, route, passport) {
           res.status(400).send(message);
         }
         else {
-          res.status(200).send({isSeller: user.isSeller});
+          res.status(200).send({isSeller: user.isSeller, id: user.id});
         }      
       })
     })(req, res, next);

@@ -13,10 +13,6 @@ angular.module('clientApp').directive('itemView', function() {
 		},
         templateUrl: '/views/item-view-all-template.html',
         controller: function ($scope, $window) {
-            $scope.$watch('items', function(newVal) {
-                if(newVal)
-                    console.log(newVal);
-            });
             $scope.sellerMealsPage = $scope.sellerView === 'true';
 
             // Left pic add padding to right, right pic add padding to left

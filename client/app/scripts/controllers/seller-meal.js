@@ -1,14 +1,17 @@
 'use strict';
 angular.module('clientApp')
-  .controller('sellerMealCtrl', function($scope, Item) {
+  .controller('sellerMealCtrl', function($scope, Item, userUtil) {
 
     // Pagination config
     $scope.currentPage = 1;
     $scope.limit = 4;
     $scope.totalItems;
+    var userId = userUtil.getUserId();
+
 
     // initial pagination params
     var requestParams = {
+      _uid: userId,
       limit: $scope.limit,
       skip: 0
     };

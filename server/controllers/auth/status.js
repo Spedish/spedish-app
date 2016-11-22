@@ -9,6 +9,7 @@ module.exports = function(app, route, passport) {
       res.status(200).json({
         status: true,
         isSeller: req.user.isSeller,
+        id: req.user.id,
         isFacebookUser: req.user.thirdParty_source == "Facebook"
       });
     }
