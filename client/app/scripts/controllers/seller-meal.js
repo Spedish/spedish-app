@@ -1,6 +1,6 @@
 'use strict';
 angular.module('clientApp')
-  .controller('sellerMealCtrl', function($scope, Item, $window) {
+  .controller('sellerMealCtrl', function($scope, Item) {
 
     // Pagination config
     $scope.currentPage = 1;

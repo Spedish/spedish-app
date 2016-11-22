@@ -17,12 +17,25 @@
 
         <!-- Seller -->
         <!-- TODO: after adding seller page, update the link ng-href -->
-        <p class="dish-seller-name">By <a ng-href="">{{i.contact_name}}, {{i.city}}</a></p>
+        <p class="dish-seller-name" ng-if="!sellerMealsPage">By <a ng-href="">{{i.contact_name}}, {{i.city}}</a></p>
+
+        <div ng-if="sellerMealsPage" class="meals-info-seller">
+            <div>Price: {{i.unit_price}}</div>
+            <div style="display:inline;">Amount: {{i.inventory}}</div>
+            <button type="button" class="btn btn-primary edit-button-seller" ng-click="actionOnItem(i)">{{getActionName()}}</button>
+        </div>
 
         <!-- price -->
         <div class="order-details">
-            <h4 class="dish-price">{{i.unit_price | currency:"$"}}</h4>
-            <button type="button" class="btn btn-primary" ng-click="actionOnItem(i)">{{getActionName()}}</button>
+            <div ng-if="!sellerMealsPage">
+                <h4 class="dish-price">{{i.unit_price | currency:"$"}}</h4>
+                <button type="button" class="btn btn-primary" ng-click="actionOnItem(i)">{{getActionName()}}</button>
+            </div>
+            <div ng-if="sellerMealsPage" class="meals-info-seller">
+                <!-- TODO: NO selling window now -->
+                <div>Selling Window:</div>
+                <div>From 10:00 am To 02:00 pm 08/24/2016</div>
+            </div>
         </div>
         </div>
     </li>
