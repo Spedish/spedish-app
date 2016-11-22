@@ -77,7 +77,6 @@ angular.module('clientApp').controller('OrdersCtrl', function($scope, Order, Sel
     };
 
     $scope.changePlacedOrderStatus = function(orderId, status, index) {
-      debugger;
       var updated = [{"value": status,
                       "op": "replace", 
                       "path": "/status"

@@ -259,10 +259,10 @@ module.exports = function(app, route, passport) {
                 });
               }
             default:
-              // return res.status(409).json({
-              //   status: 'failure',
-              //   message: "Buyer can only change order status to canceled."
-              // });
+              return res.status(409).json({
+                status: 'failure',
+                message: "Buyer can only change order status to canceled."
+              });
           }
           return auth.isResOwnerResolveChained(req, res, next, req.params.orderId, Order);
         });
