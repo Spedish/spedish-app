@@ -221,8 +221,7 @@ module.exports = function(app, route, passport) {
           return false;
         }
 
-        req.modelQuery = this.model.where('_uid').equals(req.user.id)
-        req.modelQuery = this.model.where().populate('item');
+        req.modelQuery = this.model.where('_uid').equals(req.user.id).populate('item')
         // Assign uid
         req.body._uid = req.user.id;
 
