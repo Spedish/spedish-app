@@ -1,5 +1,7 @@
+/*
 {
   "server": {
+    "debug": true,
     "dbConfig": {
       "url": "mongodb://localhost:27017/spedish"
     },
@@ -15,9 +17,10 @@
     "baseUrl": "http://localhost:3000"
   }
 }
-/*
+*/
 {
   "server": {
+    "debug": true,
     "dbConfig": {
       "url": "mongodb://localhost:27017/spedish"
     },
@@ -33,4 +36,3 @@
     "baseUrl": "http://spedish.com:3000"
   }
 }
-*/
