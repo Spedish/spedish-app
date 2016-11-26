@@ -1,4 +1,3 @@
-/*
 {
   "server": {
     "debug": true,
@@ -17,7 +16,7 @@
     "baseUrl": "http://localhost:3000"
   }
 }
-*/
+/*
 {
   "server": {
     "debug": true,
@@ -36,3 +35,4 @@
     "baseUrl": "http://spedish.com:3000"
   }
 }
+*/
