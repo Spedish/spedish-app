@@ -4,9 +4,13 @@ module.exports = {
     console.error(code + ': ' + msg);
 
     if (res) {
-      if (!res.headersSent)
-        res.status(code);
+      if (res.headersSent)
+      {
+        console.error('Header already gone, skipping response to client');
+        return;
+      }
 
+      res.status(code);
       res.json({'error': msg});
 
       // End the response by default
