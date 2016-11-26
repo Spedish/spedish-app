@@ -71,7 +71,7 @@ mongoose.connection.once('open', function() {
 
   function clientErrorHandler(err, req, res, next) {
     if (req.xhr) {
-      if config.get('server.debug') {
+      if (config.get('server.debug')) {
         res.status(500).send({
           message: err.message,
           error: err
@@ -88,7 +88,7 @@ mongoose.connection.once('open', function() {
 
   function errorHandler(err, req, res, next) {
     res.status(500);
-    if config.get('server.debug') {
+    if (config.get('server.debug')) {
       res.render('error', {
         message: err.message,
         error: err
