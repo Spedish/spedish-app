@@ -4,6 +4,7 @@ var auth = require('../lib/auth');
 var ses = require('../lib/ses');
 var Resource = require('resourcejs');
 var uuid = require('node-uuid');
+var utils = require('../lib/utils');
 
 var checkAvailability = function(item, order) {
   var timezone = item.availability.timezone;
@@ -71,11 +72,8 @@ module.exports = function(app, route, passport) {
     var completeOrderId = req.params.completeOrderId;
 
     Order.findById(orderId, function(err, order) {
-      if (err) {
-        res.status(404).json({
-          status: 'failure',
-          message: "Order with orderId " + orderId + " can not be found."
-        });
+      if (err || !order) {
+        utils.sendErrorResponse(res, 404, "Order with orderId " + orderId + " can not be found.");
       }
       else {
         if (order.status == 'complete') {
@@ -86,25 +84,19 @@ module.exports = function(app, route, passport) {
             if (order.status == 'ready') {
               order.status = 'complete';
               order.save(function(err, order) {
-                if (err) res.status(500).json({
-                  status: 'failure',
-                  message: "Update order with orderId " + orderId + " failed."
-                });
+                if (err) {
+                  utils.sendErrorResponse(res, 500, "Update order with orderId " + orderId + " failed.");
+                }
+
                 res.status(200).json("Order is complete.");
               });
             }
             else {
-              res.status(500).json({
-                status: 'failure',
-                message: "Can not complete order with orderId " + orderId + ". Order is not under ready status."
-              });
+              utils.sendErrorResponse(res, 500, "Can not complete order with orderId " + orderId + ". Order is not under ready status.");
             }
           }
           else {
-            res.status(404).json({
-              status: 'failure',
-              message: "Order with orderId " + orderId + " does not contain completeOrderId " + completeOrderId + " ."
-            });
+            utils.sendErrorResponse(res, 404, "Order with orderId " + orderId + " does not contain completeOrderId " + completeOrderId + " .");
           }
         }
       }
@@ -115,8 +107,7 @@ module.exports = function(app, route, passport) {
     .get({
       before: function(req, res, next) {
         if (!req.isAuthenticated()) {
-          console.error('Unauthenticated user attempted to place an order');
-          res.status(403).json({'error': 'no user currently logged in'}).end();
+          utils.sendErrorResponse(res, 403, 'no user currently logged in');
           return false;
         }
         req.modelQuery = this.model.where().populate('item');
@@ -124,7 +115,7 @@ module.exports = function(app, route, passport) {
       },
       after: function(req, res, next) {
         if(!auth.isResOwner(req, res.resource.item)) {
-          res.status(403).json({error: 'This user does not own this order'}).end();
+          utils.sendErrorResponse(res, 403, 'this user does not own this order');
         } else {
           res.resource.item._doc.canEdit = true;
         }
@@ -135,18 +126,18 @@ module.exports = function(app, route, passport) {
     .post({
       before: function(req, res, next) {
         if (!req.isAuthenticated()) {
-          console.error('Unauthenticated user attempted to place an order');
-          res.status(403).json({'error': 'no user currently logged in'}).end();
+          utils.sendErrorResponse(res, 403, 'no user currently logged in');
           return false;
         }
+
         // Assign uid
         req.body._uid = req.user.id;
 
         Item.findById(req.body.item, function(err, item) {
-          if (err) return res.status(404).json({
-            status: 'failure',
-            message: "Item not found."
-          });
+          if (err || !item) {
+            return utils.sendErrorResponse(res, 404, 'item not found', false);
+          }
+
           //TODO: Provide details on the response instead of a boolean, consider
           //throw exceptions
           if (checkAvailability(item, req.body)) {
@@ -155,10 +146,9 @@ module.exports = function(app, route, passport) {
             req.body.total_price = item.unit_price * req.body.count;
             req.body._sid = item._uid;
             req.body.complete_order_id = uuid.v4();
-          } else res.status(409).json({
-            status: 'failure',
-            message: "There's an issue processing your order, please try again later."
-          });
+          } else {
+            return utils.sendErrorResponse(res, 409, "There's an issue processing your order, please try again later.", false);
+          };
 
           next();
         });
@@ -166,22 +156,23 @@ module.exports = function(app, route, passport) {
       after: function(req, res, next) {
         if (res.resource.status >= 200 && res.resource.status < 300) {
           Item.findById(req.body.item, function(err, item) {
-            if (err) return res.status(404).json({
-              status: 'failure',
-              message: "Item not found."
-            });
+            if (err || !item) {
+              return utils.sendErrorResponse(res, 404, 'item not found', false);
+            }
+
             item.orders.push(res.resource.item._id);
             item.inventory = (item.inventory - req.body.count);
             item.save(function(err, docs) {
-              if (err) return res.status(500).json({
-                status: 'failure',
-                message: "Update inventory failed."
-              });
+              if (err) {
+                return utils.sendErrorResponse(res, 500, 'update inventory failed', false);
+              }
+
               console.log('Inventory successfully updated!');
+
               app.models.user.findById(res.resource.item._sid, function(err, user) {
                 if (err || !user) {
                   console.error('Cannot find user ' + res.resource.item._sid);
-                  res.status(404).json({error: 'user not found'});
+                  utils.sendErrorResponse(res, 500, 'user not found');
                 } else {
                   var emailBodyForBuyer = "Thank you for ordering with us, please wait for your chef " +
                     "to confirm your order.";
@@ -190,19 +181,17 @@ module.exports = function(app, route, passport) {
                   ses.send(req.user,
                     `order ${res.resource.item._id}`,
                     emailBodyForBuyer, function (err, data, res) {
-                      if (err) return res.status(500).json({
-                        status: 'failure',
-                        message: "Email notification sent failure."
+                      if (err) {
+                        return utils.sendErrorResponse(res, 500, 'Email notification failure', false);
+                      }
                     });
-                  });
                   ses.send(user,
                     `New order ${res.resource.item._id}`,
                     emailBodyForSeller, function (err, data, resonse) {
-                      if (err) return res.status(500).json({
-                        status: 'failure',
-                        message: "Email notification sent failure."
+                      if (err) {
+                        return utils.sendErrorResponse(res, 500, 'Email notification failure', false);
+                      }
                     });
-                  });
                 }
               });
             });
@@ -216,12 +205,13 @@ module.exports = function(app, route, passport) {
       before: function(req, res, next) {
         if (!req.isAuthenticated()) {
           console.error('Unauthenticated user attempted to retrieve all orders');
-          res.status(403).json({'error': 'no user currently logged in'}).end();
+          utils.sendErrorResponse(res, 403, 'no user currently logged in');
 
           return false;
         }
 
         req.modelQuery = this.model.where('_uid').equals(req.user.id).populate('item')
+
         // Assign uid
         req.body._uid = req.user.id;
 
@@ -241,27 +231,20 @@ module.exports = function(app, route, passport) {
       before: function(req, res, next) {
         if (!req.isAuthenticated()) {
           console.error('Unauthenticated user attempted update an order');
-          return res.status(403).json({'error': 'no user currently logged in'}).end();
+          return utils.sendErrorResponse(res, 403, 'no user currently logged in');
         }
 
         Order.findById(req.params.orderId, function(err, item) {
-          if (err) return res.status(404).json({
-            status: 'failure',
-            message: "Order not found."
-          });
+          if (err || !item) {
+            return utils.sendErrorResponse(res, 404, 'order not found', false);
+          }
           switch (req.body[0].value) {
             case "canceled":
               if (item.status != "ordered") {
-                return res.status(409).json({
-                  status: 'failure',
-                  message: "Order cannot be canceled after it is being confirmed by chef."
-                });
+                return utils.sendErrorResponse(res, 409, 'order cannot be canceled after it was confirmed by the chef', false);
               }
             default:
-              return res.status(409).json({
-                status: 'failure',
-                message: "Buyer can only change order status to canceled."
-              });
+              return utils.sendErrorResponse(res, 409, 'buyer can only change order status to canceled', false);
           }
           return auth.isResOwnerResolveChained(req, res, next, req.params.orderId, Order);
         });
@@ -272,7 +255,7 @@ module.exports = function(app, route, passport) {
           app.models.user.findById(updatedOrder._sid, function(err, user) {
             if (err || !user) {
               console.error('Cannot find user ' + updatedOrder._sid);
-              res.status(404).json({error: 'user not found'});
+              utils.sendErrorResponse(res, 404, 'user not found');
             } else {
               switch (updatedOrder.status) {
                 case "canceled":
@@ -282,19 +265,17 @@ module.exports = function(app, route, passport) {
                   ses.send(req.user,
                     `order ${res.resource.item._id}`,
                     emailBodyForBuyer, function (err, data, resonse) {
-                      if (err) return res.status(500).json({
-                        status: 'failure',
-                        message: "Email notification sent failure."
+                      if (err) {
+                        return utils.sendErrorResponse(res, 500, 'Email notification failure', false);
+                      }
                     });
-                  });
                   ses.send(user,
                     `order ${res.resource.item._id}`,
                     emailBodyForSeller, function (err, data, resonse) {
-                      if (err) return res.status(500).json({
-                        status: 'failure',
-                        message: "Email notification sent failure."
+                      if (err) {
+                        return utils.sendErrorResponse(res, 500, 'Email notification failure', false);
+                      }
                     });
-                  });
                   break;
                 // TODO: Migrate complete order api to call this route instead.
                 //

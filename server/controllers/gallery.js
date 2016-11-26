@@ -6,6 +6,7 @@ var imageMagick = require('imagemagick');
 var randStr     = require('randomstring');
 var auth        = require('../lib/auth');
 var config      = require('config');
+var utils       = require('../lib/utils.js');
 
 var options    = {
   tmpDir: config.get('server.tmpDir'),
@@ -113,11 +114,14 @@ UploadHandler.prototype.post = function (app, req, res) {
 
   // If there is a gallery ID, save it
   }).on('field', function (name, value) {
-      if (name === 'gid')
+      if (name === 'gid') {
         gid = value;
-      if (name === 'profile_mode') {
+      } else if (name === 'profile_mode') {
         console.log("Profile mode");
         gid = 'profiles';
+      } else {
+        console.error('Aborting due to bad command');
+        gid = 'error';
       }
 
   // On error delete all the temporary files that were uploaded
@@ -127,9 +131,11 @@ UploadHandler.prototype.post = function (app, req, res) {
       tmpFiles.forEach(function (file) {
           fs.unlink(file);
       });
+      gid = 'error';
 
   }).on('error', function (e) {
       console.log(e);
+      gid = 'error';
 
   }).on('progress', function (bytesReceived, bytesExpected) {
       if (bytesReceived > options.maxPostSize) {
@@ -170,6 +176,14 @@ UploadHandler.prototype.post = function (app, req, res) {
             console.log('Saving for gallery mode file ' + file + ' to ' + options.galleryDir + '/' + gid + '/' + fileInfo.name);
           else
             console.log('Saving for profile photo for uid ' + uid + ' file ' + file + ' to ' + options.galleryDir + '/' + gid + '/' + fileInfo.name);
+
+          stats = fs.lstatSync(options.galleryDir + '/' + gid);
+          if (!stats.isDirectory()) {
+            console.error('Gallery directory does not exist: ' + options.galleryDir + '/' + gid);
+            fs.unlink(file);
+            handler.req.connection.destroy();
+            return;
+          }
           fs.renameSync(file, options.galleryDir + '/' + gid + '/' + fileInfo.name);
 
           // Newly added file goes to the back of the picture order
@@ -202,12 +216,16 @@ UploadHandler.prototype.post = function (app, req, res) {
           }).catch(function(err) {
             // This error handling is incomplete as we will never return
             console.error(err);
+            fs.unlink(file);
+            handler.req.connection.destroy();
+            return;
           });
         } else {
           app.models.user.find({_id: uid}, function(err, us) {
             if (err || !us || us.length != 1) {
               console.error('Retrieving gallery failed');
               handler.req.connection.destroy();
+              return;
             } else {
               console.log('Successfully retrieved user with uid ' + uid);
               us[0].update({profile_image: order[0]}).then(function() {
@@ -220,13 +238,14 @@ UploadHandler.prototype.post = function (app, req, res) {
       };
 
       // There must be a gallery ID at this point
-      if (gid != undefined) {
+      if (gid != undefined && gid !== 'error') {
         if (gid !== 'profiles') {
           // Check gallery is valid first
           app.models.gallery.find({_id: gid}, function(err, gs) {
             if (err || !gs || gs.length != 1) {
               console.error('Retrieving gallery failed');
               handler.req.connection.destroy();
+              return;
             } else {
               console.log('Successfully retrieved gallery with gid ' + gid);
 
@@ -291,7 +310,7 @@ module.exports = function(app, route, passport) {
 
   app.put('/'+route, function(req, res) {
     if (!req.isAuthenticated()) {
-      res.status(403).json({'error': 'user not logged in'});
+      utils.sendErrorResponse(res, 403, 'user not logged in');
 
       return false;
     }
@@ -333,9 +352,7 @@ module.exports = function(app, route, passport) {
         var g = gs[0];
 
         // Does the current user own this resource?
-        if(!auth.isResOwner(req, g)) {
-          res.status(403).json({error: 'This user does not own this gallery'}).end();
-        } else {
+        if(auth.isResOwner(req, g)) {
           // Update the ordering for the gallery
           console.log(req.body.order);
           g.update({order: req.body.order}).then(function() {
@@ -347,6 +364,8 @@ module.exports = function(app, route, passport) {
 
             res.end(JSON.stringify({order: req.body.order}));
           });
+        } else {
+          return false;
         }
       }
     });
@@ -364,9 +383,7 @@ module.exports = function(app, route, passport) {
       } else {
         var g = gs[0];
 
-        if(!auth.isResOwner(req, g)) {
-          res.status(403).json({error: 'This user does not own this gallery'}).end();
-        } else {
+        if(auth.isResOwner(req, g)) {
           // Delete the image from the order list (which will stop it from appearing)
           console.log('Successfully retrieved gallery with gid ' + gid);
 
@@ -390,6 +407,8 @@ module.exports = function(app, route, passport) {
           } else {
             res.status(404).end();
           }
+        } else {
+          return false;
         }
       }
     });

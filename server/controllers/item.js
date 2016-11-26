@@ -1,5 +1,6 @@
 var Resource = require('resourcejs');
 var auth = require('../lib/auth');
+var utils = require('../lib/utils');
 
 module.exports = function(app, route, passport) {
   // Setup the controller for REST;
@@ -22,12 +23,13 @@ module.exports = function(app, route, passport) {
         before: function(req, res, next) {
           if (!req.isAuthenticated()) {
             console.error('Unauthenticated user attempted to create an item');
-            res.status(403).json({'error': 'no user currently logged in'}).end();
+            utils.sendErrorResponse(res, 403, 'no user currently logged in');
 
             return false;
           }
 
-          // Assign uid
+          // Assign uid, request userid guaranteed to exist since we
+          // passed authentication check
           req.body._uid = req.user.id;
 
           next();
@@ -35,7 +37,10 @@ module.exports = function(app, route, passport) {
       })
     .put({
         before: function(req, res, next) {
-          return auth.isResOwnerResolveChained(req, res, next, req.params.itemId, app.models.item);
+          if (req.params.itemId)
+            return auth.isResOwnerResolveChained(req, res, next, req.params.itemId, app.models.item);
+          else
+            return utils.sendErrorResponse(res, 400, 'item not specified', false);
         }
       })
     .index({
@@ -62,7 +67,10 @@ module.exports = function(app, route, passport) {
       })
     .delete({
         before: function(req, res, next) {
-          return auth.isResOwnerResolveChained(req, res, next, req.params.itemId, app.models.item);
+          if (req.params.itemId)
+            return auth.isResOwnerResolveChained(req, res, next, req.params.itemId, app.models.item);
+          else
+            return utils.sendErrorResponse(res, 500, 'item not specified', false);
         }
       })
 

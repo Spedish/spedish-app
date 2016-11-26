@@ -2,6 +2,7 @@ var Resource = require('resourcejs');
 var auth = require('../lib/auth');
 var ses = require('../lib/ses');
 var config = require('config');
+var utils = require('../lib/utils');
 
 module.exports = function(app, route, passport) {
   var Order = app.models.order;
@@ -11,7 +12,12 @@ module.exports = function(app, route, passport) {
       before: function(req, res, next) {
         if (!req.isAuthenticated()) {
           console.error('Unauthenticated user attempted update an order');
-          res.status(403).json({'error': 'no user currently logged in'}).end();
+          utils.sendErrorResponse(res, 403, 'no user currently logged in');
+          return false;
+        }
+
+        if (!req.params.orderId) {
+          utils.sendErrorResponse(res, 400, 'no order specified');
           return false;
         }
 
@@ -22,7 +28,7 @@ module.exports = function(app, route, passport) {
         app.models.user.findById(updatedOrder._uid, function(err, user) {
           if (err || !user) {
             console.error('Cannot find user ' + updatedOrder._uid);
-            res.status(404).json({error: 'user not found'});
+            utils.sendErrorResponse(res, 404, 'user not found');
           } else {
             switch (updatedOrder.status) {
               case "confirmed":
@@ -31,10 +37,9 @@ module.exports = function(app, route, passport) {
                 ses.send(user,
                   `order ${res.resource.item._id}`,
                   orderDetails, function (err, data, resonse) {
-                    if (err) return res.status(500).json({
-                      status: 'failure',
-                      message: "Email notification sent failure."
-                  });
+                    if (err) {
+                      return utils.sendErrorResponse(res, 500, 'email notification failure', false);
+                    }
                 });
                 break;
               case "ready":
@@ -44,10 +49,9 @@ module.exports = function(app, route, passport) {
                 ses.send(user,
                   `order ${res.resource.item._id}`,
                   orderDetails, function (err, data, resonse) {
-                    if (err) return res.status(500).json({
-                      status: 'failure',
-                      message: "Email notification sent failure."
-                  });
+                    if (err) {
+                      return utils.sendErrorResponse(res, 500, 'email notification failure', false);
+                    }
                 });
                 break;
               case "declined":
@@ -56,11 +60,14 @@ module.exports = function(app, route, passport) {
                 ses.send(user,
                   `order ${res.resource.item._id}`,
                   orderDetails, function (err, data, resonse) {
-                    if (err) return res.status(500).json({
-                      status: 'failure',
-                      message: "Email notification sent failure."
-                  });
+                    if (err) {
+                      return utils.sendErrorResponse(res, 500, 'email notification failure', false);
+                    }
                 });
+                break;
+
+              default:
+                console.err('Unhandled case in oder status update');
                 break;
             }
           }
@@ -73,7 +80,7 @@ module.exports = function(app, route, passport) {
         before: function(req, res, next) {
           if (!req.isAuthenticated()) {
             console.error('Unauthenticated user attempted retrieve orders');
-            res.status(403).json({'error': 'no user currently logged in'}).end();
+            utils.sendErrorResponse(res, 403, 'no user currently logged in');
             return false;
           }
           req.modelQuery = this.model.where('_sid').equals(req.user.id).populate('item');

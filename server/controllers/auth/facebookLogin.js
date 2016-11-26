@@ -1,6 +1,7 @@
 // load up the user model
 var User = require('../../models/user');
 var uuid = require('node-uuid');
+var utils = require('../../lib/utils');
 
 module.exports = function(app, route, passport) {
 
@@ -10,16 +11,18 @@ module.exports = function(app, route, passport) {
     User.findOne({
       'thirdParty_id': req.body.thirdParty_id
     }, function(err, user) {
-      if (err) {
-        return res.status(500).json({
-          error: 'unable to connect to the database'
-        });
+      if (err || !user) {
+        return utils.sendErrorResponse(res, 404, 'user not found', false);
       }
 
       // Existed user
       if (user) {
         console.log("Found an existing user.");
-        req.logIn(user, function() {
+        req.logIn(user, function(err) {
+          if (err) {
+            return utils.sendErrorResponse(res, 500, 'unable to login', false);
+          }
+
           res.status(200).send({
             isSeller: user.isSeller
           });
@@ -29,10 +32,8 @@ module.exports = function(app, route, passport) {
         User.findOne({
           'email': req.body.thirdParty_email
         }, function(err, user) {
-          if (err) {
-            return res.status(500).json({
-              error: 'unable to connect to the database'
-            });
+          if (err || !user) {
+            return utils.sendErrorResponse(res, 500, 'user not found', false);
           }
 
           if (user) {
@@ -47,12 +48,14 @@ module.exports = function(app, route, passport) {
 
             // save the updated user to the database
             user.save(function(err, user) {
-              if (err) {
-                return res.status(500).json({
-                  error: 'unable to save the new user to the database'
-                });
+              if (err || !user) {
+                return utils.sendErrorResponse(res, 500, 'unable to save new user into database', false);
               } else {
-                req.logIn(user, function() {
+                req.logIn(user, function(err) {
+                  if (err) {
+                    return utils.sendErrorResponse(res, 500, 'unable to login', false);
+                  }
+
                   res.status(200).send({
                     isSeller: user.isSeller
                   });
@@ -79,10 +82,8 @@ module.exports = function(app, route, passport) {
             User.findOne({
               'username': req.body.thirdParty_name
             }, function(err, user) {
-              if (err) {
-                return res.status(500).json({
-                  error: 'unable to connect to the database'
-                });
+              if (err || !user) {
+                return utils.sendErrorResponse(res, 500, 'user not found', false);
               }
 
               if (!user) {
@@ -94,9 +95,7 @@ module.exports = function(app, route, passport) {
               // save our user to the database
               newUser.save(function(err, user) {
                 if (err) {
-                  return res.status(500).json({
-                    error: 'unable to save the new user to the database'
-                  });
+                  return utils.sendErrorResponse(res, 500, 'unable to save new user to database', false);
                 } else {
                   req.logIn(user, function() {
                     res.status(200).send({

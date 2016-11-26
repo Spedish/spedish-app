@@ -1,7 +1,8 @@
+require('../lib/utils.js');
+
 module.exports = {
 
   getUserId: function(req) {
-    debugger;
     return req.user._id;
   },
 
@@ -22,7 +23,7 @@ module.exports = {
   // instead of using a sycnhronise library
   isResOwnerResolveChained: function(req, res, next, objId, objType) {
     if (!req.isAuthenticated()) {
-      res.status(403).json({'error': 'user not logged in'});
+      sendErrorResponse(res, 403, 'user not logged in');
 
       return false;
     }
@@ -30,14 +31,14 @@ module.exports = {
     // Get the object
     objType.findOne({_id: objId}, function(err, obj) {
       if (err || !obj) {
-        res.status(404).json({'error': 'object being edited does not exist'}).end();
+        sendErrorResponse(res, 404, 'object being edited does not exist');
 
         return false;
       }
 
       // Check that the object has an id
       if (!obj._uid) {
-        res.status(500).json({'error': 'model error'}).end();
+        sendErrorResponse(res, 500, 'model error');
 
         return false;
       }
@@ -45,7 +46,7 @@ module.exports = {
       if (obj._uid == req.user._id) {
         next();
       } else {
-        res.status(403).json({'error': 'you do not own this resource'}).end();
+        sendErrorResponse(res, 403, 'you do not own this resource');
 
         return false;
       }
@@ -55,7 +56,7 @@ module.exports = {
   // This version checks whether this resource is owned by a seller
   isResOwnedBySellerResolveChained: function(req, res, next, objId, objType) {
     if (!req.isAuthenticated()) {
-      res.status(403).json({'error': 'user not logged in'});
+      sendErrorResponse(res, 403, 'user not logged in');
 
       return false;
     }
@@ -63,14 +64,14 @@ module.exports = {
     // Get the object
     objType.findOne({_id: objId}, function(err, obj) {
       if (err || !obj) {
-        res.status(404).json({'error': 'object being edited does not exist'}).end();
+        sendErrorResponse(res, 404, 'object being edited does not exist');
 
         return false;
       }
 
       // Check that the object has an id
       if (!obj._sid) {
-        res.status(500).json({'error': 'model error'}).end();
+        sendErrorResponse(res, 500, 'model error');
 
         return false;
       }
@@ -78,7 +79,7 @@ module.exports = {
       if (obj._sid == req.user._id) {
         next();
       } else {
-        res.status(403).json({'error': 'you do not own this resource'}).end();
+        sendErrorResponse(res, 403, 'you do not own this resource');
 
         return false;
       }
