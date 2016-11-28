@@ -1,6 +1,7 @@
 # Compiled source #
 ###################
 server/node_modules/
+node_modules
 
 # Auto generated config file #
 client/app/scripts/config.js

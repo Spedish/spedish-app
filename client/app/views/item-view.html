@@ -23,4 +23,13 @@
   <a class="btn btn-primary" href="#/item/{{ item._id }}/order">Order Now</a>
 </div>
 
+<br>
+
 <div ng-include="'views/map-embed.html'" />
+
+<br>
+
+<!--Item Reviews-->
+<div ng-controller="ReviewViewCtrl">
+  <review-View></review-View>
+</div>

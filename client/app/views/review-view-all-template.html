@@ -1,0 +1,35 @@
+
+<div>{{ retrieveReviewError }}</div>
+<div>
+  <h3>{{ reviews.length }} Reviews</h3>
+</div>
+<div>
+  <table>
+    <tr ng-repeat="x in reviews">
+      <td>
+        <table border="1" width="200%">
+          <tr>
+            <td colspan="2"><hr></td>
+          </tr>
+          <tr>
+            <td rowspan="3">Buyer Name: {{ x._uid.username }}</td>
+            <td><span uib-rating ng-model="x.rating" read-only="true"></span>{{x.createdAt}}</td>
+          </tr>
+          <tr>
+            <td>{{ x.buyer_review }}</td>
+          </tr>
+          <tr>
+            <td align="right"><a ng-href="#/item/{{x.item}}">item link {{ x.item.title }}</a></td>
+          </tr>
+          <tr>
+            <td rowspan="2"></td>
+            <td>Response from seller: </td>
+          </tr>
+          <tr>
+            <td>XXXX {{ x.seller_response }}</td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+</div>
