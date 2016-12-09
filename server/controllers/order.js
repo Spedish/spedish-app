@@ -172,7 +172,7 @@ module.exports = function(app, route, passport) {
               app.models.user.findById(res.resource.item._sid, function(err, user) {
                 if (err || !user) {
                   console.error('Cannot find user ' + res.resource.item._sid);
-                  utils.sendErrorResponse(res, 500, 'user not found');
+                  utils.sendErrorResponse(res, 404, 'user not found');
                 } else {
                   var emailBodyForBuyer = "Thank you for ordering with us, please wait for your chef " +
                     "to confirm your order.";

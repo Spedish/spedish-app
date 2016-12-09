@@ -70,7 +70,7 @@ module.exports = function(app, route, passport) {
           if (req.params.itemId)
             return auth.isResOwnerResolveChained(req, res, next, req.params.itemId, app.models.item);
           else
-            return utils.sendErrorResponse(res, 500, 'item not specified', false);
+            return utils.sendErrorResponse(res, 400, 'item not specified', false);
         }
       })
 

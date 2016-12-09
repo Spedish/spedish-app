@@ -14,7 +14,7 @@ module.exports = {
       res.json({'error': msg});
 
       // End the response by default
-      if (!endResp || endResp == true)
+      if (endResp !=='undefined' && endResp == true)
         res.end();
 
     } else {
