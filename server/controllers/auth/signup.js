@@ -1,16 +1,14 @@
+var utils = require('../../lib/utils.js');
+
 module.exports = function(app, route, passport) {
 
   app.post('/signup', function(req, res, next) {
     passport.authenticate('local-signup', function(err, user, info) {
       if (err) {
-        return res.status(500).json({
-          message: "Create user failed."
-        });
+        return utils.sendErrorResponse(res, 500, 'Create user failed', false);
       }
       if (!user) {
-        return res.status(409).json({ // 409 Conflict
-          message: info.message
-        });
+        return utils.sendErrorResponse(res, 409, info.message, false);
       }
       return res.status(201).json(user);
     })(req, res, next);

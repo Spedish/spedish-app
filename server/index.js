@@ -71,9 +71,16 @@ mongoose.connection.once('open', function() {
 
   function clientErrorHandler(err, req, res, next) {
     if (req.xhr) {
-      res.status(500).send({
-        error: 'Something failed!'
-      });
+      if (config.get('server.debug')) {
+        res.status(500).send({
+          message: err.message,
+          error: err
+        });
+      } else {
+        res.status(500).send({
+          message: err.message
+        });
+      }
     } else {
       next(err);
     }
@@ -81,11 +88,18 @@ mongoose.connection.once('open', function() {
 
   function errorHandler(err, req, res, next) {
     res.status(500);
-    res.render('error', {
-      error: err
-    });
+    if (config.get('server.debug')) {
+      res.render('error', {
+        message: err.message,
+        error: err
+      });
+    } else {
+      res.render('error', {
+        message: err.message
+      });
+    }
   }
 
-  console.log('Listening on port ' + config.get('server.port'));
   app.listen(config.get('server.port'));
+  console.log('Listening on port ' + config.get('server.port'));
 });

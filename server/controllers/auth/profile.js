@@ -1,8 +1,10 @@
+var utils = require('../../lib/utils');
+
 module.exports = function(app, route, passport, User) {
 
   app.get('/profile', function(req, res, next) {
     if (!req.isAuthenticated()) {
-      res.status(403).json({error: 'no logged in user'});
+      utils.sendErrorResponse(res, 403, 'no logged in user');
     } else {
       res.status(200).json({
         username: req.user.username,
@@ -27,8 +29,7 @@ module.exports = function(app, route, passport, User) {
 
     app.models.user.findOne({username: username}, function(err, user) {
       if (err || !user) {
-        console.error('Cannot find user ' + username);
-        res.status(404).json({error: 'user not found'});
+        utils.sendErrorResponse(res, 404, 'user not found');
       } else {
         res.status(200).json({
           username: user.username,
@@ -50,15 +51,13 @@ module.exports = function(app, route, passport, User) {
 
   app.post('/profile', function(req, res, next) {
     if (!req.isAuthenticated()) {
-      res.status(403).json({error: 'no logged in user'});
-
-      next();
+      utils.sendErrorResponse(res, 403, 'user not found');
     } else {
       req.user.update(req.body, function(err, user) {
-        if (!err)
+        if (!err && user)
           res.status(200).json({status: 'updated'});
         else
-          res.status(500).json({error: 'unable to update'});
+          utils.sendErrorResponse(res, 500, 'unable to update');
 
         next();
       });

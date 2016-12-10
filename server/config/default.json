@@ -1,5 +1,6 @@
 {
   "server": {
+    "debug": true,
     "dbConfig": {
       "url": "mongodb://localhost:27017/spedish"
     },
@@ -18,6 +19,7 @@
 /*
 {
   "server": {
+    "debug": true,
     "dbConfig": {
       "url": "mongodb://localhost:27017/spedish"
     },

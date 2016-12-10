@@ -1,5 +1,6 @@
 var moment = require('moment');
 var auth = require('../lib/auth');
+var utils = require('../lib/utils');
 
 module.exports = function(app, route, passport) {
   var Item = app.models.item;
@@ -7,7 +8,7 @@ module.exports = function(app, route, passport) {
   app.put('/item/:id/availability', function(req, res) {
     if (!req.isAuthenticated()) {
       console.error('Unauthenticated user attempted to modify availability of an item');
-      res.status(403).json({'error': 'no user currently logged in'}).end();
+      utils.sendErrorResponse(res, 403, 'no user currently logged in');
 
       return false;
     }
@@ -16,19 +17,19 @@ module.exports = function(app, route, passport) {
     req.body._uid = req.user.id;
 
     Item.findById(req.params.id, function(err, item) {
-      if (err) return res.status(404).json({
-        status: 'failure',
-        message: "Item not found."
-      });
+      if (err || !item) {
+        return utils.sendErrorResponse(res, 404, 'item not found', false);
+      }
+
       if(!auth.isResOwner(req, item)) {
-        res.status(403).json({error: 'This user does not own this item'}).end();
+        utils.sendErrorResponse(res, 403, 'this user does not own this item');
       } else {
         item.availability = req.body;
         item.save(function(err, doc) {
-          if (err) return res.status(500).json({
-            status: 'failure',
-            message: "Update availability failed."
-          });
+          if (err || !doc) {
+            return utils.sendErrorResponse(res, 500, 'update availablity failed', false);
+          }
+
           console.log('Availability successfully updated!');
           res.status(200).json(doc.availability);
         });
@@ -40,10 +41,10 @@ module.exports = function(app, route, passport) {
 
     Item.findById(req.params.id, 'availability', function(err,
       availability) {
-      if (err) res.status(404).json({
-        status: 'failure',
-        message: "Item not found."
-      });
+      if (err || !availability) {
+        return utils.sendErrorResponse(res, 404, 'item not found', false);
+      }
+
       console.log('Availability successfully retrieved!');
       res.status(200).json(availability);
     });
