@@ -9,12 +9,38 @@
  */
 angular.module('clientApp')
   .controller('ItemViewCtrl', function($scope, Item, $routeParams) {
-
-    $scope.item = Item.one($routeParams.id).get().$object;
-
+    // set quantity dropdown
+    $scope.itemQuantityArray = generateQuantity();
+    $scope.selected = { value: $scope.itemQuantityArray[0] };
+    // Get item info from backend
+    Item.one($routeParams.id).get().then(function(responses) {
+        $scope.item = responses;
+        $scope.totalPrice = $scope.selected.value.name * $scope.item.unit_price;
+      }).catch(function() {
+        $scope.items = [];
+    });
     $scope.getEmbedMapSrc = function() {
       return g_config.embeddedMapUrl + $scope.item.street + ',' + $scope.item
         .city + ',' + $scope.item.zip;
+    }
+
+    $scope.$watch('selected.value', quantityChanged);
+
+    //update total price
+    function quantityChanged() {
+      if($scope.item)
+        $scope.totalPrice =  $scope.item.unit_price * $scope.selected.value.name;
+    };
+
+    function generateQuantity() {
+      var quantityArray = [];
+      for(var i = 0; i < 9; i++) {
+        quantityArray[i] = {
+          id: i + 1,
+          name: i + 1
+        }
+      };
+      return quantityArray;
     }
   })
 

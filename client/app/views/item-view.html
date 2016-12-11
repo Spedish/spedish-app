@@ -1,26 +1,70 @@
 <!-- Image carousel -->
 <div id="gallery" ng-controller="CarouselCtrl">
-  <div class="col-xs-12 col-md-12 col-lg-12">
-    <uib-carousel active="active" interval="rotateInterval" no-wrap="noWrapSlides">
+  <div style="height: 350px;">
+    <div uib-carousel active="active" interval="rotateInterval" no-wrap="noWrapSlides">
       <!-- Now now, add max height for image, need to set a suggested height and width when buyer tries to upload a image -->
-      <uib-slide ng-repeat="slide in slides track by slide.id" index="slide.id" style="max-height:500px;">
+      <div uib-slide ng-repeat="slide in slides track by slide.id" index="slide.id" style="max-height:350px;">
         <img ng-src="{{slide.image}}" style="margin:auto;">
-      </uib-slide>
-    </uib-carousel>
+      </div>
+    </div>
+  </div>
+
+<div class="item-order-large-detail">
+  <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2 avatar item-order-seller-profile" style="background-image: url(images/avator_placeholder.jpg)">
+  </div>
+  <div class="col-lg-1">
+  </div>
+  <div class="col-lg-9 col-md-10 col-sm-10 col-xs-10" style="padding-top: 23px;">
+    <span class="item-view-title">{{ item.title }}&nbsp&nbsp{{item.unit_price  | currency:"$"}}</span>
+    <span>+ tax</span>
   </div>
 </div>
 
-<div ng-controller="CarouselCtrl">
-  <h2>{{ item.title }}</h2>
-  <h3>Category: {{ item.category }}</h3>
-  <p>Description:</p>
-  <p ta-bind ng-model="description"></p>
-  <p>Price/Inventory: ${{ item.unit_price }} @ {{ item.inventory }}</p>
-  <p>Options: {{ item.meal_options }}</p>
-  <br />
-  <p>Gallery ID: {{ item._gallery._id }}</p>
-  <p>Image Order: {{ item._gallery.order }}</p>
-  <a class="btn btn-primary" href="#/item/{{ item._id }}/order">Order Now</a>
-</div>
+  <div class="item-view-info-group">
+      <span class="item-view-info-title">Availability: </span>
+      <span class="item-view-info">{{ item.inventory }}</span>
+  </div>
 
-<div ng-include="'views/map-embed.html'" />
+  <div class="item-view-info-group" ng-if="item.category">
+      <span class="item-view-info-title">Category:</span>
+      <span>{{ item.category }}</span>
+  </div>
+
+  <div class="item-view-info-group">
+    <span class="item-view-info-title">Description:</span>
+    <span ta-bind ng-model="description" style="display: inline-block;"></span>
+  </div>
+
+  <div class="item-view-info-group">
+    <span class="item-view-info-title">Pick Up Location:</span>
+    <span class="item-view-info">{{ item.street }}, {{item.city}}, {{item.zip}}</span>
+  </div>
+
+  <div class="item-view-info-group" style="display: flex;">
+    <span class="item-view-info-title order-quantity-question">How many orders:</span>
+    <span class="item-view-info item-quantity-dropdown">
+
+      <!-- dropdown to choose quantity -->
+      <!-- more info about the dropdown -->
+      <!-- https://github.com/angular-ui/ui-select/wiki -->
+      <ui-select ng-model="selected.value" search-enabled="false">
+        <ui-select-match>
+            <span ng-bind="$select.selected.name"></span>
+        </ui-select-match>
+        <ui-select-choices position="down" repeat="item in itemQuantityArray track by item.id">
+            <span ng-bind="item.name"></span>
+        </ui-select-choices>
+      </ui-select>
+    </span>
+
+  </div>
+
+  <div class="item-view-info-group">
+    <span class="item-view-info-title">Total:</span>
+    <span class="item-view-info">{{totalPrice | currency:"$"}}</span>
+  </div>
+  <div class="item-view-info-group">
+    <a class="btn btn-primary" href="#/item/{{ item._id }}/order">Order Now</a>
+  </div>
+
+<div style="padding-top: 10px;" ng-include="'views/map-embed.html'" />

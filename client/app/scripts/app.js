@@ -26,7 +26,8 @@ angular
     'multipleSelect',
     'ui.bootstrap',
     'ngTimezone',
-    'textAngular'
+    'textAngular',
+    'ui.select'
   ])
   .config(function(ENV, $httpProvider, $routeProvider, RestangularProvider,
     $sceDelegateProvider) {

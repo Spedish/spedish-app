@@ -196,3 +196,48 @@ hr.dish-image-content-spacer {
   float: right;
   margin-right: 15px;
 }
+
+.item-order-seller-profile {
+  width: 75px;
+  height: 75px;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  border: none;
+  left: 0;
+  top: 0;
+  cursor: pointer;
+}
+
+.item-order-large-detail {
+  height: 85px;
+  margin-top: 10px;
+}
+
+.item-view-title {
+  font-size: 24px;
+  font-weight: 400;
+}
+
+.item-view-info-title {
+  font-size: 18px;
+  font-weight: 400;
+}
+
+.item-view-info {
+  font-size: 18px;
+  font-weight: 300;
+}
+
+.item-view-info-group {
+  padding-top: 10px;
+}
+
+.order-quantity-question.item-view-info-title {
+  margin-top: 4px;
+}
+
+.item-quantity-dropdown.item-view-info {
+  width: 30%;
+  margin-left: 25px;
+}
